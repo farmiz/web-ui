@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { initialRequestState } from "../../defaults";
 import { UserProps } from "../../interfaces/users";
 import { IDefaultPlugin, RequestStateProps } from "../../interfaces";
@@ -10,10 +10,15 @@ const initialState: {
   ...initialRequestState,
 };
 
+// const fetchUsers = createAsyncThunk("", )
 export const userSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {}
+  reducers: {
+    getUserById: (actions, payload)=>{
+      
+    }
+  }
 });
 
 export const {} = userSlice.actions;

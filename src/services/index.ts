@@ -1,20 +1,25 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
+const  BASE_API_URL = "http://localhost:8080/v1"
 export class RequestService {
   private axiosInstance: AxiosInstance;
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: "",
+      baseURL: BASE_API_URL,
+      withCredentials: true
     });
   }
 
-  protected async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.get(url, config);
+   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response: AxiosResponse<T> = await this.axiosInstance.get(
+      url,
+      config
+    );
     return response.data;
   }
 
-  protected async post<T>(
+   async post<T>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
@@ -27,7 +32,7 @@ export class RequestService {
     return response.data;
   }
 
-  protected async put<T>(
+   async put<T>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
@@ -40,7 +45,10 @@ export class RequestService {
     return response.data;
   }
 
-  protected async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+   async delete<T>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response: AxiosResponse<T> = await this.axiosInstance.delete(
       url,
       config

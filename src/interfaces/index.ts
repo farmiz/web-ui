@@ -1,3 +1,5 @@
+import { UserRole } from "./users";
+
 export interface IDefaultPlugin {
     _id?: string;
     createdAt?: Date;
@@ -29,4 +31,15 @@ export interface IDefaultPlugin {
     isSuccess: boolean;
     isError: boolean;
     message: string;
+  }
+
+  export interface AuthProps {
+    email: string;
+    password: string;
+    role: UserRole;
+    username: string;
+    firstName: string;
+    LastName: string;
+    phone: PhoneProps;
+    dateOfBirthday: Date;
   }
