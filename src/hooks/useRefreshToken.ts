@@ -5,7 +5,6 @@ function useRefreshToken() {
   const dispatch = useAppDispatch();
   const refresh = async () => {
     const { response } = await authService.refresh();
-
     dispatch(
       setAuth({ accessToken: response.accessToken, userDetails: response.user })
     );

@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import { UserRole } from "./users";
 
 export interface IDefaultPlugin {
@@ -42,4 +43,11 @@ export interface IDefaultPlugin {
     LastName: string;
     phone: PhoneProps;
     dateOfBirthday: Date;
+  }
+
+  export interface ActionButtonProps {
+    createButton?: {
+      name: string;
+      onClick: MouseEventHandler<HTMLButtonElement>;
+    };
   }

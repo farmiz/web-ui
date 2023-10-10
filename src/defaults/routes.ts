@@ -15,6 +15,7 @@ import {
 import Login from "@/pages/auth/Login";
 import Users from "@/pages/users";
 import Dashboard from "@/pages/dashboard";
+import CreateUser from "@/pages/users/create";
 
 export interface RoutesProps {
   url: string;
@@ -44,6 +45,11 @@ export const routes: RoutesProps[] = [
     url: "/users",
     requireAuth: true,
     component: Users,
+  },
+  {
+    url: "/users/create",
+    requireAuth: true,
+    component: CreateUser,
   },
 ];
 

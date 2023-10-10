@@ -3,18 +3,19 @@ import { DatePicker } from "../DatePicker";
 import ButtonWithIcon from "../ButtonWithIcon";
 import { ArrowDown } from "lucide-react";
 import { Button } from "../ui/button";
+import { ActionButtonProps } from "@/interfaces";
 
 interface HeaderTitleProps {
   pageTitle: string;
   pageDescription?: string;
   showPageExporter?: boolean;
-  actionButtons?: Record<string, any>
+  actionButtons?: ActionButtonProps;
 }
 const HeaderTitle: React.FC<HeaderTitleProps> = ({
   pageTitle,
   pageDescription,
   showPageExporter,
-  actionButtons
+  actionButtons,
 }) => {
   return (
     <div className="pb-5 mb-5 lg:flex items-center justify-between sm:block">
@@ -23,7 +24,7 @@ const HeaderTitle: React.FC<HeaderTitleProps> = ({
         <p className="text-sm">{pageDescription || ""}</p>
       </div>
       {showPageExporter && (
-        <div className="exporter flex items-center justify-between gap-5 sm:justify-normal">
+        <div className="exporter flex items-center justify-between gap-3 sm:justify-normal">
           <DatePicker />
           <ButtonWithIcon text="Export">
             <ArrowDown size={18} />
@@ -31,7 +32,12 @@ const HeaderTitle: React.FC<HeaderTitleProps> = ({
         </div>
       )}
       {actionButtons && (
-       <Button className="px-8 py-3 uppercase w-[200px] rounded-sm">Click me</Button>
+        <Button
+          className="px-8 py-3 uppercase w-[200px] rounded-sm"
+          onClick={actionButtons.createButton?.onClick }
+        >
+          {actionButtons.createButton?.name}
+        </Button>
       )}
     </div>
   );

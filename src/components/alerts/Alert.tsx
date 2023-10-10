@@ -23,7 +23,7 @@ const Alert: React.FC<AlertProps> = ({ text, type }) => {
   };
   return (
     <div
-      className={`${alertMapper[type].className} text-sm p-3 flex justify-between rounded items-center`}
+      className={`${alertMapper[type]?.className} text-sm p-3 flex justify-between rounded items-center`}
     >
       <div>
         <div className="flex items-center">

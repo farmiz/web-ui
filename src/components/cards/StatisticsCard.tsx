@@ -13,7 +13,7 @@ const StatisticsCard: React.FC<StatisticsCardProps> = ({ amount, text, icon }) =
       style={{ boxShadow: "rgba(33, 35, 38, 0.1) 0px 10px 10px -10px" }}
     >
       <div className="card-icon p-4 rounded bg-slate-100">
-        {React.createElement(icon, {size: 18})}
+        {React.createElement(icon, {size: 18} as any)}
         {/* <PieChartIcon size={18} className="text-primary" /> */}
       </div>
       <div className="p-6 flex-grow pt-0 pl-0 group-hover:text-white">

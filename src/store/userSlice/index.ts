@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { initialRequestState } from "../../defaults";
 import { UserProps } from "../../interfaces/users";
 import { IDefaultPlugin, RequestStateProps } from "../../interfaces";
@@ -15,9 +15,7 @@ export const userSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    getUserById: (actions, payload)=>{
-      
-    }
+    
   }
 });
 

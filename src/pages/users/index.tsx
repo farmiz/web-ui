@@ -1,12 +1,17 @@
 import DashboardLayout from "@/components/dashboard/Layout";
 import Table from "@/components/tableData/Table";
+import { ActionButtonProps } from "@/interfaces";
+import { useNavigate } from "react-router-dom";
 
 const Users = () => {
-  const handleCreateButtonClick = () => {};
-  const actionButtons = {
+  const navigate = useNavigate();
+  const handleCreateButtonClick = () => {
+    navigate("/users/create");
+  };
+  const actionButtons: ActionButtonProps = {
     createButton: {
       name: "Create User",
-      onclick: null,
+      onClick: handleCreateButtonClick,
     },
   };
   return (

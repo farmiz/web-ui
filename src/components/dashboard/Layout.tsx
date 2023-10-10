@@ -23,7 +23,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   pageTitle,
   pageDescription,
   showPageExporter = false,
-  actionButtons = {}
+  actionButtons
 }) => {
   return (
     <div className="overflow-hidden w-full h-screen relative flex z-0 bg-[#fafafa]">

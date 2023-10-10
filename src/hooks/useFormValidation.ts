@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const useFormValidation = <T extends z.ZodType<any, any, any>>(
