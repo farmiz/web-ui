@@ -1,8 +1,8 @@
+
 import DashboardLayout from "@/components/dashboard/Layout";
-// import Table from "@/components/tableData/Table";
+import Table from "@/components/table/Table";
 import { ActionButtonProps } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
-import Table from "@/components/Table"
 const Users = () => {
   const navigate = useNavigate();
   const handleCreateButtonClick = () => {
@@ -16,7 +16,7 @@ const Users = () => {
   };
   return (
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
-      <Table />
+    <Table />
     </DashboardLayout>
   );
 };
