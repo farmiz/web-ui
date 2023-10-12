@@ -41,9 +41,9 @@ export const columns: ColumnDef<Task>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "title",
+    accessorKey: "label",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Label" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label)
@@ -51,6 +51,21 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
+        </div>
+      )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: "title",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Title" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue("title")}
           </span>

@@ -3,22 +3,22 @@ import {
   ChevronRightIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
-} from "lucide-react"
-import { Table } from "@tanstack/react-table"
+} from "lucide-react";
+import { Table } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import PaginationNumbers from "./PaginationNumbers";
 
 interface DataTablePaginationProps<TData> {
-  table: Table<TData>
+  table: Table<TData>;
 }
-
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
@@ -34,7 +34,7 @@ export function DataTablePagination<TData>({
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
-              table.setPageSize(Number(value))
+              table.setPageSize(Number(value));
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -72,6 +72,12 @@ export function DataTablePagination<TData>({
             <span className="sr-only">Go to previous page</span>
             <ChevronLeftIcon className="h-4 w-4" />
           </Button>
+
+          <PaginationNumbers
+            itemsPerPage={9}
+            table={table}
+          />
+
           <Button
             variant="outline"
             className="h-8 w-8 p-0"
@@ -93,5 +99,5 @@ export function DataTablePagination<TData>({
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,7 +1,11 @@
 import DataTable from "./DataTable";
 import { columns } from "@/components/table/columns";
-import data  from "@/components/table/data/tasks.json";
-export default function Table() {
+import data from "@/components/table/data/tasks.json";
+
+interface TableProps {
+  showExportButton?: boolean;
+}
+const Table: React.FC<TableProps> = ({ showExportButton = false }) => {
   return (
     <>
       <div className="md:hidden"></div>
@@ -14,8 +18,13 @@ export default function Table() {
             </p>
           </div>
         </div>
-        <DataTable columns={columns} data={data}/>
+        <DataTable
+          columns={columns}
+          data={data}
+          showExportButton={showExportButton}
+        />
       </div>
     </>
   );
-}
+};
+export default Table;

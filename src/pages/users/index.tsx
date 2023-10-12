@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/dashboard/Layout";
 import Table from "@/components/table/Table";
 import { ActionButtonProps } from "@/interfaces";
@@ -16,7 +15,7 @@ const Users = () => {
   };
   return (
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
-    <Table />
+      <Table showExportButton={true} />
     </DashboardLayout>
   );
 };

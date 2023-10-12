@@ -15,16 +15,28 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { DataTablePagination } from "./DataTablePagination";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { labels, priorities, statuses } from "@/components/table/data/data";
+import { DataFilterProps } from "@/interfaces/tables";
+import { ArrowRightLeft, Hash, PlusCircleIcon, Settings2 } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  showExportButton?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  showExportButton = false,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -55,11 +67,50 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+  const filters: DataFilterProps[] = [
+    {
+      column: "status",
+      options: statuses,
+      title: "Status",
+      extra: {
+        mainIcon: Settings2,
+      },
+    },
+    {
+      column: "priority",
+      options: priorities,
+      title: "Priorities",
+      extra: {
+        mainIcon: ArrowRightLeft,
+      },
+    },
+    {
+      column: "label",
+      title: "Labels",
+      options: labels,
+      extra: {
+        mainIcon: PlusCircleIcon,
+      },
+    },
+    {
+      column: "label",
+      title: "Labels",
+      options: labels,
+      isNumber: true,
+      extra: {
+        mainIcon: Hash,
+      },
+    },
+  ];
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar
+        table={table}
+        showExportButton={showExportButton}
+        filters={filters}
+      />
       <div className="rounded border border-md mt-5">
-      <Table>
+        <Table>
           <TableHeader className="bg-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -73,7 +124,7 @@ export function DataTable<TData, TValue>({
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
