@@ -16,6 +16,8 @@ import Login from "@/pages/auth/Login";
 import Users from "@/pages/users";
 import Dashboard from "@/pages/dashboard";
 import CreateUser from "@/pages/users/create";
+import CreateDiscovery from "@/pages/discoveries/create";
+import Discovery from "@/pages/discoveries";
 
 export interface RoutesProps {
   url: string;
@@ -50,6 +52,16 @@ export const routes: RoutesProps[] = [
     url: "/users/create",
     requireAuth: true,
     component: CreateUser,
+  },
+  {
+    url: "/discoveries/create",
+    requireAuth: true,
+    component: CreateDiscovery,
+  },
+  {
+    url: "/discoveries",
+    requireAuth: true,
+    component: Discovery,
   },
 ];
 

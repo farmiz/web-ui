@@ -2,22 +2,22 @@ import DashboardLayout from "@/components/dashboard/Layout";
 import Table from "@/components/table/Table";
 import { ActionButtonProps } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
-const Users = () => {
+const Discovery = () => {
   const navigate = useNavigate();
   const handleCreateButtonClick = () => {
-    navigate("/users/create");
+    navigate("/discoveries/create");
   };
   const actionButtons: ActionButtonProps = {
     createButton: {
-      name: "Create User",
+      name: "Create Discovery",
       onClick: handleCreateButtonClick,
     },
   };
   return (
-    <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
-      <Table showExportButton={true} title="Users List" />
+    <DashboardLayout pageTitle="Discoveries List" actionButtons={actionButtons}>
+      <Table showExportButton={true} title="Discoveries List" />
     </DashboardLayout>
   );
 };
 
-export default Users;
+export default Discovery;

@@ -33,7 +33,7 @@ const HeaderTitle: React.FC<HeaderTitleProps> = ({
       )}
       {actionButtons && (
         <Button
-          className="px-8 py-3 uppercase w-[200px] rounded-sm"
+          className="px-8 py-3 uppercase min-w-[200px] rounded-sm"
           onClick={actionButtons.createButton?.onClick }
         >
           {actionButtons.createButton?.name}

@@ -10,6 +10,7 @@ import { DataTableViewOptions } from "@/components/table/DataTableViewOptions";
 import { DataTableFacetedFilter } from "./TableFacetedFilter";
 import { DataFilterProps } from "@/interfaces/tables";
 import DataFacetedFilterForNumbers from "./DataFacetedFilterForNumbers";
+import { useCallback, useState } from "react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -23,17 +24,24 @@ export function DataTableToolbar<TData>({
   filters,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-
+  const [value, setValue] = useState<string>("");
+  const handleOnChange = useCallback(
+    (event: any) => {
+      // if (value.length >= 3) {
+      // }
+      setValue(event.target.value);
+      table.getColumn("title")?.setFilterValue(value);
+    },
+    [value]
+  );
   return (
     <>
       <div className="flex items-center justify-between mb-5">
         <div className="flex flex-1 items-center space-x-2">
           <Input
             placeholder="Filter tasks..."
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("title")?.setFilterValue(event.target.value)
-            }
+            value={value ?? ""}
+            onChange={handleOnChange}
             className="h-8 w-[150px] lg:w-[250px]"
           />
         </div>
@@ -60,7 +68,7 @@ export function DataTableToolbar<TData>({
                 : table.getColumn(filter.column) && (
                     <DataFacetedFilterForNumbers
                       key={Math.ceil(Math.random() * 1000000000)}
-                     filter={filter}
+                      filter={filter}
                     />
                   );
             })}

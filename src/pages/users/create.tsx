@@ -1,11 +1,14 @@
-import DashboardLayout from '@/components/dashboard/Layout'
+import Container from "@/components/Container";
+import DashboardLayout from "@/components/dashboard/Layout";
 
 const CreateUser = () => {
   return (
     <DashboardLayout pageTitle="Create User">
-     <h1>Hello</h1>
+      <Container className="border">
+        <h1>Users</h1>
+      </Container>
     </DashboardLayout>
-  )
-}
+  );
+};
 
-export default CreateUser
+export default CreateUser;

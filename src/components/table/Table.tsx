@@ -1,20 +1,21 @@
 import DataTable from "./DataTable";
 import { columns } from "@/components/table/columns";
 import data from "@/components/table/data/tasks.json";
+import Container from "../Container";
 
 interface TableProps {
   showExportButton?: boolean;
+  title?: string
 }
-const Table: React.FC<TableProps> = ({ showExportButton = false }) => {
+const Table: React.FC<TableProps> = ({ showExportButton = false, title }) => {
   return (
     <>
-      <div className="md:hidden"></div>
-      <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex bg-white min-h-[400px]">
+      <Container>
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Users List</h2>
-            <p className="text-muted-foreground">
-              Here's a list of all users in farmiz!
+            <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
+            <p className="text-muted-foreground mt-1">
+              Here's a list of all <span className="font-bold">{title && title.split(" ")[0].toLowerCase()}</span> in farmiz!
             </p>
           </div>
         </div>
@@ -23,7 +24,7 @@ const Table: React.FC<TableProps> = ({ showExportButton = false }) => {
           data={data}
           showExportButton={showExportButton}
         />
-      </div>
+      </Container>
     </>
   );
 };

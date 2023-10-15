@@ -11,9 +11,8 @@ const InputErrorMessage = <T extends FieldValues>({
   fieldName,
 }: ErrorMessageProps<T>) => {
   const errorMessage = errors[fieldName]?.message as string | undefined;
-
   return errorMessage ? (
-    <span className="text-red-800 block text-sm">{errorMessage}</span>
+    <span className="text-red-600 block text-[13px]">{errorMessage}</span>
   ) : null;
 };
 

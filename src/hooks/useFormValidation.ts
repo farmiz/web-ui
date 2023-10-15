@@ -6,6 +6,7 @@ export const useFormValidation = <T extends z.ZodType<any, any, any>>(
   validation: T
 ) => {
   type FormSchemaType = z.infer<typeof validation>;
+  
   const {
     register,
     handleSubmit,
@@ -13,8 +14,6 @@ export const useFormValidation = <T extends z.ZodType<any, any, any>>(
   } = useForm<FormSchemaType>({
     resolver: zodResolver(validation),
   });
-
-
 
   return { errors, isSubmitting, register, handleSubmit};
 };
