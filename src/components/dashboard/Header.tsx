@@ -5,7 +5,7 @@ import { MessageSquare, BellIcon } from "lucide-react";
 const Header = () => {
   const userDetails = useAppSelector("auth").userDetails;
   return (
-    <div className="header-container bg-white">
+    <div className="header-container bg-white sticky top-0">
       <header
         className="flex h-[56px] items-center justify-between relative px-8"
         role="banner"

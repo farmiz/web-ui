@@ -107,7 +107,7 @@ export const menuSidebarRoutes = {
     },
     {
       title: "Sponsorships",
-      url: "/sponsorshipa",
+      url: "/sponsorships",
       icon: HeartHandshake,
     },
   ],

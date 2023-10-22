@@ -25,7 +25,7 @@ import {
 import { DataTableProps, Paginator } from "@/interfaces/tables";
 import TableBodyItem from "./TableBodyItem";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import NoDataImg from "/no-data.svg";
 export function DataTable<TData, TValue>({
   columns,
   showExportButton = false,
@@ -67,16 +67,13 @@ export function DataTable<TData, TValue>({
       } catch (error) {
         throw error;
       }
-
     };
   }, [queryParameters]);
 
   useEffect(() => {
     memoizedFetchQuery();
 
-    return ()=>{
-      
-    }
+    return () => {};
   }, []);
 
   const table = useReactTable({
@@ -139,7 +136,10 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  <div className="p-10 flex items-center justify-center flex-col gap-4">
+                    <img src={NoDataImg} alt="" style={{ width: "20%" }} />
+                    <p className="text-lg">No results.</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

@@ -11,9 +11,10 @@ export const useFormValidation = <T extends z.ZodType<any, any, any>>(
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    control
   } = useForm<FormSchemaType>({
     resolver: zodResolver(validation),
   });
 
-  return { errors, isSubmitting, register, handleSubmit};
+  return { errors, isSubmitting, register, handleSubmit, control};
 };

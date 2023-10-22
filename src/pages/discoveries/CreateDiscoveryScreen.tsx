@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import DashboardLayout from "@/components/dashboard/Layout";
 import FormBuilder from "@/components/forms/FormBuilder/FormBuilder";
+// import SearchComponent from "@/components/forms/FormBuilder/SearchComponent";
 import FormHeader from "@/components/forms/FormHeader";
 import {
   discoveryForm,
@@ -28,6 +29,15 @@ const CreateDiscovery = () => {
           description="Basic information about the discovery"
           title="Discovery data"
         />
+        {/* <SearchComponent
+          isMulti={true}
+          isSearchable={true}
+          options={[
+            { label: "Option 1", value: "option1" },
+            { label: "Option 2", value: "option2" },
+            { label: "Option 3", value: "option3" },
+          ]}
+        /> */}
         <FormBuilder
           schema={discoveryForm}
           onSubmit={onSubmit}

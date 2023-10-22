@@ -13,7 +13,7 @@ function FormBuilder<T extends z.ZodType<any, any, any>>({
   onSubmit,
   formButton,
 }: FormBuilderProps<T>) {
-  const { errors, handleSubmit, register } =
+  const { errors, handleSubmit, register, control } =
     useFormValidation(validationSchema);
 
   const hasError = (errors: FieldErrors<TypeOf<T>>, index: string) => {
@@ -67,6 +67,7 @@ function FormBuilder<T extends z.ZodType<any, any, any>>({
                   className={
                     hasError(errors, input.fieldKey) ? "border-red-500" : ""
                   }
+                  control={control}
                 />
                 <InputErrorMessage errors={errors} fieldName={input.fieldKey} />
               </div>

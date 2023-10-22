@@ -118,18 +118,6 @@ export const discoveryForm: FormComponent[] = [
   },
   {
     section: {
-      col: "cols-3",
-      form: [
-        {
-          label: "Closing date",
-          fieldKey: "closingDate",
-          type: "date",
-        },
-      ],
-    },
-  },
-  {
-    section: {
       col: "cols-1",
       form: [
         {

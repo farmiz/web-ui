@@ -1,5 +1,3 @@
-"use client";
-
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Columns, DownloadIcon } from "lucide-react";
 import { Table } from "@tanstack/react-table";
