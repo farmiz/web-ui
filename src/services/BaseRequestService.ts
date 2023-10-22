@@ -9,13 +9,15 @@ interface RequestOptions {
   contentType?: string;
 }
 
+const { VITE_BASE_API_URL } = import.meta.env;
+
 export class BaseRequestService {
   private axiosInstance: AxiosInstance;
 
   // Initialize axios
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: "http://localhost:8080/v1",
+      baseURL: VITE_BASE_API_URL,
       withCredentials: true,
     });
   }
@@ -78,7 +80,7 @@ export class BaseRequestService {
 
   // refresh token
   async refreshToken(tokenType: TokenType) {
-    try {      
+    try {
       const axiosInstance = this.getInstance();
       const { data } = await axiosInstance.get("/auth/refresh");
       const response = data.response;

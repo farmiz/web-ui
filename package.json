@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "dev-build": "tsc && vite build -mode developement",
+    "staging-build": "tsc && vite build -mode staging",
+    "prod-build": "tsc && vite build -mode production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "start": ""
+    "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
