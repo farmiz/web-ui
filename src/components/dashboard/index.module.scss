@@ -1,0 +1,28 @@
+// .dashboard-layout {
+//     @apply flex-row h-[calc(100vh-0px)] mt-0;
+
+//     .main-content {
+//         >    .header-container {
+//             @apply bg-red-500
+//         }
+//     // }
+ 
+//     > .sidebar {
+//         @apply shrink-0 bg-red-200;
+//     }
+
+//     // this container on the right
+//     > div {
+//         @apply grow flex flex-col;
+
+//         // header on the top that should be sticky
+//         header {
+//             @apply sticky top-0;
+//         }
+
+//         // main content area below the header
+//         .dashboard-content {
+//             @apply p-6 pt-0 relative overflow-auto grow;
+//         }
+//     }
+// }
