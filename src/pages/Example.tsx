@@ -5,10 +5,11 @@ import { filters } from "@/components/table/data/filters";
 import axios from "axios";
 import { useMemo } from "react";
 
+const { VITE_BASE_API_URL } = import.meta.env;
 async function getData(query?: Record<string, any>) {
   console.log(query)
   return await axios.request({
-    url: "http://localhost:8080/v1/users",
+    url: `${VITE_BASE_API_URL}/users`,
     method: "get",
     params: query,
   });
