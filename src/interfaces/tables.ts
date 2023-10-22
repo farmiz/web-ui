@@ -1,3 +1,5 @@
+import { ColumnDef } from "@tanstack/react-table";
+
 type IconType = React.ComponentType<{ className?: string }>;
 export interface DataFilterProps {
   column: string;
@@ -10,5 +12,20 @@ export interface DataFilterProps {
   isNumber?: boolean;
   extra?: {
     mainIcon?: IconType;
-  }
+  };
+}
+export type SortType = "asc" | "desc";
+export interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  showExportButton?: boolean;
+  useActionButton?: boolean;
+  filters?: DataFilterProps[];
+  fetchQuery?: (query: {}) => Promise<any>;
+}
+
+export interface Paginator {
+  page: number;
+  perPage: number;
+  totalDocuments: number;
+  totalPages: number;
 }

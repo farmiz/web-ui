@@ -1,5 +1,5 @@
 
-import { AddressProps, IDefaultPlugin, PhoneProps } from ".";
+import { AddressProps, IDefaultPlugin, PhoneProps } from "@/interfaces";
 
 export type UserRole =
   | "admin"

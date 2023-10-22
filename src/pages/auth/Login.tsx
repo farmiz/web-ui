@@ -14,24 +14,26 @@ import { Label } from "@/components/ui/label";
 import { loginValidationSchema } from "@/formValidations/auth";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
-// import { errorToast, successToast } from "@/lib/toast";
+import { errorToast } from "@/lib/toast";
 import { loginAuth } from "@/store/authSlice";
 import { SubmitHandler } from "react-hook-form";
-import { Link, /**useLocation, useNavigate */} from "react-router-dom";
+import { Link,  useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import Logo from "@/components/Logo";
-// import { useEffect } from "react";
+import { useEffect } from "react";
+
 export default function AuthenticationPage() {
   const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
-  // const location = useLocation();
+  const auth = useAppSelector("auth");
+  const navigate = useNavigate();
+  const location = useLocation();
   const { errors, handleSubmit, isSubmitting, register } = useFormValidation(
     loginValidationSchema
   );
 
-  const auth = useAppSelector((state) => state.auth);
   const { isLoading } = auth;
   type FormSchemaType = z.infer<typeof loginValidationSchema>;
+  
   const onSubmit: SubmitHandler<FormSchemaType> = async (data) => {
     try {
       dispatch(loginAuth(data));
@@ -40,20 +42,19 @@ export default function AuthenticationPage() {
     }
   };
 
-  // useEffect(() => {
-  //   if (auth.isError) {
-  //     errorToast(auth.message);
-  //   }
-  //   if (auth.isSuccess) {
-  //     successToast(auth.message);
-  //     const routeTo = `/`;
-  //     const from = location.state?.from?.pathname || routeTo;
+  useEffect(() => {
+    if (auth.isError) {
+      return errorToast(auth.message);
+    }
+    if (auth.isSuccess) {
+      const routeTo = `/`;
+      const from = location.state?.from?.pathname || routeTo;
 
-  //     setTimeout(() => {
-  //       navigate(from, { replace: true });
-  //     }, 1500);
-  //   }
-  // }, [auth.accessToken]);
+      setTimeout(() => {
+        navigate(from, { replace: true });
+      }, 1500);
+    }
+  }, [auth.accessToken]);
 
   return (
     <>
@@ -74,7 +75,7 @@ export default function AuthenticationPage() {
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 lg:max-w-lg">
             <Card>
               <CardHeader className="space-y-1">
-                {auth.isError && <Alert type="warning" text={auth.message} />}
+                {auth.isError && <Alert type="error" text={auth.message} />}
                 <CardTitle className="text-2xl text-center">Sign in</CardTitle>
                 <CardDescription className="text-center">
                   Enter your email and password to login
@@ -108,8 +109,8 @@ export default function AuthenticationPage() {
                   Login
                 </Button>
                 <p className="mt-2 text-xs text-center text-gray-700">
-                  {" "}
-                  Don't have an account?{" "}
+                  
+                  Don't have an account?
                   <span className=" text-blue-600 hover:underline">
                     Sign up
                   </span>
@@ -118,14 +119,14 @@ export default function AuthenticationPage() {
             </Card>
 
             <p className="px-8 text-center text-sm text-muted-foreground">
-              By clicking continue, you agree to our{" "}
+              By clicking continue, you agree to our
               <Link
                 to="/terms"
                 className="underline underline-offset-4 hover:text-primary"
               >
                 Terms of Service
-              </Link>{" "}
-              and{" "}
+              </Link>
+              and
               <Link
                 to="/privacy"
                 className="underline underline-offset-4 hover:text-primary"

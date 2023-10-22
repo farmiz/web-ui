@@ -1,5 +1,5 @@
 import { MouseEventHandler } from "react";
-import { UserRole } from "./users";
+import { UserRole } from "@/store/userSlice/types";
 
 export interface IDefaultPlugin {
     _id?: string;

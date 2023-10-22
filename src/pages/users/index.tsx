@@ -1,7 +1,9 @@
 import DashboardLayout from "@/components/dashboard/Layout";
 import Table from "@/components/table/Table";
+import { columns } from "@/components/table/columns";
 import { ActionButtonProps } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
+
 const Users = () => {
   const navigate = useNavigate();
   const handleCreateButtonClick = () => {
@@ -13,9 +15,14 @@ const Users = () => {
       onClick: handleCreateButtonClick,
     },
   };
+
   return (
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
-      <Table showExportButton={true} title="Users List" />
+      <Table
+        showExportButton={true}
+        title="Users List"
+        columns={columns}
+      />
     </DashboardLayout>
   );
 };

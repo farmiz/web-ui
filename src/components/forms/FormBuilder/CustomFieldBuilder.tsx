@@ -3,6 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { InputProps } from "@/interfaces/form";
 import { UseFormRegister } from "react-hook-form";
 import { TypeOf, ZodType } from "zod";
+import SelectField from "../SelectField";
 
 interface CustomFieldBuilderProps<T extends ZodType<any, any, any>> {
   input: InputProps;
@@ -34,6 +35,19 @@ function CustomFieldBuilder<T extends ZodType<any, any, any>>({
         <Textarea
           className={`${className}`}
           {...register(input.fieldKey as TypeOf<T>)}
+        />
+      );
+    case "search-select":
+      return <SelectField isSearchable={true} options={input.options} />;
+    case "select":
+      return <SelectField isSearchable={false} options={input.options} />;
+    case "multi-select":
+      return (
+        <SelectField
+          isSearchable={false}
+          options={input.options}
+          isMulti
+          closeMenuOnSelect={false}
         />
       );
   }

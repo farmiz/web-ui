@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useAppSelector } from "@/hooks/useStoreActions";
 import { MessageSquare, BellIcon } from "lucide-react";
 const Header = () => {
-  const userDetails = useAppSelector((state) => state.auth.userDetails);
+  const userDetails = useAppSelector("auth").userDetails;
   return (
     <div className="header-container bg-white">
       <header

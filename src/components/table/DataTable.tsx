@@ -1,7 +1,6 @@
-import React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataTableToolbar } from "./TableToolbar";
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -23,28 +22,62 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { labels, priorities, statuses } from "@/components/table/data/data";
-import { DataFilterProps } from "@/interfaces/tables";
-import { ArrowRightLeft, Hash, PlusCircleIcon, Settings2 } from "lucide-react";
-
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  showExportButton?: boolean;
-}
+import { DataTableProps, Paginator } from "@/interfaces/tables";
+import TableBodyItem from "./TableBodyItem";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
   showExportButton = false,
+  filters,
+  fetchQuery,
 }: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [data, setData] = useState<TData[]>([]);
+  const [paginator, setPaginator] = useState<Paginator>();
+  // { id: "actions", cell: ({}) => <DataTableRowActions /> }
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  // Create an object to store all query parameters
+  const queryParameters: Record<string, any> = {};
+  // /items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
+  const defaultQuery = {
+    limit: "50",
+    currentPage: "1",
+    columns: "firstName,lastName,email",
+  };
+  for (const [key, value] of queryParams.entries()) {
+    queryParameters[key] = value;
+  }
+
+  const navigation = useNavigate();
+  const memoizedFetchQuery = useMemo(() => {
+    return async () => {
+      try {
+        const params = new URLSearchParams(defaultQuery).toString();
+        navigation(`?${params}`);
+        const result = await fetchQuery!(defaultQuery);
+        console.log(result);
+        setData(result.data.response.data);
+        setPaginator(result.data.response.paginator);
+      } catch (error) {
+        throw error;
+      }
+
+    };
+  }, [queryParameters]);
+
+  useEffect(() => {
+    memoizedFetchQuery();
+
+    return ()=>{
+      
+    }
+  }, []);
 
   const table = useReactTable({
     data,
@@ -67,41 +100,7 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
-  const filters: DataFilterProps[] = [
-    {
-      column: "status",
-      options: statuses,
-      title: "Status",
-      extra: {
-        mainIcon: Settings2,
-      },
-    },
-    {
-      column: "priority",
-      options: priorities,
-      title: "Priorities",
-      extra: {
-        mainIcon: ArrowRightLeft,
-      },
-    },
-    {
-      column: "label",
-      title: "Labels",
-      options: labels,
-      extra: {
-        mainIcon: PlusCircleIcon,
-      },
-    },
-    {
-      column: "label",
-      title: "Labels",
-      options: labels,
-      isNumber: true,
-      extra: {
-        mainIcon: Hash,
-      },
-    },
-  ];
+
   return (
     <div className="space-y-4">
       <DataTableToolbar
@@ -131,21 +130,9 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table
+                .getRowModel()
+                .rows.map((row) => <TableBodyItem row={row} key={row.id} />)
             ) : (
               <TableRow>
                 <TableCell
@@ -159,7 +146,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} paginator={paginator} />
     </div>
   );
 }

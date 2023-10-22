@@ -1,11 +1,10 @@
 import {
   ActionReducerMapBuilder,
-  PayloadAction,
   createAsyncThunk,
   createSlice,
 } from "@reduxjs/toolkit";
 import { initialRequestState } from "../../defaults";
-import { UserProps } from "../../interfaces/users";
+import { UserProps } from "../userSlice/types";
 import { AuthProps, IDefaultPlugin, RequestStateProps } from "../../interfaces";
 import { authService } from "../../services/Auth";
 import { omit } from "lodash";
@@ -21,7 +20,7 @@ const initialState: {
   isSuccess: boolean;
   message: string;
 } = {
-  userDetails: {},
+  userDetails: null,
   ...initialRequestState,
   accessToken: null,
 };
@@ -34,10 +33,11 @@ export const loginAuth = createAsyncThunk(
   ) => {
     try {
       const response = await authService.login({ email, password });
+      localStorage.setItem("accessToken", response.response.accessToken);
       return response;
     } catch (error: any) {
       const errorMessage =
-        error.response.data &&
+        error.response &&
         error.response.data.response &&
         Boolean(Object.keys(error.response.data.response).length)
           ? error.response.data.response.message
@@ -46,32 +46,13 @@ export const loginAuth = createAsyncThunk(
     }
   }
 );
-export const refreshTokenAuth = createAsyncThunk(
-  "auth/refresh",
-  async ({}, thunkAPI) => {
-    try {
-      const response = await authService.refresh();
-      return response;
-    } catch (error: any) {
-      const errorMessage = error.message || error.response.message;
-      return thunkAPI.rejectWithValue(errorMessage);
-    }
-  }
-);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuth: (
-      state,
-      action: PayloadAction<
-        Omit<
-          typeof initialState,
-          "isLoading" | "isSuccess" | "message" | "isError"
-        >
-      >
-    ) => {
-      state.userDetails = action.payload.userDetails;
+    setAuth: (state, action: Record<string, any>) => {
+      state.userDetails = action.payload.user;
       state.accessToken = action.payload.accessToken;
     },
   },
@@ -84,7 +65,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.accessToken = action.payload.response.accessToken;
-        state.userDetails = omit(action.payload.response, ["accessToken"]);
+        state.userDetails = omit(action.payload.response.user);
         state.message = "Log in successful";
       })
       .addCase(loginAuth.rejected, (state, action) => {

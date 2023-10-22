@@ -10,7 +10,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserProps } from "@/interfaces/users";
+import { UserProps } from "@/store/userSlice/types";
 import React from "react";
 import { Link } from "react-router-dom";
 

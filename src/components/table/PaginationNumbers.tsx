@@ -9,10 +9,10 @@ export default function PaginationNumbers<TData>({
   itemsPerPage,
 }: PaginationNumbersProps<TData>) {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(
+  const totalPages = Math.floor(
     table.getFilteredRowModel().rows.length / itemsPerPage
   );
-  const pageRange = 2; // Number of page numbers to display around the current page.
+  const pageRange = 1; // Number of page numbers to display around the current page.
 
   // Function to generate an array of page numbers to display.
   const generatePageNumbers = () => {

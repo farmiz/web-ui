@@ -1,5 +1,5 @@
 import React from "react";
-import { UserRole } from "../interfaces/users";
+import { UserRole } from "../store/userSlice/types";
 import VerifyAccount from "../pages/auth/VerifyAccount";
 import {
   LayoutDashboard,
@@ -16,8 +16,9 @@ import Login from "@/pages/auth/Login";
 import Users from "@/pages/users";
 import Dashboard from "@/pages/dashboard";
 import CreateUser from "@/pages/users/create";
-import CreateDiscovery from "@/pages/discoveries/create";
-import Discovery from "@/pages/discoveries";
+import CreateDiscovery from "@/pages/discoveries/CreateDiscoveryScreen";
+import Discovery from "@/pages/discoveries/DiscoveryListScreen";
+import Example from "@/pages/Example";
 
 export interface RoutesProps {
   url: string;
@@ -28,6 +29,11 @@ export interface RoutesProps {
   component: React.FC;
 }
 export const routes: RoutesProps[] = [
+  {
+    url: "/users",
+    requireAuth: false,
+    component: Example,
+  },
   {
     url: "/verify/email",
     requireAuth: false,

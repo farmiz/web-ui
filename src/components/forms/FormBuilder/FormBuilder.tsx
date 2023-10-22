@@ -6,8 +6,6 @@ import { FieldErrors } from "react-hook-form";
 import { TypeOf, z } from "zod";
 import { defineButtonPosition } from "./utils";
 import CustomFieldBuilder from "./CustomFieldBuilder";
-import { useState } from "react";
-import CustomSearchableSelect from "./SelectField";
 
 function FormBuilder<T extends z.ZodType<any, any, any>>({
   schema,
@@ -20,18 +18,6 @@ function FormBuilder<T extends z.ZodType<any, any, any>>({
 
   const hasError = (errors: FieldErrors<TypeOf<T>>, index: string) => {
     return errors && errors[index] && errors[index]?.message;
-  };
-
-  const options = [
-    { label: "Option 1", value: "option1" },
-    { label: "Option 2", value: "option2" },
-    { label: "Option 3", value: "option3" },
-    // Add more options as needed
-  ];
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  const handleOptionSelect = (option: any) => {
-    setSelectedOption(option);
   };
   return (
     <form
@@ -56,11 +42,7 @@ function FormBuilder<T extends z.ZodType<any, any, any>>({
             </Button>
           </div>
         )}
-      <CustomSearchableSelect
-        options={options}
-        onSelect={handleOptionSelect}
-        placeholder="Select an option..."
-      />
+
       {schema.map((section, index) => (
         <div key={index}>
           <h2>{section.section.title}</h2>

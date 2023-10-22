@@ -27,8 +27,6 @@ export function DataTableToolbar<TData>({
   const [value, setValue] = useState<string>("");
   const handleOnChange = useCallback(
     (event: any) => {
-      // if (value.length >= 3) {
-      // }
       setValue(event.target.value);
       table.getColumn("title")?.setFilterValue(value);
     },
@@ -51,12 +49,13 @@ export function DataTableToolbar<TData>({
         />
       </div>
       <div className="flex items-center">
-        <div className="filters flex gap-2">
+        <div className="filters flex gap-2 overflow-x-scroll">
           {filters &&
             filters.length &&
             filters.map((filter) => {
               return !filter.isNumber
                 ? table.getColumn(filter.column) && (
+
                     <DataTableFacetedFilter
                       column={table.getColumn(filter.column)}
                       title={filter.title}
@@ -64,6 +63,7 @@ export function DataTableToolbar<TData>({
                       extra={filter.extra}
                       key={Math.ceil(Math.random() * 1000000000)}
                     />
+                    
                   )
                 : table.getColumn(filter.column) && (
                     <DataFacetedFilterForNumbers

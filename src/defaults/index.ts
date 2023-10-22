@@ -4,7 +4,7 @@ import {
   PhoneProps,
   RequestStateProps,
 } from "../interfaces";
-import { UserProps } from "../interfaces/users";
+import { UserProps } from "../store/userSlice/types";
 
 const defaultPlugin: IDefaultPlugin = {
   _id: "",

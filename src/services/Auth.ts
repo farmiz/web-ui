@@ -1,34 +1,23 @@
-import { API_ROUTES } from "@/utils/constants";
-import { RequestService } from ".";
+import { RequestService } from "./RequestService";
 import { AuthProps } from "../interfaces";
-import { UserProps } from "../interfaces/users";
+import { UserProps } from "../store/userSlice/types";
 
 interface AuthResponseProps {
   response: {
     accessToken: string;
-  } & UserProps;
+    user: UserProps
+  };
   success: boolean;
 }
 class AuthService extends RequestService {
+  constructor() {
+    super("auth");
+  }
   async login({
     email,
     password,
   }: Pick<AuthProps, "email" | "password">): Promise<AuthResponseProps> {
-    return await this.post<AuthResponseProps>(API_ROUTES.AUTH.LOGIN, {
-      email,
-      password,
-    });
-  }
-  async refresh() {
-    return await this.get<{
-      response: {
-        user: UserProps,
-        accessToken: string;
-      },
-      success: true
-    }>(API_ROUTES.AUTH.REFRESH, {
-      withCredentials: true,
-    });
+    return await this.createOne({email, password}, "login");
   }
 }
 

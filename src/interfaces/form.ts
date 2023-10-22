@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Props } from "react-select";
 export type IconType = React.ComponentType<{
   className?: string;
   size?: number;
@@ -28,17 +29,32 @@ type HTMLInputTypeAttribute =
   | "week"
   | "textarea"
   | "select"
-  | "search-select";
+  | "search-select"
+  | "multi-select";
 type FormBuilderInputType = HTMLInputTypeAttribute;
-export interface InputProps {
-  label: string;
-  fieldKey: string;
-  type: FormBuilderInputType;
-  ref?: any;
-  validation?: any;
-  id?: string;
-  required?: boolean;
+
+interface SelectFieldProps extends Props {
+  options:  { label: string; value: string }[]
 }
+export type InputProps =
+  {
+    label: string;
+    type: Exclude<FormBuilderInputType, "select" | "search-select" | "multi-select">;
+    ref?: any;
+    validation?: any;
+    id?: string;
+    required?: boolean;
+    fieldKey: string;
+  } | {
+    label: string;
+    type: "select" | "search-select" | "multi-select";
+    ref?: any;
+    validation?: any;
+    id?: string;
+    required?: boolean;
+    fieldKey: string;
+  } & SelectFieldProps;
+
 
 export interface FormComponent {
   section: {

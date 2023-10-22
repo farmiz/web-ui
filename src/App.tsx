@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import NotFound from "./pages/error/NotFound";
+import NotAuthorized from "./pages/error/NotAuthorizedScreen";
 import { RoutesProps, routes } from "./defaults/routes";
 import PersistLogin from "./components/persistentAuth/PersistLogin";
 import RequireAuth from "./components/persistentAuth/RequireAuth";
@@ -9,13 +9,11 @@ function App() {
     <Routes>
       {routes.map((route: RoutesProps) =>
         route.requireAuth ? (
-          <>
-            <Route element={<PersistLogin />}>
-              <Route element={<RequireAuth allowedRole="customer" />}>
-                <Route path={route.url} element={<route.component />} />
-              </Route>
+          <Route element={<PersistLogin />} key={route.url}>
+            <Route element={<RequireAuth allowedRole="customer" />}>
+              <Route path={route.url} element={<route.component />} />
             </Route>
-          </>
+          </Route>
         ) : (
           <Route
             path={route.url}
@@ -25,7 +23,7 @@ function App() {
         )
       )}
 
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotAuthorized />} />
     </Routes>
   );
 }

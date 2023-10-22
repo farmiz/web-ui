@@ -28,7 +28,6 @@ const CreateDiscovery = () => {
           description="Basic information about the discovery"
           title="Discovery data"
         />
-
         <FormBuilder
           schema={discoveryForm}
           onSubmit={onSubmit}
