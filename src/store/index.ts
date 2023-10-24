@@ -3,6 +3,10 @@ import { storeReducers } from "@/store/config";
 
 export const store = configureStore({
   reducer: storeReducers,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    })
 });
 
 

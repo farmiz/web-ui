@@ -20,7 +20,7 @@ export interface DataTableProps<TData, TValue> {
   showExportButton?: boolean;
   useActionButton?: boolean;
   filters?: DataFilterProps[];
-  fetchQuery?: (query: {}) => Promise<any>;
+  fetchQuery: (query: {}) => Promise<any>;
 }
 
 export interface Paginator {

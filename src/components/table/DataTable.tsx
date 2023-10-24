@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
       try {
         const params = new URLSearchParams(defaultQuery).toString();
         navigation(`?${params}`);
-        const result = await fetchQuery!(defaultQuery);
+        const result = await fetchQuery(defaultQuery);
         console.log(result);
         setData(result.data.response.data);
         setPaginator(result.data.response.paginator);
@@ -105,7 +105,7 @@ export function DataTable<TData, TValue>({
         showExportButton={showExportButton}
         filters={filters}
       />
-      <div className="rounded border border-md mt-5">
+      <div className="rounded border border-md mt-5 min-h-[440px]">
         <Table>
           <TableHeader className="bg-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (

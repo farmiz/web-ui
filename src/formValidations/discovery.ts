@@ -1,22 +1,27 @@
-import { FormComponent } from "@/interfaces/form";
+import { FormComponent, SelectFieldOptions } from "@/interfaces/form";
 import { z } from "zod";
+const transformTags = (tags: any) => tags.map((tag: any) => tag.value);
 
 export const discoveryValidationSchema = z.object({
   name: z.string().min(3, "Name should be atleast 3 chars"),
-  amount: z.preprocess((a) => parseInt(z.string().parse(a)), z.number()),
-  tags: z.enum(["good", "bad", "ugly"]),
+  amount: z.coerce.number(),
+  tags: z
+  .array(z.enum(["good", "bad", "ugly"]))
+  .refine((value) => Array.isArray(value), {
+    message: "Tags should be an array of objects",
+  })
+  .transform(transformTags),
   description: z.string().min(1),
-  startDate: z.date(),
-  endDate: z.date(),
-  closingDate: z.date(),
-  profitPercentage: z.number(),
-  riskLevel: z.enum(["high", "low", "moderate"]),
-  duration: z.number(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  closingDate: z.coerce.date(),
+  profitPercentage: z.coerce.number(),
+  riskLevel: z.enum(["high", "low", "moderate"]).optional(),
+  duration: z.coerce.number(),
 });
 type RiskLevel = "high" | "low" | "moderate";
 type Tag = "good" | "bad" | "ugly";
 
-type SelectFieldOptions<T> = { label: string; value: T }[];
 const riskLevelArray: SelectFieldOptions<RiskLevel> = [
   {
     label: "High",

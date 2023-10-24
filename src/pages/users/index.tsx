@@ -1,6 +1,6 @@
 import DashboardLayout from "@/components/dashboard/Layout";
-import Table from "@/components/table/Table";
-import { columns } from "@/components/table/columns";
+// import Table from "@/components/table/Table";
+// import { columns } from "@/components/table/columns";
 import { ActionButtonProps } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
 
@@ -18,11 +18,11 @@ const Users = () => {
 
   return (
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
-      <Table
+      {/* <Table
         showExportButton={true}
         title="Users List"
         columns={columns}
-      />
+      /> */}
     </DashboardLayout>
   );
 };

@@ -98,3 +98,5 @@ export interface FormBuilderProps<T extends z.ZodType<any, any, any>> {
   onSubmit: (values: z.infer<T>) => void;
   formButton?: FormButtonProps;
 }
+
+export type SelectFieldOptions<T> = { label: string; value: T }[];
