@@ -1,10 +1,13 @@
 import DashboardLayout from "@/components/dashboard/Layout";
-// import Table from "@/components/table/Table";
-// import { columns } from "@/components/table/columns";
+import Table from "@/components/table/Table";
+import { columns } from "@/components/table/columns";
+import { filters } from "@/components/table/data/filters";
 import { ActionButtonProps } from "@/interfaces";
+import { fetchUsers } from "@/store/userSlice/actions";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Users = () => {
+const UsersListScreen = () => {
   const navigate = useNavigate();
   const handleCreateButtonClick = () => {
     navigate("/users/create");
@@ -16,15 +19,18 @@ const Users = () => {
     },
   };
 
+  const columnsToDisplay = useMemo(() => columns, []);
   return (
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
-      {/* <Table
+      <Table
         showExportButton={true}
-        title="Users List"
-        columns={columns}
-      /> */}
+        title="Discoveries List"
+        columns={columnsToDisplay}
+        filters={filters}
+        fetchQuery={fetchUsers}
+      />
     </DashboardLayout>
   );
 };
 
-export default Users;
+export default UsersListScreen;

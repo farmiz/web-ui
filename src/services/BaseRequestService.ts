@@ -32,7 +32,6 @@ export class BaseRequestService {
   ): Promise<BaseResponse> {
     try {
       const { useToken, tokenType } = options;
-
       // check if request should use accessToken
       if (useToken && tokenType) {
         const accessTokenFromStore = localStorage.getItem(tokenType) || null;

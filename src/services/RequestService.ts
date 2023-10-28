@@ -58,6 +58,7 @@ export class RequestService extends BaseRequestService {
     };
     return await this.request(requestConfig, {
       useToken: true,
+      tokenType: "accessToken"
     });
   };
 }

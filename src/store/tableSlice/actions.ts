@@ -7,12 +7,24 @@ export const addCurrentPageAction = (
 ) => {
   state.currentPage = action.payload;
 };
+export const addItemPerPageAction = (
+  state: DataTableQueryProps,
+  action: PayloadAction<number>
+) => {
+  state.limit = action.payload;
+};
 
 export const addQueryAction = (
   state: DataTableQueryProps,
   action: PayloadAction<string>
 ) => {
   state.query = action.payload;
+};
+export const addColumnsAction = (
+  state: DataTableQueryProps,
+  action: PayloadAction<string>
+) => {
+  state.columns = [...state.columns, ...action.payload];
 };
 
 export const addSortAction = (

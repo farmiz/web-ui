@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Loader from "@/components/Loader";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
 import { AxiosError } from "axios";
 import { BaseRequestService } from "@/services/BaseRequestService";
-import { setAuth } from "@/store/authSlice";
+import { resetAuth, setAuth } from "@/store/authSlice";
 
 const PersistLogin = () => {
   const baseRequest = new BaseRequestService();
@@ -12,30 +12,33 @@ const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const auth = useAppSelector("auth");
-  useEffect(() => {
-    const verifyRefreshToken = async () => {
-      try {
-        const response = await baseRequest.refreshToken(
-          "accessToken"
-          // controller
-        );
-        dispatch(setAuth(response));
-      } catch (e) {
-        if (e instanceof AxiosError && e.response?.status === 403) {
+  const initialized = useRef(false)
+  const verifyRefreshToken = async () => {
+    try {
+      const response = await baseRequest.refreshToken(
+        "accessToken"
+      );
+      dispatch(setAuth(response));
+    } catch (e) {
+        if (e instanceof AxiosError && e.response?.status === 403 && !auth.userDetails) {
+          dispatch(resetAuth())
           navigate("/auth/login");
         }
-      } finally {
+    } finally {
+      setIsLoading(false);
+      
+    }
+  };
+  useEffect(() => {
+    if(!initialized.current){
+      if (!auth.userDetails || !Object.keys(auth.userDetails).length) {
+        verifyRefreshToken();
+      } else {
         setIsLoading(false);
       }
-    };
-
-    if (!auth.userDetails) {
-      verifyRefreshToken();
-    }else{
-      setIsLoading(false)
+      initialized.current = true
     }
   }, []);
-
   return <>{isLoading ? <Loader /> : <Outlet />}</>;
 };
 

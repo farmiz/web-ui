@@ -1,7 +1,7 @@
 import LogoutButton from "@/components/buttons/LogoutButton";
 import ThemeSwitcher from "@/components/buttons/ThemeSwitcher";
 import SidebarMenu from "./SidebarMenu";
-import { generalSidebarRoutes, menuSidebarRoutes } from "@/defaults/routes";
+import { generalSidebarRoutes, menuSidebarRoutes } from "@/routes";
 import Logo from "/farmiz.svg";
 const DashboardSidebar = () => {
   return (

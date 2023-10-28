@@ -7,7 +7,6 @@ import { useMemo } from "react";
 
 const { VITE_BASE_API_URL } = import.meta.env;
 async function getData(query?: Record<string, any>) {
-  console.log(query)
   return await axios.request({
     url: `${VITE_BASE_API_URL}/users`,
     method: "get",

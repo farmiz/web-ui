@@ -13,16 +13,16 @@ import {
   HeartHandshake,
 } from "lucide-react";
 import Login from "@/pages/auth/Login";
-import Users from "@/pages/users";
+import Users from "@/pages/users/UsersListScreen";
 import Dashboard from "@/pages/dashboard";
-import CreateUser from "@/pages/users/create";
+import CreateUser from "@/pages/users/CreateUserScreen";
 import CreateDiscovery from "@/pages/discoveries/CreateDiscoveryScreen";
 import Discovery from "@/pages/discoveries/DiscoveryListScreen";
-import Example from "@/pages/Example";
+import UsersListScreen from "@/pages/users/UsersListScreen";
 
 export interface RoutesProps {
   url: string;
-  permission?: [];
+  permission?: string[];
   requireAuth: boolean;
   allowedRoles?: UserRole[];
   meta?: Record<string, string>;
@@ -31,8 +31,8 @@ export interface RoutesProps {
 export const routes: RoutesProps[] = [
   {
     url: "/users",
-    requireAuth: false,
-    component: Example,
+    requireAuth: true,
+    component: UsersListScreen,
   },
   {
     url: "/verify/email",
@@ -53,6 +53,7 @@ export const routes: RoutesProps[] = [
     url: "/users",
     requireAuth: true,
     component: Users,
+    permission: ["users", "create"]
   },
   {
     url: "/users/create",

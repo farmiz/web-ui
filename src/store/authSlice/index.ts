@@ -55,6 +55,10 @@ export const authSlice = createSlice({
       state.userDetails = action.payload.user;
       state.accessToken = action.payload.accessToken;
     },
+    resetAuth: (state)=>{
+      state.userDetails = null;
+      state.accessToken = null
+    }
   },
   extraReducers: (builder: ActionReducerMapBuilder<typeof initialState>) => {
     builder
@@ -77,4 +81,4 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { setAuth } = authSlice.actions;
+export const { setAuth, resetAuth } = authSlice.actions;

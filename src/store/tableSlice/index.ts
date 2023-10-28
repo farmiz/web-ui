@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { tableDefaults } from "@/store/tableSlice/defaults";
-import { addCurrentPageAction, addQueryAction, addSortAction } from "./actions";
+import {
+  addCurrentPageAction,
+  addQueryAction,
+  addSortAction,
+  addColumnsAction,
+  addItemPerPageAction,
+} from "./actions";
 export const tableSlice = createSlice({
   name: "datatable",
   initialState: tableDefaults,
@@ -8,8 +14,11 @@ export const tableSlice = createSlice({
     addCurrentPage: addCurrentPageAction,
     addQuery: addQueryAction,
     addSort: addSortAction,
+    addColumn: addColumnsAction,
+    addItemPerPage: addItemPerPageAction,
   },
 });
 
 export default tableSlice.reducer;
-export const { addCurrentPage, addQuery, addSort } = tableSlice.actions;
+export const { addCurrentPage, addQuery, addSort, addColumn, addItemPerPage } =
+  tableSlice.actions;

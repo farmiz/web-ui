@@ -1,19 +1,18 @@
-import { Table } from "@tanstack/react-table";
-import { useState } from "react";
-interface PaginationNumbersProps<TData> {
+import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
+import { addCurrentPage } from "@/store/tableSlice";
+interface PaginationNumbersProps {
   itemsPerPage: number;
-  table: Table<TData>;
+  totalDocument: number;
 }
-export default function PaginationNumbers<TData>({
-  table,
+export default function PaginationNumbers({
   itemsPerPage,
-}: PaginationNumbersProps<TData>) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.floor(
-    table.getFilteredRowModel().rows.length / itemsPerPage
-  );
+  totalDocument,
+}: PaginationNumbersProps) {
+  const dispatchTable = useAppDispatch();
+  const tableStore = useAppSelector("table")
+  const totalPages = Math.floor(totalDocument / itemsPerPage || 30);
   const pageRange = 1; // Number of page numbers to display around the current page.
-
+  const currentPage = tableStore.currentPage;
   // Function to generate an array of page numbers to display.
   const generatePageNumbers = () => {
     const pageNumbers = [];
@@ -59,14 +58,7 @@ export default function PaginationNumbers<TData>({
 
   const handleGeneratePageNumber = (generatedNumber: number | string) => {
     if (typeof generatedNumber === "number") {
-      setCurrentPage(generatedNumber);
-      table.setState((state) => ({
-        ...state,
-        pagination: {
-          pageIndex: generatedNumber,
-          pageSize: 10,
-        },
-      }));
+      dispatchTable(addCurrentPage(generatedNumber));
     }
   };
   return (

@@ -9,7 +9,6 @@ interface RequireAuthProps {
 const RequireAuth: React.FC<RequireAuthProps> = ({ allowedRole }) => {
   const auth = useAppSelector("auth");
   const location = useLocation();
-
   if (auth.userDetails?.role === allowedRole) {
     return <Outlet />;
   } else if (auth.userDetails?.role && auth.userDetails.role !== allowedRole) {
@@ -20,3 +19,5 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ allowedRole }) => {
 };
 
 export default RequireAuth;
+
+// https://echarts.apache.org/en/index.html

@@ -24,57 +24,76 @@ import {
 } from "../ui/table";
 import { DataTableProps, Paginator } from "@/interfaces/tables";
 import TableBodyItem from "./TableBodyItem";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate, useLocation } from "react-router-dom";
 import NoDataImg from "/no-data.svg";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
+import { cleanObject, objectToQueryString } from "@/utils";
+import { addColumn } from "@/store/tableSlice";
 export function DataTable<TData, TValue>({
   columns,
   showExportButton = false,
   filters,
   fetchQuery,
 }: DataTableProps<TData, TValue>) {
+  const [loading, setLoading] = useState<boolean>(false);
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [data, setData] = useState<TData[]>([]);
   const [paginator, setPaginator] = useState<Paginator>();
+  const navigate = useNavigate();
+  const tableStore = useAppSelector("table");
+  const dispatchTable = useAppDispatch();
+  const search = useLocation().search;
+  // const [searchParams] = useSearchParams()
   // { id: "actions", cell: ({}) => <DataTableRowActions /> }
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
 
-  // Create an object to store all query parameters
-  const queryParameters: Record<string, any> = {};
+  const columnsForDefaultValues = columns
+    .map((column) => {
+      if ("accessorKey" in column) {
+        return column.accessorKey;
+      }
+      return;
+    })
+    .filter((columnName: any) => columnName);
+
   // /items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
-  const defaultQuery = {
-    limit: "50",
-    currentPage: "1",
-    columns: "firstName,lastName,email",
-  };
-  for (const [key, value] of queryParams.entries()) {
-    queryParameters[key] = value;
+  if (!tableStore.columns.length) {
+    dispatchTable(addColumn(columnsForDefaultValues as any));
   }
 
-  const navigation = useNavigate();
+  useEffect(() => {
+    console.log(tableStore);
+
+    navigate({
+      search: `?${objectToQueryString(tableStore)}`,
+    });
+  }, [tableStore]);
+
+  // const searchParams = new URLSearchParams(search);
+  const newQuery = cleanObject(tableStore);
+  console.log({ newQuery });
+
   const memoizedFetchQuery = useMemo(() => {
     return async () => {
       try {
-        const params = new URLSearchParams(defaultQuery).toString();
-        navigation(`?${params}`);
-        const result = await fetchQuery(defaultQuery);
-        console.log(result);
-        setData(result.data.response.data);
-        setPaginator(result.data.response.paginator);
+        setLoading(true);
+        const { payload } = await dispatchTable(fetchQuery(newQuery));
+
+        setData(payload.response.data);
+        setPaginator(payload.response.paginator);
       } catch (error) {
         throw error;
+      } finally {
+        setLoading(false);
       }
     };
-  }, [queryParameters]);
+  }, [newQuery]);
 
   useEffect(() => {
     memoizedFetchQuery();
-
-    return () => {};
-  }, []);
+  }, [search]);
 
   const table = useReactTable({
     data,
@@ -92,6 +111,7 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    initialState: { pagination: { pageSize: tableStore.limit || 30 } },
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
@@ -105,9 +125,9 @@ export function DataTable<TData, TValue>({
         showExportButton={showExportButton}
         filters={filters}
       />
-      <div className="rounded border border-md mt-5 min-h-[440px]">
-        <Table>
-          <TableHeader className="bg-gray-100">
+      <div className="rounded border border-md mt-5">
+        <Table className="min-h-[400px]">
+          <TableHeader className="bg-gray-100 w-full">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -126,7 +146,16 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  <div className="flex justify-center items-center h-full flex-col gap-4">
+                    <div className="loader h-7 w-8 border-4 rounded-full border-x-[#000] border-y-transparent spin-in-6 animate-spin duration-500"></div>
+                    <h3>Fetch Data...</h3>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table
                 .getRowModel()
                 .rows.map((row) => <TableBodyItem row={row} key={row.id} />)

@@ -9,6 +9,8 @@ import { DataTableFacetedFilter } from "./TableFacetedFilter";
 import { DataFilterProps } from "@/interfaces/tables";
 import DataFacetedFilterForNumbers from "./DataFacetedFilterForNumbers";
 import { useCallback, useState } from "react";
+import { useAppDispatch } from "@/hooks/useStoreActions";
+import { addQuery } from "@/store/tableSlice";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -23,10 +25,12 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [value, setValue] = useState<string>("");
+  const tableDispatch = useAppDispatch();
   const handleOnChange = useCallback(
     (event: any) => {
       setValue(event.target.value);
-      table.getColumn("title")?.setFilterValue(value);
+      tableDispatch(addQuery(event.target.value));
+      console.log(event.target.value)
     },
     [value]
   );
@@ -53,7 +57,6 @@ export function DataTableToolbar<TData>({
             filters.map((filter) => {
               return !filter.isNumber
                 ? table.getColumn(filter.column) && (
-
                     <DataTableFacetedFilter
                       column={table.getColumn(filter.column)}
                       title={filter.title}
@@ -61,7 +64,6 @@ export function DataTableToolbar<TData>({
                       extra={filter.extra}
                       key={Math.ceil(Math.random() * 1000000000)}
                     />
-                    
                   )
                 : table.getColumn(filter.column) && (
                     <DataFacetedFilterForNumbers

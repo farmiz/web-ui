@@ -5,9 +5,8 @@ import { DataTableQueryProps } from "./types";
 export const tableDefaults: DataTableQueryProps = {
   searchSelection: "",
   query: "",
-  limit: 50,
-  offset: 0,
+  limit: 30,
   currentPage: 1,
   sort: [],
-  column: [],
+  columns: [],
 };
