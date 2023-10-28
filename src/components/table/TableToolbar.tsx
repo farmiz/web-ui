@@ -26,21 +26,23 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
   const [value, setValue] = useState<string>("");
   const tableDispatch = useAppDispatch();
-  const handleOnChange = useCallback(
-    (event: any) => {
-      setValue(event.target.value);
-      tableDispatch(addQuery(event.target.value));
-      console.log(event.target.value)
-    },
-    [value]
-  );
+  const handleOnChange = useCallback((event: any) => {
+    setValue(event.target.value);
+    if (event.target.value) {
+      if (event.target.value.length >= 3) {
+        tableDispatch(addQuery(event.target.value));
+      } else if (event.target.value.length === 0) {
+        tableDispatch(addQuery(event.target.value));
+      }
+    }
+  }, []);
   return (
     <>
       <div className="flex items-center justify-between mb-5">
         <div className="flex flex-1 items-center space-x-2">
           <Input
             placeholder="Filter tasks..."
-            value={value ?? ""}
+            value={value}
             onChange={handleOnChange}
             className="h-8 w-[150px] lg:w-[250px]"
           />
@@ -58,7 +60,7 @@ export function DataTableToolbar<TData>({
               return !filter.isNumber
                 ? table.getColumn(filter.column) && (
                     <DataTableFacetedFilter
-                      column={table.getColumn(filter.column)}
+                      column={filter.column}
                       title={filter.title}
                       options={filter.options}
                       extra={filter.extra}

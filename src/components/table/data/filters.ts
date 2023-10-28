@@ -1,7 +1,16 @@
 import { DataFilterProps } from "@/interfaces/tables";
-import {  statuses } from "./data";
 import {  Settings2 } from "lucide-react";
 
+export const statuses = [
+  {
+    value: "active",
+    label: "Active",
+  },
+  {
+    value: "pendingApproval",
+    label: "Pending Approval",
+  }
+]
 export const filters: DataFilterProps[] = [
     {
       column: "status",
@@ -10,5 +19,11 @@ export const filters: DataFilterProps[] = [
       extra: {
         mainIcon: Settings2,
       },
+    },
+    {
+      column: "firstName",
+      options: [],
+      title: "First Name",
+      isNumber: true
     }
   ];

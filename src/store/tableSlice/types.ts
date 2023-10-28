@@ -1,6 +1,6 @@
 export interface DataTableQueryProps{
     searchSelection: string,
-    query: string,
+    search: string,
     limit: number,
     currentPage: number,
     sort: string[],

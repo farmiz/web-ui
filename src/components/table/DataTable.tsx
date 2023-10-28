@@ -24,7 +24,7 @@ import {
 } from "../ui/table";
 import { DataTableProps, Paginator } from "@/interfaces/tables";
 import TableBodyItem from "./TableBodyItem";
-import {  useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import NoDataImg from "/no-data.svg";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
 import { cleanObject, objectToQueryString } from "@/utils";
@@ -64,8 +64,6 @@ export function DataTable<TData, TValue>({
   }
 
   useEffect(() => {
-    console.log(tableStore);
-
     navigate({
       search: `?${objectToQueryString(tableStore)}`,
     });
@@ -73,7 +71,6 @@ export function DataTable<TData, TValue>({
 
   // const searchParams = new URLSearchParams(search);
   const newQuery = cleanObject(tableStore);
-  console.log({ newQuery });
 
   const memoizedFetchQuery = useMemo(() => {
     return async () => {
@@ -126,7 +123,7 @@ export function DataTable<TData, TValue>({
         filters={filters}
       />
       <div className="rounded border border-md mt-5">
-        <Table className="min-h-[400px]">
+        <Table>
           <TableHeader className="bg-gray-100 w-full">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -175,7 +172,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} paginator={paginator} />
+      {!loading && <DataTablePagination table={table} paginator={paginator} />}
     </div>
   );
 }

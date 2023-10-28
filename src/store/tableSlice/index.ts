@@ -6,6 +6,7 @@ import {
   addSortAction,
   addColumnsAction,
   addItemPerPageAction,
+  addGenericFilterAction,
 } from "./actions";
 export const tableSlice = createSlice({
   name: "datatable",
@@ -16,9 +17,16 @@ export const tableSlice = createSlice({
     addSort: addSortAction,
     addColumn: addColumnsAction,
     addItemPerPage: addItemPerPageAction,
+    addGenericFilter: addGenericFilterAction,
   },
 });
 
 export default tableSlice.reducer;
-export const { addCurrentPage, addQuery, addSort, addColumn, addItemPerPage } =
-  tableSlice.actions;
+export const {
+  addCurrentPage,
+  addQuery,
+  addSort,
+  addColumn,
+  addItemPerPage,
+  addGenericFilter,
+} = tableSlice.actions;

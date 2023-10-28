@@ -18,7 +18,7 @@ export const addQueryAction = (
   state: DataTableQueryProps,
   action: PayloadAction<string>
 ) => {
-  state.query = action.payload;
+  state.search = action.payload;
 };
 export const addColumnsAction = (
   state: DataTableQueryProps,
@@ -39,4 +39,15 @@ export const addSortAction = (
   });
 
   state.sort = [...state.sort, action.payload];
+};
+
+interface GenericFilterActionProps {
+  column: string;
+  value: string[]
+}
+export const addGenericFilterAction = (
+  state: Record<string, any>,
+  action: PayloadAction<GenericFilterActionProps>
+) => {
+  state[`${action.payload.column}__in`] = action.payload.value.join(",")
 };
