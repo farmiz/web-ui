@@ -1,17 +1,25 @@
 import { useAppSelector } from "@/hooks/useStoreActions";
-import { UserRole } from "@/store/userSlice/types";
+import {
+  PermissionOperation,
+  PermissionString,
+  hasPermission,
+} from "@/utils/permissions";
 import React from "react";
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 
 interface RequireAuthProps {
-  allowedRole: UserRole;
+  permission: [PermissionString, PermissionOperation];
 }
-const RequireAuth: React.FC<RequireAuthProps> = ({ allowedRole }) => {
+const RequireAuth: React.FC<RequireAuthProps> = ({ permission }) => {
   const auth = useAppSelector("auth");
   const location = useLocation();
-  if (auth.userDetails?.role === allowedRole) {
+  const permissionVerified = hasPermission(
+    String(auth?.userDetails?.permission?.access),
+    permission
+  );
+  if (permissionVerified || auth.userDetails?.role === "admin") {
     return <Outlet />;
-  } else if (auth.userDetails?.role && auth.userDetails.role !== allowedRole) {
+  } else if (auth.userDetails?.role && !permissionVerified) {
     return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   } else {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;

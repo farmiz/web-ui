@@ -12,9 +12,12 @@ function FormBuilder<T extends z.ZodType<any, any, any>>({
   validationSchema,
   onSubmit,
   formButton,
+  formValues,
 }: FormBuilderProps<T>) {
-  const { errors, handleSubmit, register, control } =
-    useFormValidation(validationSchema);
+  const { errors, handleSubmit, register, control, setValue } = useFormValidation(
+    validationSchema,
+    formValues
+  );
 
   const hasError = (errors: FieldErrors<TypeOf<T>>, index: string) => {
     return errors && errors[index] && errors[index]?.message;
@@ -50,28 +53,34 @@ function FormBuilder<T extends z.ZodType<any, any, any>>({
           <div
             className={`grid sm:grid-cols-1 lg:grid-${section.section.col} md:grid-cols-1 gap-x-4`}
           >
-            {section.section.form.map((input, inputIndex) => (
-              <div key={inputIndex} className="my-2">
-                <label
-                  htmlFor={input.id && input.id}
-                  className="cursor-pointer text-sm"
-                >
-                  {input.label}
-                  {hasError(errors, input.fieldKey) && (
-                    <sup className="font-bold text-red-500">*</sup>
-                  )}
-                </label>
-                <CustomFieldBuilder
-                  input={input}
-                  register={register}
-                  className={
-                    hasError(errors, input.fieldKey) ? "border-red-500" : ""
-                  }
-                  control={control}
-                />
-                <InputErrorMessage errors={errors} fieldName={input.fieldKey} />
-              </div>
-            ))}
+            {section.section.form.map((input, inputIndex) => {
+              return (
+                <div key={inputIndex} className="my-2">
+                  <label
+                    htmlFor={input.id && input.id}
+                    className="cursor-pointer text-sm"
+                  >
+                    {input.label}
+                    {hasError(errors, input.fieldKey) && (
+                      <sup className="font-bold text-red-500">*</sup>
+                    )}
+                  </label>
+                  <CustomFieldBuilder
+                    input={input}
+                    register={register}
+                    className={
+                      hasError(errors, input.fieldKey) ? "border-red-500" : ""
+                    }
+                    control={control}
+                    setValue={setValue}
+                  />
+                  <InputErrorMessage
+                    errors={errors}
+                    fieldName={input.fieldKey}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}

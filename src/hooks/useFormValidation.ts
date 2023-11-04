@@ -1,9 +1,10 @@
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const useFormValidation = <T extends z.ZodType<any, any, any>>(
-  validation: T
+  validation: T,
+  defaultValues:DefaultValues<z.TypeOf<T>>
 ) => {
   type FormSchemaType = z.infer<typeof validation>;
   
@@ -11,10 +12,13 @@ export const useFormValidation = <T extends z.ZodType<any, any, any>>(
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    control
+    control,
+    setValue
   } = useForm<FormSchemaType>({
     resolver: zodResolver(validation),
+    defaultValues,
+    
   });
 
-  return { errors, isSubmitting, register, handleSubmit, control};
+  return { errors, isSubmitting, register, handleSubmit, control, setValue};
 };

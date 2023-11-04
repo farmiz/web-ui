@@ -1,24 +1,43 @@
 import { FormComponent, SelectFieldOptions } from "@/interfaces/form";
 import { z } from "zod";
-const transformTags = (tags: any) => tags.map((tag: any) => tag.value);
 
+// const tagsSchema = z.object({
+//   label: z.string(),
+//   value: z.string(),
+// });
 export const discoveryValidationSchema = z.object({
-  name: z.string().min(3, "Name should be atleast 3 chars"),
-  amount: z.coerce.number(),
-  tags: z
-  .array(z.enum(["good", "bad", "ugly"]))
-  .refine((value) => Array.isArray(value), {
-    message: "Tags should be an array of objects",
-  })
-  .transform(transformTags),
+  name: z.string().min(3, "Name should be at least 3 chars"),
+  amount: z.coerce.number().gt(0, "Amount should be greater than 0"),
+  tags: z.array(z.string()).min(1),
   description: z.string().min(1),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
-  closingDate: z.coerce.date(),
-  profitPercentage: z.coerce.number(),
-  riskLevel: z.enum(["high", "low", "moderate"]).optional(),
-  duration: z.coerce.number(),
+  startDate: z.coerce.date().refine((data) => data > new Date(), {
+    message: "Start date must today or the future",
+  }),
+  endDate: z.coerce.date().refine((data) => data > new Date(), {
+    message: "End date must today or the future",
+  }),
+  duration: z.coerce.number().gt(0),
+  closingDate: z.coerce.date().refine((data) => data > new Date(), {
+    message: "Start date must today or the future",
+  }),
+  profitPercentage: z.coerce
+    .number()
+    .min(0, "Profit percentage should be greater than 0").max(100),
+  riskLevel: z.string(z.enum(["high", "low", "moderate"])).min(3),
 });
+
+export const discoveryDefaultValues = {
+  name: "",
+  amount: null,
+  tags: [],
+  description: "",
+  startDate: null,
+  endDate: null,
+  duration: null,
+  closingDate: null,
+  profitPercentage: null,
+  riskLevel: "",
+};
 type RiskLevel = "high" | "low" | "moderate";
 type Tag = "good" | "bad" | "ugly";
 

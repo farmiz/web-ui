@@ -1,5 +1,4 @@
 import InputErrorMessage from "@/components/InputErrorMessage";
-import Alert from "@/components/alerts/Alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,18 +27,17 @@ export default function AuthenticationPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { errors, handleSubmit, isSubmitting, register } = useFormValidation(
-    loginValidationSchema
+    loginValidationSchema, {
+      email: "",
+      password: ""
+    }
   );
 
   const { isLoading } = auth;
   type FormSchemaType = z.infer<typeof loginValidationSchema>;
   
   const onSubmit: SubmitHandler<FormSchemaType> = async (data) => {
-    try {
       dispatch(loginAuth(data));
-    } catch (error) {
-      console.log({ error });
-    }
   };
 
   useEffect(() => {
@@ -52,7 +50,10 @@ export default function AuthenticationPage() {
 
       navigate(from, { replace: true });
     }
-  }, [auth.accessToken]);
+    ()=>{
+      return;
+    }
+  }, [auth]);
 
   return (
     <>
@@ -73,7 +74,7 @@ export default function AuthenticationPage() {
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 lg:max-w-lg">
             <Card>
               <CardHeader className="space-y-1">
-                {auth.isError && <Alert type="error" text={auth.message} />}
+               
                 <CardTitle className="text-2xl text-center">Sign in</CardTitle>
                 <CardDescription className="text-center">
                   Enter your email and password to login

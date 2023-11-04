@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { InputProps } from "@/interfaces/form";
-import { Controller, UseFormRegister } from "react-hook-form";
+import { Controller, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { TypeOf, ZodType } from "zod";
 import SelectField from "../SelectField";
 interface CustomFieldBuilderProps<T extends ZodType<any, any, any>> {
@@ -9,14 +9,25 @@ interface CustomFieldBuilderProps<T extends ZodType<any, any, any>> {
   register: UseFormRegister<TypeOf<T>>;
   className?: string;
   control: any;
+  setValue: UseFormSetValue<TypeOf<T>>;
 }
+
+
 function CustomFieldBuilder<T extends ZodType<any, any, any>>({
   input,
   register,
   className,
   control,
+  setValue,
 }: CustomFieldBuilderProps<T>) {
-
+  const handleSetValue = (field: any, value: any) => {
+    if (Array.isArray(value)) {
+      const r: any = value.map((val) => val.value);
+      setValue(field, r);
+    } else {
+      setValue(field, value.value);
+    }
+  };
   switch (input.type) {
     case "text":
     case "password":
@@ -40,55 +51,21 @@ function CustomFieldBuilder<T extends ZodType<any, any, any>>({
         />
       );
     case "search-select":
-      return (
-        <Controller
-          control={control}
-          name={input.fieldKey}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <SelectField
-              isSearchable={true}
-              options={input.options}
-              onBlur={onBlur}
-              onChange={onChange}
-              value={value}
-            />
-          )}
-        />
-      );
+    case "multi-select":
     case "select":
       return (
         <Controller
           control={control}
           name={input.fieldKey}
-          render={({ field: { onChange, onBlur, value } }) => (
+          render={() => (
             <SelectField
-              isSearchable={false}
+              isSearchable={input.type === "search-select" && true}
               options={input.options}
-              onBlur={onBlur}
-              onChange={onChange}
-              value={value}
+              isMulti={input.type === "multi-select" && true}
+              onChange={(val: any) => handleSetValue(input.fieldKey, val)}
+              closeMenuOnSelect={input.type === "multi-select" ? false : true}
             />
           )}
-        />
-      );
-    case "multi-select":
-      return (
-        <Controller
-          control={control}
-          name={input.fieldKey}
-          render={({ field: { onChange, onBlur, value } }) => {
-            return (
-              <SelectField
-                isSearchable={false}
-                options={input.options}
-                isMulti
-                closeMenuOnSelect={false}
-                onBlur={onBlur}
-                onChange={onChange}
-                value={value}
-              />
-            );
-          }}
         />
       );
   }

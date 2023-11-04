@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import DashboardLayout from "@/components/dashboard/Layout";
 
-const CreateUser = () => {
+const CreateUserScreen = () => {
   return (
     <DashboardLayout pageTitle="Create User">
       <Container className="border">
@@ -11,4 +11,4 @@ const CreateUser = () => {
   );
 };
 
-export default CreateUser;
+export default CreateUserScreen;

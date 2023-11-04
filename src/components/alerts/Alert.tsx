@@ -1,4 +1,4 @@
-import { Shapes, X } from "lucide-react";
+import { Shapes } from "lucide-react";
 import React from "react";
 
 type AlertType = "error" | "warning" | "success" | "info";
@@ -33,9 +33,6 @@ const Alert: React.FC<AlertProps> = ({ text, type }) => {
             {text}
           </p>
         </div>
-      </div>
-      <div>
-        <X size={18} />
       </div>
     </div>
   );

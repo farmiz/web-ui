@@ -12,17 +12,18 @@ import {
   ArrowLeftRight,
   HeartHandshake,
 } from "lucide-react";
-import Login from "@/pages/auth/Login";
-import Users from "@/pages/users/UsersListScreen";
+import Login from "@/pages/auth/LoginScreen";
 import Dashboard from "@/pages/dashboard";
 import CreateUser from "@/pages/users/CreateUserScreen";
 import CreateDiscovery from "@/pages/discoveries/CreateDiscoveryScreen";
 import Discovery from "@/pages/discoveries/DiscoveryListScreen";
 import UsersListScreen from "@/pages/users/UsersListScreen";
+import { PermissionOperation, PermissionString } from "@/utils/permissions";
+import NotAuthorized from "@/pages/error/NotAuthorizedScreen";
 
 export interface RoutesProps {
   url: string;
-  permission?: string[];
+  permission?: [PermissionString, PermissionOperation];
   requireAuth: boolean;
   allowedRoles?: UserRole[];
   meta?: Record<string, string>;
@@ -33,6 +34,7 @@ export const routes: RoutesProps[] = [
     url: "/users",
     requireAuth: true,
     component: UsersListScreen,
+    permission: ["users", "read"]
   },
   {
     url: "/verify/email",
@@ -50,26 +52,30 @@ export const routes: RoutesProps[] = [
     component: Login,
   },
   {
-    url: "/users",
-    requireAuth: true,
-    component: Users,
-    permission: ["users", "create"]
-  },
-  {
     url: "/users/create",
     requireAuth: true,
     component: CreateUser,
+    permission: ["users", "create"]
+
   },
   {
     url: "/discoveries/create",
     requireAuth: true,
     component: CreateDiscovery,
+    permission: ["discovery", "create"]
   },
   {
     url: "/discoveries",
     requireAuth: true,
     component: Discovery,
+    permission: ["discovery", "read"]
   },
+
+  {
+    url :"/unauthorized",
+    requireAuth: false,
+    component: NotAuthorized
+  }
 ];
 
 export const menuSidebarRoutes = {

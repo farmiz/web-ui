@@ -97,6 +97,7 @@ export interface FormBuilderProps<T extends z.ZodType<any, any, any>> {
   validationSchema: T;
   onSubmit: (values: z.infer<T>) => void;
   formButton?: FormButtonProps;
+  formValues: any
 }
 
 export type SelectFieldOptions<T> = { label: string; value: T }[];
