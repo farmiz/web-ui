@@ -23,7 +23,6 @@ const Discovery = () => {
         showExportButton={true}
         title="Discoveries List"
         columns={columnsToDisplay}
-        useActionButton={true}
         filters={filters}
       />
     </DashboardLayout>

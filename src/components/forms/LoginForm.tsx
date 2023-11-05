@@ -18,6 +18,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         onSubmit={onSubmit}
         validationSchema={loginValidationSchema}
         formButton={formButton}
+        formValues={{email: "", password: ""}}
       />
     </div>
   );

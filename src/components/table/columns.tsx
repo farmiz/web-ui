@@ -1,8 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
+import { UserProps } from "@/store/userSlice/types";
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<UserProps>[] = [
   {
     id: "select",
     header: ({ table }) => (
