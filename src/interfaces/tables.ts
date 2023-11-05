@@ -1,4 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { MouseEventHandler } from "react";
 
 type IconType = React.ComponentType<{ className?: string }>;
 export interface DataFilterProps {
@@ -15,12 +16,17 @@ export interface DataFilterProps {
   };
 }
 export type SortType = "asc" | "desc";
+
+export interface ActionButton {
+  label: string;
+  action: MouseEventHandler;
+}
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   showExportButton?: boolean;
-  useActionButton?: boolean;
+  actionButtons?: ActionButton[];
   filters?: DataFilterProps[];
-  fetchQuery: any;
+  fetchQuery?: any;
 }
 
 export interface Paginator {

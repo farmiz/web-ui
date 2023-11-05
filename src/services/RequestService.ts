@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import { BaseResponse } from "./BaseResponse";
 import { BaseRequestService } from "./BaseRequestService";
 
-type ServiceName = "auth" | "users";
+type ServiceName = "auth" | "users" | "discovery";
 export class RequestService extends BaseRequestService {
   private name: string;
   constructor(name: ServiceName) {
@@ -27,6 +27,7 @@ export class RequestService extends BaseRequestService {
     };
     return await this.request(requestConfig, {
       useToken: true,
+      tokenType: "accessToken"
     });
   };
   public createOne = async (
@@ -45,6 +46,7 @@ export class RequestService extends BaseRequestService {
 
     return await this.request(requestConfig, {
       useToken: true,
+      tokenType: "accessToken"
     });
   };
   public getMany = async (

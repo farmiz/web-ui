@@ -1,11 +1,8 @@
 import DashboardLayout from "@/components/dashboard/Layout";
-// import Table from "@/components/table/Table";
-// import { columns } from "@/components/table/columns";
-// import { filters } from "@/components/table/data/filters";
-import { useAppDispatch } from "@/hooks/useStoreActions";
+import Table from "@/components/table/Table";
+import { columns, filters } from "@/dataTable/discoveries";
 import { ActionButtonProps } from "@/interfaces";
-import { fetchUsers } from "@/store/userSlice/actions";
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 const Discovery = () => {
   const navigate = useNavigate();
@@ -19,20 +16,16 @@ const Discovery = () => {
     },
   };
 
-  const disp = useAppDispatch();
-  useEffect(() => {
-    disp(fetchUsers({}));
-  }, []);
-  // const columnsToDisplay = useMemo(() => columns, []);
+  const columnsToDisplay = useMemo(() => columns, []);
   return (
     <DashboardLayout pageTitle="Discoveries List" actionButtons={actionButtons}>
-      {/* <Table
+      <Table
         showExportButton={true}
         title="Discoveries List"
         columns={columnsToDisplay}
         useActionButton={true}
         filters={filters}
-      /> */}
+      />
     </DashboardLayout>
   );
 };

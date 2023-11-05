@@ -1,19 +1,20 @@
 import DataTable from "./DataTable";
 import Container from "../Container";
 import { DataTableProps } from "@/interfaces/tables";
+import { memo } from "react";
 
-interface TableProps<TData, TValue> extends DataTableProps<TData, TValue> {
+interface TableProps extends DataTableProps<any, any> {
   title: string;
 }
 
-const Table = <TData, TValue>({
+const Table = ({
   showExportButton = false,
   title,
   columns,
-  useActionButton,
+  actionButtons,
   filters,
-  fetchQuery
-}: TableProps<TData, TValue>) => {
+  fetchQuery,
+}: TableProps) => {
   return (
     <>
       <Container>
@@ -21,18 +22,18 @@ const Table = <TData, TValue>({
           <div>
             <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
             <p className="text-muted-foreground mt-1">
-              Here's a list of all 
+              Here's a list of all
               <span className="font-bold mx-1">
                 {title && title.split(" ")[0].toLowerCase()}
               </span>
-               in farmiz!
+              in farmiz!
             </p>
           </div>
         </div>
         <DataTable
           columns={columns}
           showExportButton={showExportButton}
-          useActionButton={useActionButton}
+          actionButtons={actionButtons}
           filters={filters}
           fetchQuery={fetchQuery}
         />
@@ -41,4 +42,4 @@ const Table = <TData, TValue>({
   );
 };
 
-export default Table;
+export default memo(Table);

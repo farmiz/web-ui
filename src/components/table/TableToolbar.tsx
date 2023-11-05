@@ -38,13 +38,13 @@ export function DataTableToolbar<TData>({
   }, []);
   return (
     <>
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col lg:flex-row items-center justify-between mb-5">
         <div className="flex flex-1 items-center space-x-2">
           <Input
             placeholder="Filter tasks..."
             value={value}
             onChange={handleOnChange}
-            className="h-8 w-[150px] lg:w-[250px]"
+            className="h-8 w-full lg:w-[250px] my-2 lg:my-0"
           />
         </div>
         <DataTableViewOptions

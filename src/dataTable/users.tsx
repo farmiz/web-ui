@@ -1,8 +1,39 @@
+import { DataFilterProps } from "@/interfaces/tables";
+import { Settings2 } from "lucide-react";
+
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DataTableColumnHeader } from "./DataTableColumnHeader";
+import { DataTableColumnHeader } from "@/components/table/DataTableColumnHeader";
+import { UserProps } from "@/store/userSlice/types";
 
-export const columns: ColumnDef<User>[] = [
+export const statuses = [
+  {
+    value: "active",
+    label: "Active",
+  },
+  {
+    value: "pendingApproval",
+    label: "Pending Approval",
+  },
+];
+export const filters: DataFilterProps[] = [
+  {
+    column: "status",
+    options: statuses,
+    title: "Status",
+    extra: {
+      mainIcon: Settings2,
+    },
+  },
+  {
+    column: "firstName",
+    options: [],
+    title: "First Name",
+    isNumber: true,
+  },
+];
+
+export const columns: ColumnDef<UserProps>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -29,7 +60,9 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="FirstName" />
     ),
-    cell: ({ row }) => <div className="flex space-x-2">{row.getValue("firstName")}</div>,
+    cell: ({ row }) => (
+      <div className="flex space-x-2">{row.getValue("firstName")}</div>
+    ),
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
@@ -39,12 +72,8 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Label" />
     ),
-    cell: ({ row }) => { 
-     return (
-        <div className="flex space-x-2">
-         {row.getValue("lastName")}
-        </div>
-      );
+    cell: ({ row }) => {
+      return <div className="flex space-x-2">{row.getValue("lastName")}</div>;
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
@@ -86,15 +115,14 @@ export const columns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
-
       return (
         <div className="flex w-[100px] items-center">
-         {row.getValue("status")}
+          {row.getValue("status")}
         </div>
       );
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-  }
+  },
 ];

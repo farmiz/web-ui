@@ -7,15 +7,30 @@ import {
   discoveryForm,
   discoveryValidationSchema,
 } from "@/formValidations/discovery";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
 import { FormButtonProps } from "@/interfaces/form";
+import { successToast } from "@/lib/toast";
+import { createDiscovery } from "@/store/discoverySlice/actions";
+import { useEffect } from "react";
 import { SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 type FormSchemaType = z.infer<typeof discoveryValidationSchema>;
 
 const CreateDiscovery = () => {
+  const dispatch = useAppDispatch();
+  const discovery = useAppSelector("discovery");
+  const navigate = useNavigate();
   const onSubmit: SubmitHandler<FormSchemaType> = async (data) => {
-    console.log({ data });
+    dispatch(createDiscovery(data));
   };
+
+  useEffect(() => {
+    if (discovery.isSuccess) {
+      successToast(discovery.message);
+      navigate("/discoveries");
+    }
+  }, [discovery]);
   const formButton: FormButtonProps = {
     label: "Submit",
     position: "bottom-right",

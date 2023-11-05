@@ -1,3 +1,4 @@
+import { DiscoveryProps } from "@/store/discoverySlice/types";
 import {
   AddressProps,
   IDefaultPlugin,
@@ -60,4 +61,21 @@ export const userDefault = (): UserProps => ({
     userId: "",
   },
   ...defaultPlugin,
+});
+
+export const discoveryDefaults = (): DiscoveryProps => ({
+  amount: 0,
+  closingDate: new Date(),
+  description: "",
+  duration: {
+    type: "day",
+    value: 23,
+  },
+  endDate: new Date(),
+  name: "",
+  riskLevel: "low",
+  profitPercentage: 0,
+  startDate: new Date(),
+  tags: [],
+  id: "",
 });

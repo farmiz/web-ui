@@ -3,9 +3,14 @@ import ThemeSwitcher from "@/components/buttons/ThemeSwitcher";
 import SidebarMenu from "./SidebarMenu";
 import { generalSidebarRoutes, menuSidebarRoutes } from "@/routes";
 import Logo from "/farmiz.svg";
-const DashboardSidebar = () => {
+const DashboardSidebar = ({ displaySidebar }: { displaySidebar: boolean }) => {
+  console.log("FROM SIDEBAR", displaySidebar);
   return (
-    <div className="flex-shrink-0 overflow-x-hidden dark w-[260px] bg-[#10172a] z-[400] shadow-md">
+    <div
+      className={`flex-shrink-0 overflow-x-hidden dark ${
+        displaySidebar ? "w-[260px]" : "w-0"
+      } hidden lg:block md:block bg-[#10172a] z-[400] shadow-md transition-all`}
+    >
       <div className="h-full w-[260px] p-5">
         <div className="flex h-full min-h-0 flex-col">
           <div className="relative h-full w-full flex-1 items-start border-white/20 flex flex-col">
@@ -14,8 +19,14 @@ const DashboardSidebar = () => {
                 <img src={Logo} alt="Logo" className="w-[120px]" />
               </div>
               <div className="menu-items">
-                <SidebarMenu title={menuSidebarRoutes.title} routesData={menuSidebarRoutes.routeLinks} />
-                <SidebarMenu title={generalSidebarRoutes.title} routesData={generalSidebarRoutes.routeLinks}/>
+                <SidebarMenu
+                  title={menuSidebarRoutes.title}
+                  routesData={menuSidebarRoutes.routeLinks}
+                />
+                <SidebarMenu
+                  title={generalSidebarRoutes.title}
+                  routesData={generalSidebarRoutes.routeLinks}
+                />
               </div>
             </div>
             <div className="sidebar-footer w-full pl-3">

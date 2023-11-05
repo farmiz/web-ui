@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Header from "@/components/dashboard/Header";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Content from "@/components/dashboard/Content";
@@ -12,7 +12,7 @@ interface DashboardLayoutProps {
   pageTitle: string;
   pageDescription?: string;
   showPageExporter?: boolean;
-  actionButtons?: Record<string, any>
+  actionButtons?: Record<string, any>;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({
@@ -23,16 +23,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   pageTitle,
   pageDescription,
   showPageExporter = false,
-  actionButtons
+  actionButtons,
 }) => {
+  const handleDisplaySidebar = () => {
+    setDisplaySidebar(!displaySidebar);
+  };
+  const [displaySidebar, setDisplaySidebar] = useState(true);
   return (
     <div className="overflow-hidden w-full h-screen relative flex z-0 bg-[#fafafa]">
-      {showSidebar && <Sidebar />}
+      {showSidebar && <Sidebar displaySidebar={displaySidebar} />}
       <div className="main-content relative flex h-full max-w-full flex-1 overflow-hidden">
         <div className="flex h-full max-w-full flex-1 flex-col">
           <main className="relative h-full w-full transition-width overflow-auto flex-1">
             <div className="h-full" role="presentation">
-              {showHeader && <Header />}
+              {showHeader && <Header handleDisplaySidebar={handleDisplaySidebar}/>}
               <Content showScrollToTopButton={showScrollToTopButton}>
                 <HeaderTitle
                   pageTitle={pageTitle}

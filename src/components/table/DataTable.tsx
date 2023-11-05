@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DataTableToolbar } from "./TableToolbar";
 import {
   ColumnFiltersState,
@@ -24,16 +24,18 @@ import {
 } from "../ui/table";
 import { DataTableProps, Paginator } from "@/interfaces/tables";
 import TableBodyItem from "./TableBodyItem";
-import { useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import NoDataImg from "/no-data.svg";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
 import { cleanObject, objectToQueryString } from "@/utils";
 import { addColumn } from "@/store/tableSlice";
+import { DataTableRowActions } from "./DataTableRowActions";
 export function DataTable<TData, TValue>({
   columns,
   showExportButton = false,
   filters,
   fetchQuery,
+  actionButtons,
 }: DataTableProps<TData, TValue>) {
   const [loading, setLoading] = useState<boolean>(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -45,9 +47,10 @@ export function DataTable<TData, TValue>({
   const navigate = useNavigate();
   const tableStore = useAppSelector("table");
   const dispatchTable = useAppDispatch();
+  const [tableColumn, setTableColumn] = useState(columns);
+  const initialized = useRef(false);
+
   const search = useLocation().search;
-  // const [searchParams] = useSearchParams()
-  // { id: "actions", cell: ({}) => <DataTableRowActions /> }
 
   const columnsForDefaultValues = columns
     .map((column) => {
@@ -69,7 +72,6 @@ export function DataTable<TData, TValue>({
     });
   }, [tableStore]);
 
-  // const searchParams = new URLSearchParams(search);
   const newQuery = cleanObject(tableStore);
 
   const memoizedFetchQuery = useMemo(() => {
@@ -89,12 +91,28 @@ export function DataTable<TData, TValue>({
   }, [newQuery]);
 
   useEffect(() => {
-    memoizedFetchQuery();
+    if (fetchQuery) {
+      memoizedFetchQuery();
+    }
   }, [search]);
 
+  useEffect(() => {
+    if (!initialized.current) {
+      if (actionButtons && actionButtons.length) {
+        setTableColumn((prevCols) => [
+          ...prevCols,
+          {
+            id: "actions",
+            cell: ({row }) => <DataTableRowActions actionButtons={actionButtons} row={row}/>,
+          },
+        ]);
+      }
+      initialized.current = true;
+    }
+  }, []);
   const table = useReactTable({
     data,
-    columns,
+    columns: tableColumn,
     state: {
       sorting,
       columnVisibility,

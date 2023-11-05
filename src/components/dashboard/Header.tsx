@@ -1,22 +1,31 @@
 import UserNav from "@/components/UserNav";
 import { Input } from "@/components/ui/input";
 import { useAppSelector } from "@/hooks/useStoreActions";
-import { MessageSquare, BellIcon } from "lucide-react";
-const Header = () => {
+import { MessageSquare, BellIcon, Menu } from "lucide-react";
+import { MouseEventHandler } from "react";
+const Header = ({
+  handleDisplaySidebar,
+}: {
+  handleDisplaySidebar: MouseEventHandler;
+}) => {
   const userDetails = useAppSelector("auth").userDetails;
   return (
-    <div className="header-container bg-white sticky top-0">
+    <div className="header-container bg-white sticky top-0 z-50 shadow-sm">
       <header
-        className="flex h-[56px] items-center justify-between relative px-8"
+        className="flex h-[56px] items-center justify-between px-8  sticky top-0"
         role="banner"
       >
-        <nav className="flex w-[300px] items-center justify-between">
+        <div className="lg:flex flex-1 items-center gap-5">
+          <Menu
+            className="lg:hidden cursor-pointer"
+            onClick={handleDisplaySidebar}
+          />
           <Input
             type="email"
             placeholder="Search..."
-            className="bg-[#fafafa]"
+            className="bg-[#fafafa] hidden lg:flex w-[300px]"
           />
-        </nav>
+        </div>
         <div className="flex items-center justify-end flex-shrink-0 gap-5">
           <div className="message-box">
             <MessageSquare size={19} />
@@ -25,7 +34,7 @@ const Header = () => {
             <BellIcon size={19} />
           </div>
           <div className="avatar">
-            <UserNav userDeatils={userDetails} />
+            <UserNav userDetails={userDetails} />
           </div>
         </div>
       </header>

@@ -19,6 +19,14 @@ const UsersListScreen = () => {
     },
   };
 
+  const tableActionButtons = [
+    {
+      label: "Delete",
+      action: (data: any) => {
+        console.log("Action deformed", data);
+      },
+    },
+  ];
   const columnsToDisplay = useMemo(() => columns, []);
   return (
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
@@ -28,6 +36,7 @@ const UsersListScreen = () => {
         columns={columnsToDisplay}
         filters={filters}
         fetchQuery={fetchUsers}
+        actionButtons={tableActionButtons}
       />
     </DashboardLayout>
   );

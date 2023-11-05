@@ -15,9 +15,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface UserNavProps {
-  userDeatils: UserProps | null;
+  userDetails: UserProps | null;
 }
-const UserNav: React.FC<UserNavProps> = React.memo(({ userDeatils }) => {
+const UserNav: React.FC<UserNavProps> = React.memo(({ userDetails }) => {
   const navLinks = [
     {
       name: "Profile",
@@ -33,15 +33,18 @@ const UserNav: React.FC<UserNavProps> = React.memo(({ userDeatils }) => {
     },
   ];
   const fullName =
-    userDeatils && `${userDeatils.firstName} ${userDeatils.lastName}`;
+    userDetails && `${userDetails.firstName} ${userDetails.lastName}`;
   const userAbbreviation =
-    userDeatils &&
-    `${userDeatils?.firstName?.[0]}${userDeatils?.lastName?.[0]}`;
+    userDetails &&
+    `${userDetails?.firstName?.[0]}${userDetails?.lastName?.[0]}`;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button
+          variant="ghost"
+          className="relative h-8 w-8 rounded-full outline-none focus-within:outline-none focus-visible:outline-none focus:outline-none border-none"
+        >
+          <Avatar className="h-8 w-8 outline-none">
             <AvatarImage src="https://github.com/shadcn.png" alt="Avatar" />
             <AvatarFallback>{userAbbreviation}</AvatarFallback>
           </Avatar>
@@ -52,7 +55,7 @@ const UserNav: React.FC<UserNavProps> = React.memo(({ userDeatils }) => {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{fullName}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {userDeatils && userDeatils.email}
+              {userDetails && userDetails.email}
             </p>
           </div>
         </DropdownMenuLabel>

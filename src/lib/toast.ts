@@ -15,7 +15,7 @@ type PromiseT<Data = any> = Promise<Data> | (() => Promise<Data>);
 const defaultOptions: ToastT = {
   dismissible: true,
   important: true,
-  duration: 6000,
+  duration: 2000,
   position: "top-right",
 };
 export const successToast = (
