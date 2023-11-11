@@ -52,14 +52,17 @@ export function DataTable<TData, TValue>({
 
   const search = useLocation().search;
 
-  const columnsForDefaultValues = columns
-    .map((column) => {
-      if ("accessorKey" in column) {
-        return column.accessorKey;
-      }
-      return;
-    })
-    .filter((columnName: any) => columnName);
+  const columnsForDefaultValues =
+    columns && columns.length
+      ? columns
+          .map((column) => {
+            if ("accessorKey" in column) {
+              return column.accessorKey;
+            }
+            return;
+          })
+          .filter((columnName: any) => columnName)
+      : [];
 
   // /items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
   if (!tableStore.columns.length) {
@@ -103,7 +106,9 @@ export function DataTable<TData, TValue>({
           ...prevCols,
           {
             id: "actions",
-            cell: ({row }) => <DataTableRowActions actionButtons={actionButtons} row={row}/>,
+            cell: ({ row }) => (
+              <DataTableRowActions actionButtons={actionButtons} row={row} />
+            ),
           },
         ]);
       }

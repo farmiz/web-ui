@@ -5,24 +5,21 @@ import FormHeader from "@/components/forms/FormHeader";
 import {
   discoveryDefaultValues,
   discoveryForm,
-  discoveryValidationSchema,
 } from "@/formValidations/discovery";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
+import { useAppSelector } from "@/hooks/useStoreActions";
 import { FormButtonProps } from "@/interfaces/form";
 import { successToast } from "@/lib/toast";
-import { createDiscovery } from "@/store/discoverySlice/actions";
 import { useEffect } from "react";
-import { SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { z } from "zod";
-type FormSchemaType = z.infer<typeof discoveryValidationSchema>;
 
 const CreateDiscovery = () => {
-  const dispatch = useAppDispatch();
   const discovery = useAppSelector("discovery");
   const navigate = useNavigate();
-  const onSubmit: SubmitHandler<FormSchemaType> = async (data) => {
-    dispatch(createDiscovery(data));
+  const handleInputBlur = (data: any) => {
+    console.log({ data }, "BLUR");
+  };
+  const handleSubmit = (data: Record<string, any>) => {
+    console.log(data);
   };
 
   useEffect(() => {
@@ -46,10 +43,10 @@ const CreateDiscovery = () => {
         />
         <FormBuilder
           schema={discoveryForm}
-          onSubmit={onSubmit}
-          validationSchema={discoveryValidationSchema}
           formButton={formButton}
           formValues={discoveryDefaultValues}
+          onFieldBlurHandler={handleInputBlur}
+          onSubmit={handleSubmit}
         />
       </Container>
     </DashboardLayout>

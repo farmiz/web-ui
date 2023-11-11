@@ -1,74 +1,74 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { InputProps } from "@/interfaces/form";
-import { Controller, UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { TypeOf, ZodType } from "zod";
+import { FormFieldComponentProps } from "@/interfaces/form";
+import { memo } from "react";
 import SelectField from "../SelectField";
-interface CustomFieldBuilderProps<T extends ZodType<any, any, any>> {
-  input: InputProps;
-  register: UseFormRegister<TypeOf<T>>;
-  className?: string;
-  control: any;
-  setValue: UseFormSetValue<TypeOf<T>>;
-}
+import DatePicker from "../DatePicker";
 
-
-function CustomFieldBuilder<T extends ZodType<any, any, any>>({
-  input,
-  register,
-  className,
-  control,
-  setValue,
-}: CustomFieldBuilderProps<T>) {
+function CustomFieldBuilder({
+  handleBlur,
+  handleChange,
+  props,
+  state,
+}: FormFieldComponentProps) {
   const handleSetValue = (field: any, value: any) => {
     if (Array.isArray(value)) {
       const r: any = value.map((val) => val.value);
-      setValue(field, r);
+      handleChange({ target: { name: field, value: r } });
     } else {
-      setValue(field, value.value);
+      handleChange({ target: { name: field, value: value.value } });
     }
   };
-  switch (input.type) {
+  switch (props.type) {
     case "text":
-    case "password":
     case "email":
-    case "color":
     case "number":
-    case "date":
       return (
         <Input
-          {...register(input.fieldKey as TypeOf<T>)}
-          type={input.type}
-          id={input.id}
-          className={className}
+          value={state[props.fieldKey]}
+          onChange={handleChange}
+          type={props.type}
+          name={props.fieldKey}
+          id={props.id || `form__${props.fieldKey}`}
+          onBlur={handleBlur}
+          defaultValue={props.defaultValue}
+        />
+      );
+
+    case "date":
+      return (
+        <DatePicker
+          fieldKey={props.fieldKey}
+          onChange={handleChange}
+          disabled={props.disabled}
+          value={state[props.fieldKey]}
         />
       );
     case "textarea":
       return (
         <Textarea
-          className={`${className}`}
-          {...register(input.fieldKey as TypeOf<T>)}
+          className={`${props.className}`}
+          value={state[props.fieldKey]}
+          onChange={handleChange}
+          name={props.fieldKey}
+          id={props.id || `form__${props.fieldKey}`}
+          onBlur={handleBlur}
         />
       );
-    case "search-select":
-    case "multi-select":
     case "select":
-      return (
-        <Controller
-          control={control}
-          name={input.fieldKey}
-          render={() => (
-            <SelectField
-              isSearchable={input.type === "search-select" && true}
-              options={input.options}
-              isMulti={input.type === "multi-select" && true}
-              onChange={(val: any) => handleSetValue(input.fieldKey, val)}
-              closeMenuOnSelect={input.type === "multi-select" ? false : true}
-            />
-          )}
-        />
-      );
+      if (props.type === "select") {
+        return (
+          <SelectField
+            isSearchable={props.isSearchable}
+            options={props.options}
+            isMulti={props.isMultiSelect}
+            onChange={(val: any) => handleSetValue(props.fieldKey, val)}
+            onBlur={handleBlur}
+            closeMenuOnSelect={props.isMultiSelect ? false : true}
+          />
+        );
+      }
   }
 }
 
-export default CustomFieldBuilder;
+export default memo(CustomFieldBuilder);

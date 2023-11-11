@@ -1,5 +1,4 @@
-import { z } from "zod";
-import { Props } from "react-select";
+
 export type IconType = React.ComponentType<{
   className?: string;
   size?: number;
@@ -28,33 +27,12 @@ type HTMLInputTypeAttribute =
   | "url"
   | "week"
   | "textarea"
-  | "select"
-  | "search-select"
-  | "multi-select";
+  | "select";
 type FormBuilderInputType = HTMLInputTypeAttribute;
 
-interface SelectFieldProps extends Props {
-  options:  { label: string; value: string }[]
-}
-export type InputProps =
-  {
-    label: string;
-    type: Exclude<FormBuilderInputType, "select" | "search-select" | "multi-select">;
-    ref?: any;
-    validation?: any;
-    id?: string;
-    required?: boolean;
-    fieldKey: string;
-  } | {
-    label: string;
-    type: "select" | "search-select" | "multi-select";
-    ref?: any;
-    validation?: any;
-    id?: string;
-    required?: boolean;
-    fieldKey: string;
-  } & SelectFieldProps;
-
+// interface SelectFieldProps extends Props {
+//   options:  { label: string; value: string }[]
+// }
 
 export interface FormComponent {
   section: {
@@ -74,7 +52,7 @@ export interface FormComponent {
       | "cols-10"
       | "cols-11"
       | "cols-12";
-    form: InputProps[];
+    form: SpecificFormFieldProps[];
   };
 }
 export interface FormButtonProps {
@@ -91,13 +69,72 @@ export interface FormButtonProps {
   //   iconPosition?: "back" | "forward";
   disabled?: boolean;
 }
-
-export interface FormBuilderProps<T extends z.ZodType<any, any, any>> {
+export interface HandlerProps {
+  key: string;
+  value: string;
+}
+export interface FormBuilderProps {
   schema: FormComponent[];
-  validationSchema: T;
-  onSubmit: (values: z.infer<T>) => void;
   formButton?: FormButtonProps;
-  formValues: any
+  formValues: Record<string, any>;
+  onFieldChangeHandler?: (data?: HandlerProps) => void;
+  onFieldBlurHandler?: (data?: HandlerProps) => void;
+  onValidationChangeHandler?: (validation: Record<string, any>) => void;
+  resetForm?: boolean;
+  onSubmit: (data: Record<string, any>) => void;
 }
 
-export type SelectFieldOptions<T> = { label: string; value: T }[];
+export interface FormIconProps {
+  name: string;
+  position: string;
+  className?: string;
+  size?: string;
+}
+
+export interface FormFieldProps {
+  type: FormBuilderInputType;
+  fieldKey: string;
+  label?: string | { text: string; icon?: FormIconProps; className?: string };
+  icon?: FormIconProps;
+  id?: string;
+  placeholder?: string;
+  attrs?: Record<string, any>;
+  className?: string;
+  disabled?: boolean;
+  defaultValue?: any;
+  validation?: (value: any) => boolean;
+  required?: boolean
+}
+
+interface SelectFieldProps extends Omit<FormFieldProps, "type"> {
+  type: "select";
+  options: { label: string; value: string }[];
+  isClearable?: boolean;
+  isSearchable?: boolean;
+  isMultiSelect?: boolean;
+}
+type SpecificFormFieldProps =
+  | ({
+      type: Exclude<FormBuilderInputType, "select">;
+    } & FormFieldProps)
+  | SelectFieldProps;
+
+export type FormBuilderState = Record<string, any>;
+export type FormBuilderAction =
+  | { type: "CHANGE_INPUT"; field: string; value: string }
+  | { type: "RESET_FORM" }
+  | { type: string };
+
+
+export interface FormFieldComponentChangeEvent {
+  target: {
+    name: string;
+    value: any;
+  };
+}
+export interface FormFieldComponentProps {
+  props: SpecificFormFieldProps;
+  handleChange: ({ target }: FormFieldComponentChangeEvent) => void;
+  handleBlur: (e: FormFieldComponentChangeEvent) => void;
+  state: FormBuilderState;
+}

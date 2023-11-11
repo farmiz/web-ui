@@ -14,9 +14,10 @@ export const hasPermission = (
   userPermission: string,
   permissions: [PermissionString, PermissionOperation]
 ): boolean => {
-  const [permissionService, permisssionOperation] = permissions;
+  if(!userPermission || !permissions) return false; 
+  const [permissionService, permissionOperation] = permissions;
   return userPermission.includes(
-    String.fromCharCode(PERMISSIONS[permissionService][permisssionOperation])
+    String.fromCharCode(PERMISSIONS[permissionService][permissionOperation])
   );
 };
 export const PERMISSIONS_LIST: PermissionString[] = [

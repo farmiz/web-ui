@@ -14,16 +14,18 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ title, routesData }) => {
     <div className="my-5">
       <p className="section-title text-white pl-3 text-[0.655rem]">{title}</p>
       <ul>
-        {routesData.map((data) => {
-          return (
-            <SidebarMenuItem
-              icon={<data.icon size={19} />}
-              text={data.title}
-              url={data.url}
-              key={data.url}
-            />
-          );
-        })}
+        {routesData &&
+          routesData.length &&
+          routesData.map((data) => {
+            return (
+              <SidebarMenuItem
+                icon={<data.icon size={19} />}
+                text={data.title}
+                url={data.url}
+                key={data.url}
+              />
+            );
+          })}
       </ul>
     </div>
   );

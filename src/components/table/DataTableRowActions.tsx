@@ -28,7 +28,7 @@ export const DataTableRowActions: FC<DataTableRowActionsProps> = memo(
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
-          {actionButtons.map((actionButton, index) => {
+          {actionButtons && actionButtons.length &&  actionButtons.map((actionButton, index) => {
             return (
               <DropdownMenuItem
                 key={index + 1}

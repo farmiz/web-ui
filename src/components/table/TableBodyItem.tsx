@@ -7,7 +7,7 @@ interface TableBodyItemProps<TData> {
 function TableBodyItem<TData>({ row }: TableBodyItemProps<TData>) {
   return (
     <TableRow  data-state={row.getIsSelected() && "selected"}>
-      {row.getVisibleCells().map((cell) => (
+      {row && row.getVisibleCells().map((cell) => (
         <TableCell key={cell.id}>
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
         </TableCell>

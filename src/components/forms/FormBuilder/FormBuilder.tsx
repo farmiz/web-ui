@@ -1,31 +1,56 @@
-import InputErrorMessage from "@/components/InputErrorMessage";
 import { Button } from "@/components/ui/button";
-import { useFormValidation } from "@/hooks/useFormValidation";
-import { FormBuilderProps } from "@/interfaces/form";
-import { FieldErrors } from "react-hook-form";
-import { TypeOf, z } from "zod";
+import {
+  FormBuilderProps,
+  FormFieldComponentChangeEvent,
+} from "@/interfaces/form";
 import { defineButtonPosition } from "./utils";
 import CustomFieldBuilder from "./CustomFieldBuilder";
+import { useFormFlowReducer } from "@/hooks/useFormReducer";
+import { useEffect } from "react";
+import InputLabel from "./InputLabel";
 
-function FormBuilder<T extends z.ZodType<any, any, any>>({
+function FormBuilder({
   schema,
-  validationSchema,
-  onSubmit,
   formButton,
   formValues,
-}: FormBuilderProps<T>) {
-  const { errors, handleSubmit, register, control, setValue } = useFormValidation(
-    validationSchema,
-    formValues
-  );
-
-  const hasError = (errors: FieldErrors<TypeOf<T>>, index: string) => {
-    return errors && errors[index] && errors[index]?.message;
+  onFieldBlurHandler,
+  onFieldChangeHandler,
+  onValidationChangeHandler,
+  onSubmit,
+  resetForm,
+}: FormBuilderProps) {
+  const { state, dispatch } = useFormFlowReducer(formValues);
+  const handleChange = ({ target }: FormFieldComponentChangeEvent) => {
+    const { name, value } = target;
+    dispatch({ type: "CHANGE_INPUT", field: name, value });
+    if (onFieldChangeHandler) {
+      onFieldChangeHandler({ key: name, value });
+    }
   };
+  const handleBlur = (e: FormFieldComponentChangeEvent) => {
+    const { name, value } = e.target;
+    if (onFieldBlurHandler) {
+      onFieldBlurHandler({ key: name, value });
+    }
+  };
+
+  const handleFormSubmit = (e: any) => {
+    e.preventDefault();
+    onSubmit(state);
+  };
+  useEffect(() => {
+    if (resetForm) {
+      dispatch({ type: "RESET_FORM" });
+    }
+  }, [resetForm]);
+
+  useEffect(() => {
+    
+  }, []);
   return (
     <form
-      onSubmit={onSubmit && handleSubmit(onSubmit)}
       className="flex-1 flex-grow flex flex-col justify-between"
+      onSubmit={handleFormSubmit}
     >
       {formButton &&
         formButton.position &&
@@ -46,44 +71,40 @@ function FormBuilder<T extends z.ZodType<any, any, any>>({
           </div>
         )}
 
-      {schema.map((section, index) => (
-        <div key={index}>
-          <h2>{section.section.title}</h2>
-          <p>{section.section.description}</p>
-          <div
-            className={`grid sm:grid-cols-1 lg:grid-${section.section.col} md:grid-cols-1 gap-x-4`}
-          >
-            {section.section.form.map((input, inputIndex) => {
-              return (
-                <div key={inputIndex} className="my-2">
-                  <label
-                    htmlFor={input.id && input.id}
-                    className="cursor-pointer text-sm"
-                  >
-                    {input.label}
-                    {hasError(errors, input.fieldKey) && (
-                      <sup className="font-bold text-red-500">*</sup>
-                    )}
-                  </label>
-                  <CustomFieldBuilder
-                    input={input}
-                    register={register}
-                    className={
-                      hasError(errors, input.fieldKey) ? "border-red-500" : ""
-                    }
-                    control={control}
-                    setValue={setValue}
-                  />
-                  <InputErrorMessage
-                    errors={errors}
-                    fieldName={input.fieldKey}
-                  />
-                </div>
-              );
-            })}
+      {schema &&
+        schema.length &&
+        schema.map((section, index) => (
+          <div key={index} className="my-4">
+            <h2>{section.section.title}</h2>
+            <p>{section.section.description}</p>
+            <div
+              className={`grid sm:grid-cols-1 lg:grid-${section.section.col} md:grid-cols-1 gap-x-4`}
+            >
+              {section.section.form &&
+                section.section.form.length &&
+                section.section.form.map((input, inputIndex) => {
+                  return (
+                    <div key={inputIndex} className="my-2 flex flex-col gap-1">
+                      {input.label && (
+                        <InputLabel
+                          id={input.id || `form__${input.fieldKey}`}
+                          label={input.label}
+                          required={input.required}
+                        />
+                      )}
+
+                      <CustomFieldBuilder
+                        handleBlur={handleBlur}
+                        handleChange={handleChange}
+                        state={state}
+                        props={input}
+                      />
+                    </div>
+                  );
+                })}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
       {formButton &&
         formButton.position &&
         ["bottom-right", "bottom-center", "bottom-left"].includes(

@@ -1,11 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import {
-  CheckIcon,
-  ChevronsUpDownIcon,
-  CornerDownRight,
-} from "lucide-react";
+import { CheckIcon, ChevronsUpDownIcon, CornerDownRight } from "lucide-react";
 import { Command, CommandGroup, CommandItem } from "../ui/command";
 import { cn } from "@/lib/utils";
 import IsBetweenFilter from "./IsBetweenFilter";
@@ -82,22 +78,24 @@ const DataFacetedFilterForNumbers: React.FC<
               <PopoverContent className="w-[200px] p-0">
                 <Command>
                   <CommandGroup>
-                    {filterGroups.map((framework) => (
-                      <CommandItem
-                        key={framework.value}
-                        onSelect={handleItemSelect}
-                      >
-                        {framework.label}
-                        <CheckIcon
-                          className={cn(
-                            "ml-auto h-4 w-4",
-                            label === framework.value
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                      </CommandItem>
-                    ))}
+                    {filterGroups &&
+                      filterGroups.length &&
+                      filterGroups.map((framework) => (
+                        <CommandItem
+                          key={framework.value}
+                          onSelect={handleItemSelect}
+                        >
+                          {framework.label}
+                          <CheckIcon
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              label === framework.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
                   </CommandGroup>
                 </Command>
               </PopoverContent>

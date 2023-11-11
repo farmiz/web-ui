@@ -1,47 +1,22 @@
-import { FormComponent, SelectFieldOptions } from "@/interfaces/form";
-import { z } from "zod";
-
-// const tagsSchema = z.object({
-//   label: z.string(),
-//   value: z.string(),
-// });
-export const discoveryValidationSchema = z.object({
-  name: z.string().min(3, "Name should be at least 3 chars"),
-  amount: z.coerce.number().gt(0, "Amount should be greater than 0"),
-  tags: z.array(z.string()).min(1),
-  description: z.string().min(1),
-  startDate: z.coerce.date().refine((data) => data > new Date(), {
-    message: "Start date must today or the future",
-  }),
-  endDate: z.coerce.date().refine((data) => data > new Date(), {
-    message: "End date must today or the future",
-  }),
-  duration: z.coerce.number().gt(0),
-  closingDate: z.coerce.date().refine((data) => data > new Date(), {
-    message: "Start date must today or the future",
-  }),
-  profitPercentage: z.coerce
-    .number()
-    .min(0, "Profit percentage should be greater than 0").max(100),
-  riskLevel: z.string(z.enum(["high", "low", "moderate"])).min(3),
-});
+import { FormComponent } from "@/interfaces/form";
 
 export const discoveryDefaultValues = {
   name: "",
-  amount: null,
+  amount: 0,
   tags: [],
   description: "",
   startDate: null,
   endDate: null,
-  duration: null,
+  duration: {
+    type: "",
+    value: 0,
+  },
   closingDate: null,
-  profitPercentage: null,
+  profitPercentage: 0,
   riskLevel: "",
 };
-type RiskLevel = "high" | "low" | "moderate";
-type Tag = "good" | "bad" | "ugly";
 
-const riskLevelArray: SelectFieldOptions<RiskLevel> = [
+const riskLevelArray = [
   {
     label: "High",
     value: "high",
@@ -55,7 +30,7 @@ const riskLevelArray: SelectFieldOptions<RiskLevel> = [
     value: "low",
   },
 ];
-const tags: SelectFieldOptions<Tag> = [
+const tags = [
   {
     label: "Bad",
     value: "bad",
@@ -78,18 +53,31 @@ export const discoveryForm: FormComponent[] = [
           label: "Name",
           fieldKey: "name",
           type: "text",
-          required: true,
+          required: true
         },
         {
           label: "Amount",
           fieldKey: "amount",
           type: "number",
-          required: true,
         },
         {
-          label: "Duration (should be in months)",
-          fieldKey: "duration",
-          type: "text",
+          label: "Duration Type",
+          fieldKey: "duration.type",
+          type: "select",
+          options: [
+            {
+              label: "Days",
+              value: "days",
+            },
+            {
+              label: "Months",
+              value: "months",
+            },
+            {
+              label: "Years",
+              value: "years",
+            },
+          ],
         },
       ],
     },
@@ -112,8 +100,10 @@ export const discoveryForm: FormComponent[] = [
         {
           label: "Tags",
           fieldKey: "tags",
-          type: "multi-select",
+          type: "select",
           options: tags,
+          isMultiSelect: true,
+          isClearable: true,
         },
       ],
     },

@@ -61,7 +61,7 @@ const UserNav: React.FC<UserNavProps> = React.memo(({ userDetails }) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {navLinks.map((link) => {
+          {navLinks && navLinks && navLinks.map((link) => {
             return (
               <Link
                 to={link.route}

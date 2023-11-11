@@ -3,8 +3,8 @@ import ThemeSwitcher from "@/components/buttons/ThemeSwitcher";
 import SidebarMenu from "./SidebarMenu";
 import { generalSidebarRoutes, menuSidebarRoutes } from "@/routes";
 import Logo from "/farmiz.svg";
+import { memo } from "react";
 const DashboardSidebar = ({ displaySidebar }: { displaySidebar: boolean }) => {
-  console.log("FROM SIDEBAR", displaySidebar);
   return (
     <div
       className={`flex-shrink-0 overflow-x-hidden dark ${
@@ -41,4 +41,4 @@ const DashboardSidebar = ({ displaySidebar }: { displaySidebar: boolean }) => {
   );
 };
 
-export default DashboardSidebar;
+export default memo(DashboardSidebar);
