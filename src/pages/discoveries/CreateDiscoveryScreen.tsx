@@ -9,17 +9,20 @@ import {
 import { useAppSelector } from "@/hooks/useStoreActions";
 import { FormButtonProps } from "@/interfaces/form";
 import { successToast } from "@/lib/toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreateDiscovery = () => {
   const discovery = useAppSelector("discovery");
   const navigate = useNavigate();
-  const handleInputBlur = (data: any) => {
-    console.log({ data }, "BLUR");
-  };
+  const [formValidation, setFormValidation] = useState <Record<string, any>>();
   const handleSubmit = (data: Record<string, any>) => {
     console.log(data);
+  };
+
+  const handleValidationChanged = (validation: Record<string, any>) => {
+    setFormValidation(validation)
+    console.log(validation)
   };
 
   useEffect(() => {
@@ -32,6 +35,7 @@ const CreateDiscovery = () => {
     label: "Submit",
     position: "bottom-right",
     className: "min-w-[200px]",
+    disabled: formValidation && formValidation.formIsValid
   };
 
   return (
@@ -45,8 +49,8 @@ const CreateDiscovery = () => {
           schema={discoveryForm}
           formButton={formButton}
           formValues={discoveryDefaultValues}
-          onFieldBlurHandler={handleInputBlur}
           onSubmit={handleSubmit}
+          onValidationChangeHandler={handleValidationChanged}
         />
       </Container>
     </DashboardLayout>

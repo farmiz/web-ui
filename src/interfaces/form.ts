@@ -137,4 +137,5 @@ export interface FormFieldComponentProps {
   handleChange: ({ target }: FormFieldComponentChangeEvent) => void;
   handleBlur: (e: FormFieldComponentChangeEvent) => void;
   state: FormBuilderState;
+  validationChanged?: (validation: Record<string, any>) => void;
 }

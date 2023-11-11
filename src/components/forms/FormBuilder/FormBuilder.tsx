@@ -20,9 +20,33 @@ function FormBuilder({
   resetForm,
 }: FormBuilderProps) {
   const { state, dispatch } = useFormFlowReducer(formValues);
+
+  const handleValidationChanged = (validation: Record<string, any>) => {
+    let validationResult: {
+      fieldHasError: boolean;
+      fieldsWithError: string[];
+    } = {
+      fieldHasError: false,
+      fieldsWithError: [],
+    };
+    if (validation) {
+      const { required = false, fieldKey } = validation;
+      if (required && !state[fieldKey]) {
+        console.log(fieldKey);
+        validationResult = {
+          fieldHasError: true,
+          fieldsWithError: [...validationResult.fieldsWithError, fieldKey],
+        };
+      }
+    }
+    if (onValidationChangeHandler) {
+      onValidationChangeHandler(validationResult);
+    }
+  };
   const handleChange = ({ target }: FormFieldComponentChangeEvent) => {
     const { name, value } = target;
     dispatch({ type: "CHANGE_INPUT", field: name, value });
+
     if (onFieldChangeHandler) {
       onFieldChangeHandler({ key: name, value });
     }
@@ -44,9 +68,6 @@ function FormBuilder({
     }
   }, [resetForm]);
 
-  useEffect(() => {
-    
-  }, []);
   return (
     <form
       className="flex-1 flex-grow flex flex-col justify-between"
@@ -98,6 +119,7 @@ function FormBuilder({
                         handleChange={handleChange}
                         state={state}
                         props={input}
+                        validationChanged={handleValidationChanged}
                       />
                     </div>
                   );

@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormFieldComponentProps } from "@/interfaces/form";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import SelectField from "../SelectField";
 import DatePicker from "../DatePicker";
 
@@ -10,8 +10,15 @@ function CustomFieldBuilder({
   handleChange,
   props,
   state,
+  validationChanged,
 }: FormFieldComponentProps) {
-  const handleSetValue = (field: any, value: any) => {
+  useEffect(() => {
+    if (validationChanged) {
+      validationChanged(props);
+    }
+  }, [state[props.fieldKey]]);
+
+  const handleSelectFieldChanged = (field: any, value: any) => {
     if (Array.isArray(value)) {
       const r: any = value.map((val) => val.value);
       handleChange({ target: { name: field, value: r } });
@@ -62,7 +69,9 @@ function CustomFieldBuilder({
             isSearchable={props.isSearchable}
             options={props.options}
             isMulti={props.isMultiSelect}
-            onChange={(val: any) => handleSetValue(props.fieldKey, val)}
+            onChange={(val: any) =>
+              handleSelectFieldChanged(props.fieldKey, val)
+            }
             onBlur={handleBlur}
             closeMenuOnSelect={props.isMultiSelect ? false : true}
           />
