@@ -1,4 +1,4 @@
-import { loginForm, loginValidationSchema } from "@/formValidations/auth";
+import { loginForm } from "@/formValidations/auth";
 import FormBuilder from "./FormBuilder/FormBuilder";
 import { FormButtonProps } from "@/interfaces/form";
 import { z } from "zod";
@@ -16,7 +16,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       <FormBuilder
         schema={loginForm}
         onSubmit={onSubmit}
-        validationSchema={loginValidationSchema}
         formButton={formButton}
         formValues={{email: "", password: ""}}
       />
