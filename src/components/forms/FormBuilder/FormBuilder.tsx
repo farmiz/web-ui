@@ -8,49 +8,28 @@ import CustomFieldBuilder from "./CustomFieldBuilder";
 import { useFormFlowReducer } from "@/hooks/useFormReducer";
 import { useEffect } from "react";
 import InputLabel from "./InputLabel";
-
+import { useValidateForm } from "@/hooks/useValidateForm";
 function FormBuilder({
   schema,
   formButton,
   formValues,
   onFieldBlurHandler,
   onFieldChangeHandler,
-  onValidationChangeHandler,
   onSubmit,
-  resetForm,
+  validationSchema,
+  onValidationChangeHandler,
 }: FormBuilderProps) {
   const { state, dispatch } = useFormFlowReducer(formValues);
+  const { errors, formIsValid } = useValidateForm(state, validationSchema);
 
-  const handleValidationChanged = (validation: Record<string, any>) => {
-    let validationResult: {
-      fieldHasError: boolean;
-      fieldsWithError: string[];
-    } = {
-      fieldHasError: false,
-      fieldsWithError: [],
-    };
-    if (validation) {
-      const { required = false, fieldKey } = validation;
-      if (required && !state[fieldKey]) {
-        console.log(fieldKey);
-        validationResult = {
-          fieldHasError: true,
-          fieldsWithError: [...validationResult.fieldsWithError, fieldKey],
-        };
-      }
-    }
-    if (onValidationChangeHandler) {
-      onValidationChangeHandler(validationResult);
-    }
-  };
   const handleChange = ({ target }: FormFieldComponentChangeEvent) => {
     const { name, value } = target;
     dispatch({ type: "CHANGE_INPUT", field: name, value });
-
     if (onFieldChangeHandler) {
       onFieldChangeHandler({ key: name, value });
     }
   };
+
   const handleBlur = (e: FormFieldComponentChangeEvent) => {
     const { name, value } = e.target;
     if (onFieldBlurHandler) {
@@ -62,16 +41,17 @@ function FormBuilder({
     e.preventDefault();
     onSubmit(state);
   };
-  useEffect(() => {
-    if (resetForm) {
-      dispatch({ type: "RESET_FORM" });
-    }
-  }, [resetForm]);
 
+  useEffect(() => {
+    if (onValidationChangeHandler) {
+      onValidationChangeHandler({ errors, formIsValid });
+    }
+  }, [state]);
   return (
     <form
       className="flex-1 flex-grow flex flex-col justify-between"
       onSubmit={handleFormSubmit}
+      noValidate
     >
       {formButton &&
         formButton.position &&
@@ -95,8 +75,8 @@ function FormBuilder({
       {schema &&
         schema.length &&
         schema.map((section, index) => (
-          <div key={index} className="my-4">
-            <h2>{section.section.title}</h2>
+          <div key={index}>
+            <h2 className="text-md font-bold">{section.section.title}</h2>
             <p>{section.section.description}</p>
             <div
               className={`grid sm:grid-cols-1 lg:grid-${section.section.col} md:grid-cols-1 gap-x-4`}
@@ -110,16 +90,23 @@ function FormBuilder({
                         <InputLabel
                           id={input.id || `form__${input.fieldKey}`}
                           label={input.label}
-                          required={input.required}
+                          required={
+                            validationSchema?.[input.fieldKey] &&
+                            validationSchema?.[input.fieldKey].required
+                          }
                         />
                       )}
-
                       <CustomFieldBuilder
                         handleBlur={handleBlur}
                         handleChange={handleChange}
                         state={state}
                         props={input}
-                        validationChanged={handleValidationChanged}
+                      />
+                      <div
+                        className="text-[12px] text-red-600"
+                        dangerouslySetInnerHTML={{
+                          __html: errors[input.fieldKey],
+                        }}
                       />
                     </div>
                   );

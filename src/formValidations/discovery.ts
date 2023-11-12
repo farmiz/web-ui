@@ -53,7 +53,6 @@ export const discoveryForm: FormComponent[] = [
           label: "Name",
           fieldKey: "name",
           type: "text",
-          required: true
         },
         {
           label: "Amount",
@@ -116,16 +115,19 @@ export const discoveryForm: FormComponent[] = [
           label: "Start date",
           fieldKey: "startDate",
           type: "date",
+          disableDate: (date: any) => date > new Date(),
         },
         {
           label: "End date",
           fieldKey: "endDate",
           type: "date",
+          disableDate: (date: any) => date > new Date(),
         },
         {
           label: "Closing date",
           fieldKey: "closingDate",
           type: "date",
+          disableDate: (date: any) => date > new Date(),
         },
       ],
     },

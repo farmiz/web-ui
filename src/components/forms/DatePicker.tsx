@@ -18,6 +18,8 @@ interface DatePickerProps {
   value?: any;
   onChange: ({ target }: FormFieldComponentChangeEvent) => void;
   disabled?: boolean;
+  formatDate?: (date: any) => string;
+  disableDate: (date: any) => boolean;
 }
 const DatePicker: FC<DatePickerProps> = ({
   fieldKey,
@@ -25,6 +27,8 @@ const DatePicker: FC<DatePickerProps> = ({
   disabled,
   label,
   value,
+  formatDate,
+  disableDate,
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   return (
@@ -38,7 +42,11 @@ const DatePicker: FC<DatePickerProps> = ({
           )}
           disabled={disabled}
         >
-          {value ? format(value, "dd-MM-yyyy") : <span>{label || "Pick a date"}</span>}
+          {value ? (
+            (formatDate && formatDate(value)) || format(value, "yyyy-mm-dd")
+          ) : (
+            <span>{label || "Pick a date"}</span>
+          )}
           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -48,9 +56,12 @@ const DatePicker: FC<DatePickerProps> = ({
           selected={value}
           onSelect={(val: any) => {
             onChange({ target: { name: fieldKey, value: val } });
-            setIsCalendarOpen(false)
+            setIsCalendarOpen(false);
           }}
-          disabled={(date) => date < new Date()}
+          disabled={(date) => disableDate(date)}
+          fromYear={1960}
+          toYear={2030}
+          captionLayout="dropdown-buttons"
         />
       </PopoverContent>
     </Popover>

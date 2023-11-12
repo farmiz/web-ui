@@ -35,7 +35,7 @@ const CreateDiscovery = () => {
     label: "Submit",
     position: "bottom-right",
     className: "min-w-[200px]",
-    disabled: formValidation && formValidation.formIsValid
+    disabled: formValidation && formValidation.fieldHasError
   };
 
   return (

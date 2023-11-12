@@ -1,4 +1,3 @@
-
 export type IconType = React.ComponentType<{
   className?: string;
   size?: number;
@@ -73,6 +72,23 @@ export interface HandlerProps {
   key: string;
   value: string;
 }
+export interface ValidationSchema {
+  [key: string]: {
+    required?: boolean;
+    minLength?: number;
+    isEnum?: boolean;
+    enumValues?: any[]; // Replace 'any' with the actual type of your enum values
+    minValue?: number;
+    maxValue?: number;
+    maxLength?: number;
+    sameAs?: string;
+    isEmail?: boolean;
+    isPassword?: boolean;
+    customValidation?: (
+      value: any
+    ) => boolean | { isValid: boolean; errorMessage?: string };
+  };
+}
 export interface FormBuilderProps {
   schema: FormComponent[];
   formButton?: FormButtonProps;
@@ -82,6 +98,7 @@ export interface FormBuilderProps {
   onValidationChangeHandler?: (validation: Record<string, any>) => void;
   resetForm?: boolean;
   onSubmit: (data: Record<string, any>) => void;
+  validationSchema?: ValidationSchema;
 }
 
 export interface FormIconProps {
@@ -102,8 +119,6 @@ export interface FormFieldProps {
   className?: string;
   disabled?: boolean;
   defaultValue?: any;
-  validation?: (value: any) => boolean;
-  required?: boolean
 }
 
 interface SelectFieldProps extends Omit<FormFieldProps, "type"> {
@@ -113,18 +128,22 @@ interface SelectFieldProps extends Omit<FormFieldProps, "type"> {
   isSearchable?: boolean;
   isMultiSelect?: boolean;
 }
+interface DatePickerProps extends Omit<FormFieldProps, "type"> {
+  type: "date";
+  formatDate?: (date: any) => string;
+  disableDate: (date: any) => boolean;
+}
 type SpecificFormFieldProps =
   | ({
-      type: Exclude<FormBuilderInputType, "select">;
+      type: Exclude<FormBuilderInputType, "select" | "date">;
     } & FormFieldProps)
-  | SelectFieldProps;
-
+  | SelectFieldProps
+  | DatePickerProps;
 export type FormBuilderState = Record<string, any>;
 export type FormBuilderAction =
   | { type: "CHANGE_INPUT"; field: string; value: string }
   | { type: "RESET_FORM" }
   | { type: string };
-
 
 export interface FormFieldComponentChangeEvent {
   target: {
@@ -137,5 +156,4 @@ export interface FormFieldComponentProps {
   handleChange: ({ target }: FormFieldComponentChangeEvent) => void;
   handleBlur: (e: FormFieldComponentChangeEvent) => void;
   state: FormBuilderState;
-  validationChanged?: (validation: Record<string, any>) => void;
 }
