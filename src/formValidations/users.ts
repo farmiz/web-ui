@@ -1,9 +1,27 @@
 import { FormComponent, ValidationSchema } from "@/interfaces/form";
+import { camelCase } from "lodash";
 
 const defaultValidation = {
   required: true,
   minLength: 3,
 };
+
+const userRole = ["admin", "support", "customer"];
+const gender = ["male", "female"];
+const status = ["active", "suspended", "pendingApproval", "inactive"];
+
+const statusOptions = status.map((stat) => ({
+  label: camelCase(stat),
+  value: stat,
+}));
+const genderOptions = gender.map((gen) => ({
+  label: camelCase(gen),
+  value: gen,
+}));
+const roleOptions = userRole.map((role) => ({
+  label: camelCase(role),
+  value: role,
+}));
 export const userValidationSchema: ValidationSchema = {
   firstName: defaultValidation,
   lastName: defaultValidation,
@@ -14,11 +32,11 @@ export const userValidationSchema: ValidationSchema = {
     required: true,
     isPassword: true,
   },
-  // confirmPassword: {
-  //   required: true,
-  //   isPassword: true,
-  //   sameAs: "password",
-  // },
+  confirmPassword: {
+    required: true,
+    isPassword: true,
+    sameAs: "password",
+  },
   username: {
     required: true,
     minLength: 3,
@@ -27,18 +45,20 @@ export const userValidationSchema: ValidationSchema = {
     required: true,
     isEmail: true,
   },
-  "phone.country": {
+  role: {
     required: true,
-    minLength: 2,
+    enumValues: ["admin", "support", "customer"],
+    isEnum: true,
   },
-  "phone.prefix": {
+  status: {
     required: true,
-    minLength: 3,
+    enumValues: ["active", "suspended", "pendingApproval", "inactive"],
+    isEnum: true,
   },
-  "phone.number": {
+  gender: {
     required: true,
-    minLength: 9,
-    maxLength: 9,
+    enumValues: ["male", "female"],
+    isEnum: true,
   },
 };
 
@@ -47,15 +67,14 @@ export const userDefaultValues = {
   lastName: "",
   username: "",
   email: "",
-  phone: {
-    number: "",
-    prefix: "",
-    country: "",
-  },
+  phone: "",
   dateOfBirth: "",
   password: "",
-  // confirmPassword: "",
-  // permission: '',
+  permission: "",
+  confirmPassword: "",
+  role: "",
+  gender: "",
+  status: "",
 };
 
 export const userForm: FormComponent[] = [
@@ -91,20 +110,15 @@ export const userForm: FormComponent[] = [
           type: "text",
         },
         {
-          label: "Country Prefix",
-          fieldKey: "phone.country",
-          type: "text",
+          label: "Phone prefix",
+          fieldKey: "phone",
+          type: "phone",
         },
         {
-          label: "Phone prefix",
-          fieldKey: "phone.prefix",
+          label: "Role",
+          fieldKey: "role",
           type: "select",
-          options: [
-            {
-              label: "+233",
-              value: "233",
-            },
-          ],
+          options: roleOptions,
         },
       ],
     },
@@ -114,9 +128,10 @@ export const userForm: FormComponent[] = [
       col: "cols-3",
       form: [
         {
-          label: "Phone Number",
-          fieldKey: "phone.number",
-          type: "text",
+          label: "Status",
+          fieldKey: "status",
+          type: "select",
+          options: statusOptions,
         },
         {
           label: "Date of birth",
@@ -125,8 +140,26 @@ export const userForm: FormComponent[] = [
           disableDate: (date: any) => date > new Date(),
         },
         {
+          label: "Gender",
+          fieldKey: "gender",
+          type: "select",
+          options: genderOptions,
+        },
+      ],
+    },
+  },
+  {
+    section: {
+      col: "cols-2",
+      form: [
+        {
           label: "Password",
           fieldKey: "password",
+          type: "password",
+        },
+        {
+          label: "Confirm Password",
+          fieldKey: "confirmPassword",
           type: "password",
         },
       ],
@@ -139,7 +172,16 @@ export const userForm: FormComponent[] = [
       form: [
         {
           fieldKey: "permission",
-          type: "text",
+          type: "permission",
+          resources: [
+            "discovery",
+            "users",
+            "settings",
+            "sponsor",
+            "transaction",
+            "wallet",
+          ],
+          actions: ["create", "read", "update", "delete"],
         },
       ],
     },

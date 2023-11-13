@@ -43,7 +43,7 @@ const DatePicker: FC<DatePickerProps> = ({
           disabled={disabled}
         >
           {value ? (
-            (formatDate && formatDate(value)) || format(value, "yyyy-mm-dd")
+            (formatDate && formatDate(value)) || format(value, "dd/MM/yyyy")
           ) : (
             <span>{label || "Pick a date"}</span>
           )}

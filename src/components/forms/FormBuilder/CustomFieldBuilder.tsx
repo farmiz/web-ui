@@ -4,6 +4,8 @@ import { FormFieldComponentProps } from "@/interfaces/form";
 import { memo } from "react";
 import SelectField from "../SelectField";
 import DatePicker from "../DatePicker";
+import Permission from "../Permission";
+import Phone from "../Phone";
 
 function CustomFieldBuilder({
   handleBlur,
@@ -58,20 +60,34 @@ function CustomFieldBuilder({
         />
       );
     case "select":
-      if (props.type === "select") {
-        return (
-          <SelectField
-            isSearchable={props.isSearchable}
-            options={props.options}
-            isMulti={props.isMultiSelect}
-            onChange={(val: any) =>
-              handleSelectFieldChanged(props.fieldKey, val)
-            }
-            onBlur={handleBlur}
-            closeMenuOnSelect={props.isMultiSelect ? false : true}
-          />
-        );
-      }
+      return (
+        <SelectField
+          isSearchable={props.isSearchable}
+          options={props.options}
+          isMulti={props.isMultiSelect}
+          onChange={(val: any) => handleSelectFieldChanged(props.fieldKey, val)}
+          onBlur={handleBlur}
+          closeMenuOnSelect={props.isMultiSelect ? false : true}
+        />
+      );
+    case "permission":
+      return (
+        <Permission
+          fieldKey={props.fieldKey}
+          resources={props.resources}
+          actions={props.actions}
+          onChange={handleChange}
+        />
+      );
+
+    case "phone":
+      return (
+        <Phone
+          fieldKey={props.fieldKey}
+          onChange={handleChange}
+          value={state[props.fieldKey]}
+        />
+      );
   }
 }
 

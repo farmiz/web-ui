@@ -23,6 +23,8 @@ function FormBuilder({
   const { errors, formIsValid } = useValidateForm(state, validationSchema);
 
   const handleChange = ({ target }: FormFieldComponentChangeEvent) => {
+    console.log({target});
+    
     const { name, value } = target;
     dispatch({ type: "CHANGE_INPUT", field: name, value });
     if (onFieldChangeHandler) {

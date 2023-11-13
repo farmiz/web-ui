@@ -16,7 +16,15 @@ const initialState = {
 export const userSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+    resetUserStore: (state) => {
+      state.editingUser = {};
+      (state.isError = false),
+        (state.isLoading = false),
+        (state.isSuccess = false);
+      state.users = [];
+    },
+  },
   extraReducers: (builder: ActionReducerMapBuilder<typeof initialState>) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -41,7 +49,7 @@ export const userSlice = createSlice({
         state.editingUser = action.payload.response;
       })
       .addCase(createUser.rejected, (state, action) => {
-        console.log(action.payload)
+        console.log(action.payload);
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
@@ -50,3 +58,4 @@ export const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
+export const { resetUserStore } = userSlice.actions;

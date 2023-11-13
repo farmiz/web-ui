@@ -1,3 +1,5 @@
+import { PermissionOperation, PermissionString } from "@/utils/permissions";
+
 export type IconType = React.ComponentType<{
   className?: string;
   size?: number;
@@ -15,18 +17,12 @@ type HTMLInputTypeAttribute =
   | "month"
   | "number"
   | "password"
-  | "radio"
-  | "range"
-  | "reset"
-  | "search"
-  | "submit"
-  | "tel"
   | "text"
   | "time"
-  | "url"
-  | "week"
   | "textarea"
-  | "select";
+  | "select"
+  | "permission"
+   | "phone";
 type FormBuilderInputType = HTMLInputTypeAttribute;
 
 // interface SelectFieldProps extends Props {
@@ -133,12 +129,24 @@ interface DatePickerProps extends Omit<FormFieldProps, "type"> {
   formatDate?: (date: any) => string;
   disableDate: (date: any) => boolean;
 }
+interface PermissionProps extends Omit<FormFieldProps, "type"> {
+  type: "permission";
+  resources: PermissionString[];
+  actions: PermissionOperation[];
+}
+
+interface PhoneProps extends Omit<FormFieldProps, "type"> {
+  type: "phone";
+}
+
+
 type SpecificFormFieldProps =
   | ({
-      type: Exclude<FormBuilderInputType, "select" | "date">;
+      type: Exclude<FormBuilderInputType, "select" | "date" | "permission" | "phone">;
     } & FormFieldProps)
   | SelectFieldProps
-  | DatePickerProps;
+  | DatePickerProps
+  | PermissionProps | PhoneProps;
 export type FormBuilderState = Record<string, any>;
 export type FormBuilderAction =
   | { type: "CHANGE_INPUT"; field: string; value: string }

@@ -1,47 +1,58 @@
-import { FC} from "react";
+import { FC, useEffect, useState } from "react";
 import { Checkbox } from "../ui/checkbox";
+import { PermissionOperation, PermissionString } from "@/utils/permissions";
 
-interface PermissionProps {}
+interface PermissionProps {
+  fieldKey: string;
+  resources: PermissionString[];
+  actions: PermissionOperation[];
+  onChange: any;
+}
 
-const Permission: FC<PermissionProps> = () => {
-  // State to store the selected permissions for each resource
-  // const [permissions, setPermissions] = useState<{ [resource: string]: string[] }>({
-  //   users: [],
-  //   // Add other resources as needed, e.g., wallet: []
-  // });
+const Permission: FC<PermissionProps> = ({
+  actions,
+  fieldKey,
+  resources,
+  onChange,
+}) => {
+  const [selectedPermissions, setSelectedPermissions] = useState<
+    Record<PermissionString, PermissionOperation[]>
+  >({} as Record<PermissionString, PermissionOperation[]>);
 
-  // Function to handle checkbox changes
-  // const handleCheckboxChange = (resource: string, value: string) => {
-  //   console.log("BOM")
-  //   setPermissions((prevPermissions) => {
-  //     const newPermissions = { ...prevPermissions };
-  //     const resourcePermissions = newPermissions[resource] || [];
+  const handleCheckboxChange = (
+    resource: PermissionString,
+    action: PermissionOperation
+  ) => {
+    const updatedPermissions = { ...selectedPermissions };
 
-  //   //   // Toggle the value in the array
-  //   //   if (resourcePermissions.includes(value)) {
-  //   //     newPermissions[resource] = resourcePermissions.filter((item) => item !== value);
-  //   //   } else {
-  //   //     newPermissions[resource] = [...resourcePermissions, value];
-  //   //   }
-  //   console.log({newPermissions, value, resource});
-    
+    if (!updatedPermissions[resource]) {
+      updatedPermissions[resource] = [];
+    }
 
-  //     return newPermissions;
-  //   });
-  // };
+    const index = updatedPermissions[resource].indexOf(action);
 
-  // Define the resources and permissions
-  const resources = ["users", "wallet"]; // Add more resources as needed
-  const permissionTypes = ["create", "read", "update", "delete"]; // Add more permission types as needed
+    if (index === -1) {
+      updatedPermissions[resource].push(action);
+    } else {
+      updatedPermissions[resource].splice(index, 1);
+    }
 
+    if(!updatedPermissions[resource].length) delete updatedPermissions[resource]
+    setSelectedPermissions(updatedPermissions);
+  };
+
+  useEffect(() => {
+    console.log(selectedPermissions);
+    onChange({ target: { name: fieldKey, value: selectedPermissions } });
+  }, [selectedPermissions]);
   return (
     <div>
       <div className="flex justify-between gap-4 mb-10">
         <h1 className="w-[20%]">Permissions</h1>
         <div className="flex items-center justify-between w-[80%]">
-          {permissionTypes.map((type) => (
-            <p key={type} className="flex-1 flex items-center justify-center">
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+          {actions.map((action) => (
+            <p key={action} className="flex-1 flex items-center justify-center">
+              {action.charAt(0).toUpperCase() + action.slice(1)}
             </p>
           ))}
         </div>
@@ -49,18 +60,21 @@ const Permission: FC<PermissionProps> = () => {
 
       {resources.map((resource) => (
         <div key={resource} className="flex items-center justify-between my-2">
-          <p className="w-[20%]">{resource.charAt(0).toUpperCase() + resource.slice(1)}</p>
+          <p className="w-[20%] font-semibold text-sm my-1">
+            {resource.charAt(0).toUpperCase() + resource.slice(1)}
+          </p>
           <div className="w-[80%] flex items-center justify-between">
-            {permissionTypes.map((type) => (
-              <p key={type} className="flex-1 flex items-center justify-center">
+            {actions.map((action) => (
+              <p
+                key={action}
+                className="flex-1 flex items-center justify-center"
+              >
                 <Checkbox
-                  value={type}
-                  onChange={(e) =>{
-                    console.log({e});
-                    
-                    // handleCheckboxChange(resource, type)
+                  name={fieldKey}
+                  value={action}
+                  onCheckedChange={() => {
+                    handleCheckboxChange(resource, action);
                   }}
-                //   checked={permissions[resource] ? permissions[resource].includes(type): false}
                 />
               </p>
             ))}

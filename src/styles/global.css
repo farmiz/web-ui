@@ -1,10 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.rdp-vhidden {
-  @apply hidden;
+.react-international-phone-country-selector-button {
+  @apply h-[44px] bg-gray-50 text-gray-700 px-1;
 }
+.react-international-phone-input {
+  @apply block !h-[44px] w-full !bg-gray-50 text-gray-700;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
