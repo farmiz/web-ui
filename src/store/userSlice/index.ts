@@ -2,7 +2,7 @@ import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { initialRequestState } from "@/defaults";
 import { UserProps } from "./types";
 import { IDefaultPlugin, RequestStateProps } from "@/interfaces";
-import { createUser, fetchUsers } from "@/store/userSlice/actions";
+import { createUser, fetchUsers, getSingleUser } from "@/store/userSlice/actions";
 export interface UserPayloadProps
   extends UserProps,
     IDefaultPlugin,
@@ -40,6 +40,8 @@ export const userSlice = createSlice({
         state.isError = true;
         state.message = action.payload as string;
       })
+
+      // CREATE USER ACTION
       .addCase(createUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -49,7 +51,21 @@ export const userSlice = createSlice({
         state.editingUser = action.payload.response;
       })
       .addCase(createUser.rejected, (state, action) => {
-        console.log(action.payload);
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
+      })
+
+      // GET SINGLE USER
+      .addCase(getSingleUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSingleUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.editingUser = action.payload.response;
+      })
+      .addCase(getSingleUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;

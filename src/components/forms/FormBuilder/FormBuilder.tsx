@@ -21,7 +21,6 @@ function FormBuilder({
 }: FormBuilderProps) {
   const { state, dispatch } = useFormFlowReducer(formValues);
   const { errors, formIsValid } = useValidateForm(state, validationSchema);
-
   const handleChange = ({ target }: FormFieldComponentChangeEvent) => {
     const { name, value } = target;
     dispatch({ type: "CHANGE_INPUT", field: name, value });
@@ -47,6 +46,7 @@ function FormBuilder({
       onValidationChangeHandler({ errors, formIsValid });
     }
   }, [state]);
+
   return (
     <form
       className="flex-1 flex-grow flex flex-col justify-between"
@@ -96,6 +96,7 @@ function FormBuilder({
                           }
                         />
                       )}
+                      {/* {JSON.stringify(state)} */}
                       <CustomFieldBuilder
                         handleBlur={handleBlur}
                         handleChange={handleChange}

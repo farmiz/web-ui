@@ -31,3 +31,15 @@ export const createUser = createAsyncThunk(
     }
   }
 );
+export const getSingleUser = createAsyncThunk(
+  "getSingle/user",
+  async (id: string, thunkAPI) => {
+    try {
+      const response = await userService.getOne({id});
+      return response;
+    } catch (error: any) {
+      const errorMessage = error.message;
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);

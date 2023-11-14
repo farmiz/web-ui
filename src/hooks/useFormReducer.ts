@@ -11,6 +11,7 @@ export const useFormFlowReducer = (defaultValues: Record<string, any>) => {
 
           // Handle nested fields
           if (fieldLevels.length > 1) {
+            console.log("I came here")
             return {
               ...state,
               [fieldLevels[0]]: {

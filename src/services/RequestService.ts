@@ -12,7 +12,7 @@ export class RequestService extends BaseRequestService {
 
   public getOne = async (
     params: Record<string, any>,
-    data: string
+    data?: string
   ): Promise<BaseResponse> => {
     let url = this.name;
     const paramValues = Object.values(params);

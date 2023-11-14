@@ -20,6 +20,7 @@ import Discovery from "@/pages/discoveries/DiscoveryListScreen";
 import UsersListScreen from "@/pages/users/UsersListScreen";
 import { PermissionOperation, PermissionString } from "@/utils/permissions";
 import NotAuthorized from "@/pages/error/NotAuthorizedScreen";
+import UpdateUserScreen from "@/pages/users/UpdateUserScreen";
 
 export interface RoutesProps {
   url: string;
@@ -56,6 +57,13 @@ export const routes: RoutesProps[] = [
     requireAuth: true,
     component: CreateUser,
     permission: ["users", "create"]
+
+  },
+  {
+    url: "/users/:id",
+    requireAuth: true,
+    component: UpdateUserScreen,
+    permission: ["users", "update"]
 
   },
   {
