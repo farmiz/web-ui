@@ -19,9 +19,9 @@ export const userSlice = createSlice({
   reducers: {
     resetUserStore: (state) => {
       state.editingUser = {};
-      (state.isError = false),
-        (state.isLoading = false),
-        (state.isSuccess = false);
+      state.isError = false;
+      state.isLoading = false;
+      state.isSuccess = false;
       state.users = [];
     },
   },

@@ -8,7 +8,7 @@ export const useFormFlowReducer = (defaultValues: Record<string, any>) => {
         if ("field" in action) {
           // Split the field into nested levels
           const fieldLevels = action.field.split(".");
-          
+
           // Handle nested fields
           if (fieldLevels.length > 1) {
             return {

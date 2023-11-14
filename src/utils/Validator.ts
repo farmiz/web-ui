@@ -1,3 +1,5 @@
+import { PhoneProps } from "@/interfaces";
+
 class Validator {
   isRequired(value: any) {
     return (
@@ -69,6 +71,17 @@ class Validator {
       hasSpecialChar;
 
     return !isComplex;
+  }
+  isPhone(phone: PhoneProps) {
+    return !!(
+      phone &&
+      Object.keys(phone).length &&
+      phone.country &&
+      phone.country.length === 2 &&
+      phone.number &&
+      phone.number.length === 9 &&
+      phone.prefix
+    );
   }
 }
 

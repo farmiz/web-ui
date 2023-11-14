@@ -66,7 +66,7 @@ export function DataTablePagination<TData>({
             </div>
             <div className="flex w-[100px] items-center justify-center text-sm font-medium">
               Page <span className="mx-1">{paginator?.page}</span> of
-              <span className="mx-1">{Number(paginator?.totalPages) - 1}</span>
+              <span className="mx-1">{Number(paginator?.totalPages)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Button

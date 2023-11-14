@@ -80,6 +80,7 @@ export interface ValidationSchema {
     sameAs?: string;
     isEmail?: boolean;
     isPassword?: boolean;
+    isPhone?: boolean;
     customValidation?: (
       value: any
     ) => boolean | { isValid: boolean; errorMessage?: string };

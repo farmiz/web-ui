@@ -78,6 +78,8 @@ export const useValidateForm = (
         } else if (!customValidationResult) {
           errors[field] = "Custom validation failed";
         }
+      } else if (validationSchema[field].isPhone && !validator.isPhone(value)) {
+        errors[field] = "Invalid phone number";
       }
     } else {
       continue;

@@ -60,6 +60,10 @@ export const userValidationSchema: ValidationSchema = {
     enumValues: ["male", "female"],
     isEnum: true,
   },
+  phone: {
+    required: true,
+    isPhone: true
+  }
 };
 
 export const userDefaultValues = {

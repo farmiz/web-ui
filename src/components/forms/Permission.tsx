@@ -37,12 +37,12 @@ const Permission: FC<PermissionProps> = ({
       updatedPermissions[resource].splice(index, 1);
     }
 
-    if(!updatedPermissions[resource].length) delete updatedPermissions[resource]
+    if (!updatedPermissions[resource].length)
+      delete updatedPermissions[resource];
     setSelectedPermissions(updatedPermissions);
   };
 
   useEffect(() => {
-    console.log(selectedPermissions);
     onChange({ target: { name: fieldKey, value: selectedPermissions } });
   }, [selectedPermissions]);
   return (

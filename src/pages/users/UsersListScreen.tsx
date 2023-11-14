@@ -32,7 +32,7 @@ const UsersListScreen = () => {
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
       <Table
         showExportButton={true}
-        title="Discoveries List"
+        title="Users List"
         columns={columnsToDisplay}
         filters={filters}
         fetchQuery={fetchUsers}

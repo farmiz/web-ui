@@ -12,6 +12,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <Router>
       <ThemeProvider>
         <Provider store={store}>
+          
           <App />
         <Toaster />
         </Provider>

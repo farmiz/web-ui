@@ -4,28 +4,25 @@ import "react-international-phone/style.css";
 
 interface PhoneProps {
   onChange: any;
-  value: any;
   fieldKey: string;
+  value: any;
 }
 const Phone: FC<PhoneProps> = ({ onChange, value, fieldKey }) => {
+  const handleChange = ({}, meta: any) => {
+    const stateValue = {
+      prefix: meta?.country?.dialCode || "",
+      number: meta?.inputValue?.split(" ")[1] || "",
+      country: meta?.country?.iso2 || "",
+    };
+    onChange({ target: { name: fieldKey, value: stateValue } });
+  };
+  const processedValue = value ? `+${value.prefix}${value.number}` : value;
   return (
     <div>
       <PhoneInput
         defaultCountry="gh"
-        value={value}
-        onChange={({}) => {
-          // const phoneNumber = meta.inputValue.split(".");
-          onChange({
-            target: {
-              name: fieldKey,
-              //   value: {
-              //     // number: phoneNumber,
-              //     // prefix: meta.dialCode,
-              //     // country: meta.iso2 && meta.iso2.toUpperCase(),
-              //   },
-            },
-          });
-        }}
+        value={processedValue}
+        onChange={handleChange}
       />
     </div>
   );

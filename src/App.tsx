@@ -1,12 +1,14 @@
-import { Routes, Route } from "react-router-dom";
+import {  Route } from "react-router-dom";
 import { RoutesProps, routes } from "./routes";
 import PersistLogin from "./components/persistentAuth/PersistLogin";
 import RequireAuth from "./components/persistentAuth/RequireAuth";
 import NotFoundScreen from "./pages/error/NotFoundScreen";
+import CustomSwitch from "./components/CustomSwitch";
 
 function App() {
+  
   return (
-    <Routes>
+    <CustomSwitch>
       {routes &&
         routes.length &&
         routes.map((route: RoutesProps) =>
@@ -26,7 +28,7 @@ function App() {
         )}
 
       <Route path="*" element={<NotFoundScreen />} />
-    </Routes>
+    </CustomSwitch>
   );
 }
 
