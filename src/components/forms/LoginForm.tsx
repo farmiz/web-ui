@@ -6,7 +6,7 @@ import { z } from "zod";
 interface LoginFormProps<T extends z.ZodType<any, any, any> = any> {
   onSubmit: (values: z.infer<T>) => void;
 }
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+const LoginForm: React.FC<LoginFormProps> = () => {
   const formButton: FormButtonProps = {
     label: "Login",
     position: "bottom-center",
@@ -15,9 +15,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     <div>
       <FormBuilder
         schema={loginForm}
-        onSubmit={onSubmit}
         formButton={formButton}
-        formValues={{email: "", password: ""}}
+        formValues={{ email: "", password: "" }}
       />
     </div>
   );

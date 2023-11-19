@@ -1,4 +1,4 @@
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -18,7 +18,7 @@ interface DatePickerProps {
   value?: any;
   onChange: ({ target }: FormFieldComponentChangeEvent) => void;
   disabled?: boolean;
-  formatDate?: (date: any) => string;
+  formatDate?: (date: string | Date) => string;
   disableDate: (date: any) => boolean;
 }
 const DatePicker: FC<DatePickerProps> = ({
@@ -37,13 +37,14 @@ const DatePicker: FC<DatePickerProps> = ({
         <Button
           variant={"outline"}
           className={cn(
-            "appearance-none w-full bg-gray-50 text-gray-700 border rounded py-[.6rem] px-4 leading-tight ",
+            "appearance-none w-full bg-gray-50 text-gray-700 border rounded py-[.6rem] px-4 leading-tight",
             !value && "text-muted-foreground"
           )}
           disabled={disabled}
         >
           {value ? (
-            (formatDate && formatDate(value)) || format(parseISO(value), "dd/MM/yyyy")
+            (formatDate && formatDate("2023-08-01")) ||
+            format(new Date(value), "dd/MM/yyyy")
           ) : (
             <span>{label || "Pick a date"}</span>
           )}
@@ -60,7 +61,7 @@ const DatePicker: FC<DatePickerProps> = ({
           }}
           disabled={(date) => disableDate(date)}
           fromYear={1960}
-          toYear={2030}
+          toYear={2060}
           captionLayout="dropdown-buttons"
         />
       </PopoverContent>

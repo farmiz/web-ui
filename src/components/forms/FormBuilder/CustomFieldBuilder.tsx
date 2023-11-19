@@ -6,6 +6,7 @@ import SelectField from "../SelectField";
 import DatePicker from "../DatePicker";
 import Permission from "../Permission";
 import Phone from "../Phone";
+import { get } from "lodash";
 
 function CustomFieldBuilder({
   handleBlur,
@@ -25,7 +26,7 @@ function CustomFieldBuilder({
     options: Record<string, any>[],
     values: string | string[]
   ) => {
-    if (!values) return {};
+    if (!values) return [];
     if (values === "string")
       return options.find((option) => option.value === values);
 
@@ -38,7 +39,7 @@ function CustomFieldBuilder({
     case "password":
       return (
         <Input
-          value={state && state[props.fieldKey] ? state[props.fieldKey] : ""}
+          value={get(state, props.fieldKey, "")}
           onChange={handleChange}
           type={props.type}
           name={props.fieldKey}
@@ -49,12 +50,13 @@ function CustomFieldBuilder({
       );
 
     case "date":
+      console.log(state);
       return (
         <DatePicker
           fieldKey={props.fieldKey}
           onChange={handleChange}
           disabled={props.disabled}
-          value={state && state[props.fieldKey] ? state[props.fieldKey] : ""}
+          value={get(state, props.fieldKey, "")}
           disableDate={props.disableDate}
         />
       );
@@ -62,7 +64,7 @@ function CustomFieldBuilder({
       return (
         <Textarea
           className={`${props.className}`}
-          value={state && state[props.fieldKey] ? state[props.fieldKey] : ""}
+          value={get(state, props.fieldKey, "")}
           onChange={handleChange}
           name={props.fieldKey}
           id={props.id || `form__${props.fieldKey}`}
@@ -78,7 +80,10 @@ function CustomFieldBuilder({
           onChange={(val: any) => handleSelectFieldChanged(props.fieldKey, val)}
           onBlur={handleBlur}
           closeMenuOnSelect={props.isMultiSelect ? false : true}
-          value={generateSelectValues(props.options, state[props.fieldKey])}
+          value={generateSelectValues(
+            props.options,
+            get(state, props.fieldKey, "")
+          )}
         />
       );
     case "permission":
@@ -96,7 +101,7 @@ function CustomFieldBuilder({
         <Phone
           fieldKey={props.fieldKey}
           onChange={handleChange}
-          value={state && state[props.fieldKey] ? state[props.fieldKey] : ""}
+          value={get(state, props.fieldKey, "")}
         />
       );
   }

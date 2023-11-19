@@ -1,43 +1,66 @@
 import Container from "@/components/Container";
 import DashboardLayout from "@/components/dashboard/Layout";
+import FileDropzone from "@/components/forms/FileDropzone";
 import FormBuilder from "@/components/forms/FormBuilder/FormBuilder";
 import FormHeader from "@/components/forms/FormHeader";
+import SubmitButton from "@/components/forms/SubmitButton";
 import {
-  discoveryDefaultValues,
   discoveryForm,
+  discoveryValidationSchema,
 } from "@/formValidations/discovery";
-import { useAppSelector } from "@/hooks/useStoreActions";
-import { FormButtonProps } from "@/interfaces/form";
-import { successToast } from "@/lib/toast";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
+import { UploadedFileProps } from "@/interfaces";
+import { FormButtonProps, HandlerProps } from "@/interfaces/form";
+import { errorToast, successToast } from "@/lib/toast";
+import { updateEditingDiscovery } from "@/store/discoverySlice";
+import { createDiscovery } from "@/store/discoverySlice/actions";
+import { validateFile } from "@/utils";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreateDiscovery = () => {
-  const discovery = useAppSelector("discovery");
+  const [selectedFiles, setSelectedFiles] = useState<UploadedFileProps>({});
+  const discoveryStore = useAppSelector("discovery");
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [formValidation, setFormValidation] = useState <Record<string, any>>();
-  const handleSubmit = (data: Record<string, any>) => {
-    console.log(data);
+  const [formIsValid, setFormIsValid] = useState<boolean>(true);
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("file", selectedFiles.uploadedFile as Blob);
+    Object.keys(discoveryStore.editingDiscovery).forEach((key) => {
+      formData.append(key, discoveryStore.editingDiscovery[key]);
+    });
+
+    dispatch(createDiscovery(formData));
   };
 
   const handleValidationChanged = (validation: Record<string, any>) => {
-    setFormValidation(validation)
-    console.log(validation)
+    setFormIsValid(validation.formIsValid);
   };
 
   useEffect(() => {
-    if (discovery.isSuccess) {
-      successToast(discovery.message);
+    if (discoveryStore.isSuccess) {
+      successToast(discoveryStore.message);
       navigate("/discoveries");
     }
-  }, [discovery]);
+    if (discoveryStore.isError) {
+      errorToast(discoveryStore.message);
+    }
+  }, [discoveryStore]);
   const formButton: FormButtonProps = {
     label: "Submit",
     position: "bottom-right",
     className: "min-w-[200px]",
-    disabled: formValidation && formValidation.fieldHasError
+    disabled: !formIsValid || !validateFile(selectedFiles),
+    onClick: () => handleSubmit(),
+    loading: discoveryStore.isLoading,
   };
-
+  const handleFileChange = ({ fileURL, uploadedFile }: UploadedFileProps) => {
+    setSelectedFiles({ fileURL, uploadedFile });
+  };
+  const handleFormFieldChanged = ({ key, value }: HandlerProps) => {
+    dispatch(updateEditingDiscovery({ key, value }));
+  };
   return (
     <DashboardLayout pageTitle="Create Discovery">
       <Container className="border">
@@ -48,10 +71,13 @@ const CreateDiscovery = () => {
         <FormBuilder
           schema={discoveryForm}
           formButton={formButton}
-          formValues={discoveryDefaultValues}
-          onSubmit={handleSubmit}
+          formValues={discoveryStore.editingDiscovery}
           onValidationChangeHandler={handleValidationChanged}
+          onFieldChangeHandler={handleFormFieldChanged}
+          validationSchema={discoveryValidationSchema}
         />
+        <FileDropzone onChange={handleFileChange} showPreview={false} />
+        <SubmitButton formButton={formButton} />
       </Container>
     </DashboardLayout>
   );

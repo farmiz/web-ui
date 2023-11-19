@@ -2,21 +2,34 @@ import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { discoveryDefaults, initialRequestState } from "@/defaults";
 import { createDiscovery } from "./actions";
 import { DiscoveryProps } from "./types";
-import { IDefaultPlugin, RequestStateProps } from "@/interfaces";
+import { RequestStateProps } from "@/interfaces";
+import { set } from "lodash";
 
-interface DiscoveryPayloadProps extends IDefaultPlugin, RequestStateProps {
+interface DiscoveryPayloadProps extends RequestStateProps {
   discovery: DiscoveryProps;
   discoveries: DiscoveryProps[];
+  editingDiscovery: Record<string, any>;
 }
 const initialState: DiscoveryPayloadProps = {
   ...initialRequestState,
   discoveries: [],
   discovery: discoveryDefaults(),
+  editingDiscovery: {},
 };
 export const discoverySlice = createSlice({
   name: "discovery",
   initialState,
-  reducers: {},
+  reducers: {
+    updateEditingDiscovery: (state, action) => {
+      const keys = action.payload.key.split(".");
+
+      if (keys.length > 1) {
+        set(state.editingDiscovery, action.payload.key, action.payload.value);
+      } else {
+        state.editingDiscovery[action.payload.key] = action.payload.value;
+      }
+    },
+  },
   extraReducers: (builder: ActionReducerMapBuilder<typeof initialState>) => {
     builder
       .addCase(createDiscovery.pending, (state) => {
@@ -26,6 +39,7 @@ export const discoverySlice = createSlice({
         state.isSuccess = true;
         state.discoveries.push(action.payload.response);
         state.discovery = action.payload.response;
+        state.editingDiscovery = action.payload.response;
         state.message = "Discovery created";
       })
       .addCase(createDiscovery.rejected, (state, action) => {
@@ -37,4 +51,4 @@ export const discoverySlice = createSlice({
 });
 
 export default discoverySlice.reducer;
-export const {} = discoverySlice.actions;
+export const { updateEditingDiscovery } = discoverySlice.actions;

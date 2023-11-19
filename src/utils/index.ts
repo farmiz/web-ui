@@ -1,3 +1,4 @@
+import { UploadedFileProps } from "@/interfaces";
 import { transform } from "lodash";
 
 export const currencyFormat = (amount: number) => {
@@ -110,4 +111,38 @@ export function objectDifference(
   }
 
   return diff;
+}
+
+type SizeUnit = "B" | "KB" | "MB" | "GB" | "TB";
+
+const sizeMap: Record<SizeUnit, number> = {
+  B: 1,
+  KB: 1024,
+  MB: 1024 * 1024,
+  GB: 1024 * 1024 * 1024,
+  TB: 1024 * 1024 * 1024 * 1024,
+};
+
+export function formatFileSize(sizeInBytes: number): string {
+  for (const unit of ["B", "KB", "MB", "GB", "TB"] as SizeUnit[]) {
+    if (sizeInBytes < sizeMap[unit]) {
+      return `${(sizeInBytes / sizeMap[unit]).toFixed(2)} ${unit}`;
+    }
+  }
+  return `${sizeInBytes} B`;
+}
+
+export function combineWithOr(strings: string[]) {
+  if (strings.length === 0) {
+    return "";
+  } else if (strings.length === 1) {
+    return strings[0];
+  } else {
+    const lastString = strings.pop();
+    return `${strings.join(", ")} or ${lastString}`;
+  }
+}
+
+export function validateFile(uploadedFile: UploadedFileProps) {
+  return !!(uploadedFile.fileURL && Object.keys(uploadedFile).length);
 }

@@ -1,4 +1,4 @@
-import { FormComponent } from "@/interfaces/form";
+import { FormComponent, ValidationSchema } from "@/interfaces/form";
 
 export const discoveryDefaultValues = {
   name: "",
@@ -14,6 +14,46 @@ export const discoveryDefaultValues = {
   closingDate: null,
   profitPercentage: 0,
   riskLevel: "",
+};
+
+const defaultValidation = {
+  required: true,
+  minLength: 3,
+};
+
+export const discoveryValidationSchema: ValidationSchema = {
+  name: defaultValidation,
+  amount: {
+    required: true,
+    minValue: 1,
+  },
+  tags: {
+    isEnum: true,
+    enumValues: ["good", "bad", "ugly"],
+    required: true,
+  },
+  description: defaultValidation,
+  startDate: {
+    required: true,
+  },
+  endDate: {
+    required: true,
+  },
+  duration: {
+    required: true,
+    customValidation(value) {
+      return value.value > 0 && value.type;
+    },
+  },
+  riskLevel: {
+    isEnum: true,
+    required: true,
+    enumValues: ["high", "moderate", "low"],
+  },
+  profitPercentage: {
+    minValue: 1,
+    required: true,
+  },
 };
 
 const riskLevelArray = [
@@ -78,13 +118,11 @@ export const discoveryForm: FormComponent[] = [
             },
           ],
         },
-      ],
-    },
-  },
-  {
-    section: {
-      col: "cols-3",
-      form: [
+        {
+          label: "Duration Value",
+          fieldKey: "duration.value",
+          type: "number",
+        },
         {
           label: "Profit percentage",
           fieldKey: "profitPercentage",
@@ -96,14 +134,6 @@ export const discoveryForm: FormComponent[] = [
           type: "select",
           options: riskLevelArray,
         },
-        {
-          label: "Tags",
-          fieldKey: "tags",
-          type: "select",
-          options: tags,
-          isMultiSelect: true,
-          isClearable: true,
-        },
       ],
     },
   },
@@ -112,22 +142,24 @@ export const discoveryForm: FormComponent[] = [
       col: "cols-3",
       form: [
         {
+          label: "Tags",
+          fieldKey: "tags",
+          type: "select",
+          options: tags,
+          isMultiSelect: true,
+          isClearable: true,
+        },
+        {
           label: "Start date",
           fieldKey: "startDate",
           type: "date",
-          disableDate: (date: any) => date > new Date(),
+          disableDate: (date: any) => date < new Date(),
         },
         {
           label: "End date",
           fieldKey: "endDate",
           type: "date",
-          disableDate: (date: any) => date > new Date(),
-        },
-        {
-          label: "Closing date",
-          fieldKey: "closingDate",
-          type: "date",
-          disableDate: (date: any) => date > new Date(),
+          disableDate: (date: any) => date < new Date(),
         },
       ],
     },

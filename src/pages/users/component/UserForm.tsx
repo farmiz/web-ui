@@ -52,7 +52,6 @@ const UserForm: FC<UserFormProps> = ({
         schema={formToUse}
         formButton={formButton}
         formValues={defaultFormValues}
-        onSubmit={handleSubmit}
         validationSchema={userValidationSchema}
         onValidationChangeHandler={handleValidationChanged}
         onFieldChangeHandler={handleFormFieldChanged}

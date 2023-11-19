@@ -96,7 +96,6 @@ export interface FormBuilderProps {
   onFieldBlurHandler?: (data?: HandlerProps) => void;
   onValidationChangeHandler?: (validation: Record<string, any>) => void;
   resetForm?: boolean;
-  onSubmit: (data: Record<string, any>) => void;
   validationSchema?: ValidationSchema;
 }
 
