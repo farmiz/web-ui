@@ -3,13 +3,17 @@ import DashboardLayout from "@/components/dashboard/Layout";
 import Table from "@/components/table/Table";
 import { columns } from "@/components/table/columns";
 import { filters } from "@/components/table/data/filters";
+import { useAppDispatch } from "@/hooks/useStoreActions";
 import { ActionButtonProps, ModalActionButtonProps } from "@/interfaces";
+import { resetUserStore } from "@/store/userSlice";
 import { fetchUsers } from "@/store/userSlice/actions";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const UsersListScreen = () => {
   const navigate = useNavigate();
+  const userDispatch = useAppDispatch();
+
   const [openModal, setOpenModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Record<string, any>>({});
   const handleCreateButtonClick = () => {
@@ -24,20 +28,21 @@ const UsersListScreen = () => {
 
   const tableActionButtons = [
     {
-      label: "Delete",
-      action: (data: Record<string, any>) => {
-        setOpenModal(true);
-        setSelectedUser(data);
-      },
-    },
-    {
       label: "Edit",
       action: (data: any) => {
         console.log(data.id);
         navigate(`/users/${data.id}`);
       },
     },
+    {
+      label: "Delete",
+      action: (data: Record<string, any>) => {
+        setOpenModal(true);
+        setSelectedUser(data);
+      },
+    },
   ];
+
   const modalData = {
     showModal: openModal,
     modalTitle: (name: string) =>
@@ -49,16 +54,24 @@ const UsersListScreen = () => {
       {
         title: "Cancel",
         action: () => setOpenModal(false),
-        type: "cancel"
+        type: "cancel",
       },
       {
         title: "Continue",
         action: () => {},
-        type: "action"
+        type: "action",
       },
     ] as ModalActionButtonProps[],
   };
+
   const columnsToDisplay = useMemo(() => columns, []);
+
+  useEffect(() => {
+    return () => {
+      userDispatch(resetUserStore());
+    };
+  });
+
   return (
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
       <Modal

@@ -65,3 +65,49 @@ export function cleanObject(obj: Record<string, any>) {
     {}
   );
 }
+
+export function objectDifference(
+  baseObject: Record<string, any>,
+  objectToCompare: Record<string, any>
+) {
+  const diff: Record<string, any> = {};
+
+  // Check keys in baseObject
+  for (const key in baseObject) {
+    if (baseObject.hasOwnProperty(key)) {
+      if (
+        typeof baseObject[key] === "object" &&
+        objectToCompare.hasOwnProperty(key) &&
+        typeof objectToCompare[key] === "object"
+      ) {
+        // Recursively compare nested objects
+        const nestedDiff = objectDifference(
+          baseObject[key],
+          objectToCompare[key]
+        );
+        if (Object.keys(nestedDiff).length > 0) {
+          diff[key] = nestedDiff;
+        }
+      } else if (
+        !objectToCompare.hasOwnProperty(key) ||
+        baseObject[key] !== objectToCompare[key]
+      ) {
+        // If key is not present in objectToCompare or values are different, add to diff
+        diff[key] = baseObject[key];
+      }
+    }
+  }
+
+  // Check keys in objectToCompare
+  for (const key in objectToCompare) {
+    if (
+      objectToCompare.hasOwnProperty(key) &&
+      !baseObject.hasOwnProperty(key)
+    ) {
+      // If key is present in objectToCompare but not in baseObject, add to diff
+      diff[key] = objectToCompare[key];
+    }
+  }
+
+  return diff;
+}

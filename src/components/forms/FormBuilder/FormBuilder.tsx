@@ -1,29 +1,22 @@
-import { Button } from "@/components/ui/button";
 import {
   FormBuilderProps,
   FormFieldComponentChangeEvent,
 } from "@/interfaces/form";
-import { defineButtonPosition } from "./utils";
 import CustomFieldBuilder from "./CustomFieldBuilder";
-import { useFormFlowReducer } from "@/hooks/useFormReducer";
 import { useEffect } from "react";
 import InputLabel from "./InputLabel";
 import { useValidateForm } from "@/hooks/useValidateForm";
 function FormBuilder({
   schema,
-  formButton,
   formValues,
   onFieldBlurHandler,
   onFieldChangeHandler,
-  onSubmit,
   validationSchema,
   onValidationChangeHandler,
 }: FormBuilderProps) {
-  const { state, dispatch } = useFormFlowReducer(formValues);
-  const { errors, formIsValid } = useValidateForm(state, validationSchema);
+  const { errors, formIsValid } = useValidateForm(formValues, validationSchema);
   const handleChange = ({ target }: FormFieldComponentChangeEvent) => {
     const { name, value } = target;
-    dispatch({ type: "CHANGE_INPUT", field: name, value });
     if (onFieldChangeHandler) {
       onFieldChangeHandler({ key: name, value });
     }
@@ -36,44 +29,15 @@ function FormBuilder({
     }
   };
 
-  const handleFormSubmit = (e: any) => {
-    e.preventDefault();
-    onSubmit(state);
-  };
-
   useEffect(() => {
     if (onValidationChangeHandler) {
       onValidationChangeHandler({ errors, formIsValid });
     }
-  }, [state]);
+  }, [formValues]);
 
   return (
-    <form
-      className="flex-1 flex-grow flex flex-col justify-between"
-      onSubmit={handleFormSubmit}
-      noValidate
-    >
-      {formButton &&
-        formButton.position &&
-        ["top-right", "top-center", "top-left"].includes(
-          formButton.position
-        ) && (
-          <div
-            className={`flex items-center my-4 ${
-              defineButtonPosition[formButton.position]
-            }`}
-          >
-            <Button
-              disabled={formButton.disabled}
-              className={formButton.className}
-            >
-              {formButton?.label}
-            </Button>
-          </div>
-        )}
-
-      {schema &&
-        schema.length &&
+    <form className="flex-1 flex-grow flex flex-col justify-between" noValidate>
+      {schema && schema.length ? (
         schema.map((section, index) => (
           <div key={index}>
             <h2 className="text-md font-bold">{section.section.title}</h2>
@@ -82,7 +46,7 @@ function FormBuilder({
               className={`grid sm:grid-cols-1 lg:grid-${section.section.col} md:grid-cols-1 gap-x-4`}
             >
               {section.section.form &&
-                section.section.form.length &&
+                section.section.form.length > 0 &&
                 section.section.form.map((input, inputIndex) => {
                   return (
                     <div key={inputIndex} className="my-2 flex flex-col gap-1">
@@ -96,11 +60,10 @@ function FormBuilder({
                           }
                         />
                       )}
-                      {/* {JSON.stringify(state)} */}
                       <CustomFieldBuilder
                         handleBlur={handleBlur}
                         handleChange={handleChange}
-                        state={state}
+                        state={formValues}
                         props={input}
                       />
                       <div
@@ -114,25 +77,10 @@ function FormBuilder({
                 })}
             </div>
           </div>
-        ))}
-      {formButton &&
-        formButton.position &&
-        ["bottom-right", "bottom-center", "bottom-left"].includes(
-          formButton.position
-        ) && (
-          <div
-            className={`flex items-center ${
-              defineButtonPosition[formButton.position]
-            } my-4`}
-          >
-            <Button
-              disabled={formButton.disabled}
-              className={formButton.className}
-            >
-              {formButton.label}
-            </Button>
-          </div>
-        )}
+        ))
+      ) : (
+        <h1>Provide a form schema</h1>
+      )}
     </form>
   );
 }

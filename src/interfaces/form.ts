@@ -22,7 +22,7 @@ type HTMLInputTypeAttribute =
   | "textarea"
   | "select"
   | "permission"
-   | "phone";
+  | "phone";
 type FormBuilderInputType = HTMLInputTypeAttribute;
 
 // interface SelectFieldProps extends Props {
@@ -63,10 +63,12 @@ export interface FormButtonProps {
   //   icon?: IconType;
   //   iconPosition?: "back" | "forward";
   disabled?: boolean;
+  loading?: boolean;
+  onClick?: () => void | Promise<void>;
 }
 export interface HandlerProps {
   key: string;
-  value: string;
+  value: any;
 }
 export interface ValidationSchema {
   [key: string]: {
@@ -87,10 +89,10 @@ export interface ValidationSchema {
   };
 }
 export interface FormBuilderProps {
-  schema: FormComponent[];
+  schema: FormComponent[] | null;
   formButton?: FormButtonProps;
   formValues: Record<string, any>;
-  onFieldChangeHandler?: (data?: HandlerProps) => void;
+  onFieldChangeHandler?: (data: HandlerProps) => void;
   onFieldBlurHandler?: (data?: HandlerProps) => void;
   onValidationChangeHandler?: (validation: Record<string, any>) => void;
   resetForm?: boolean;
@@ -140,18 +142,22 @@ interface PhoneProps extends Omit<FormFieldProps, "type"> {
   type: "phone";
 }
 
-
 type SpecificFormFieldProps =
   | ({
-      type: Exclude<FormBuilderInputType, "select" | "date" | "permission" | "phone">;
+      type: Exclude<
+        FormBuilderInputType,
+        "select" | "date" | "permission" | "phone"
+      >;
     } & FormFieldProps)
   | SelectFieldProps
   | DatePickerProps
-  | PermissionProps | PhoneProps;
+  | PermissionProps
+  | PhoneProps;
 export type FormBuilderState = Record<string, any>;
 export type FormBuilderAction =
   | { type: "CHANGE_INPUT"; field: string; value: string }
   | { type: "RESET_FORM" }
+  | { type: "SET_DEFAULT_STATE"; values: Record<string, any> }
   | { type: string };
 
 export interface FormFieldComponentChangeEvent {

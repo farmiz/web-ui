@@ -19,6 +19,22 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
+export const updateUser = createAsyncThunk(
+  "update/user",
+  async (
+    data: { updatedFields: Record<string, any>; userId: string },
+    thunkAPI
+  ) => {
+    try {
+      const { updatedFields, userId } = data;
+      const response = await userService.updateOne(updatedFields, userId);
+      return response;
+    } catch (error: any) {
+      const errorMessage = error.message;
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
 export const createUser = createAsyncThunk(
   "create/user",
   async (body: Record<string, string>, thunkAPI) => {
@@ -35,7 +51,7 @@ export const getSingleUser = createAsyncThunk(
   "getSingle/user",
   async (id: string, thunkAPI) => {
     try {
-      const response = await userService.getOne({id});
+      const response = await userService.getOne({ id });
       return response;
     } catch (error: any) {
       const errorMessage = error.message;

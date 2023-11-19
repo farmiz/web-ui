@@ -1,15 +1,21 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { initialRequestState } from "@/defaults";
-import { UserProps } from "./types";
-import { IDefaultPlugin, RequestStateProps } from "@/interfaces";
-import { createUser, fetchUsers, getSingleUser } from "@/store/userSlice/actions";
-export interface UserPayloadProps
-  extends UserProps,
-    IDefaultPlugin,
-    RequestStateProps {}
-const initialState = {
+import { RequestStateProps } from "@/interfaces";
+import {
+  createUser,
+  fetchUsers,
+  getSingleUser,
+  updateUser,
+} from "@/store/userSlice/actions";
+export interface UserPayloadProps extends RequestStateProps {
+  editingUser: Record<string, any>;
+  editing: Record<string, any>;
+  users: Record<string, any>[];
+}
+const initialState: UserPayloadProps = {
   users: [],
   editingUser: {},
+  editing: {},
   ...initialRequestState,
 };
 
@@ -18,11 +24,31 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     resetUserStore: (state) => {
-      state.editingUser = {};
+      state.editingUser = {
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        phone: {
+          number: "",
+          prefix: "",
+          country: "",
+        },
+        dateOfBirth: "",
+        password: "",
+        permission: "",
+        confirmPassword: "",
+        role: "",
+        gender: "",
+        status: "",
+      };
       state.isError = false;
       state.isLoading = false;
       state.isSuccess = false;
       state.users = [];
+    },
+    updateEditingUser: (state, action) => {
+      state.editingUser[action.payload.key] = action.payload.value;
     },
   },
   extraReducers: (builder: ActionReducerMapBuilder<typeof initialState>) => {
@@ -64,8 +90,25 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.editingUser = action.payload.response;
+        state.editing = action.payload.response;
       })
       .addCase(getSingleUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
+      })
+
+      // UPDATE SINGLE USER
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.editingUser = action.payload.response;
+        state.editing = action.payload.response;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
@@ -74,4 +117,4 @@ export const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { resetUserStore } = userSlice.actions;
+export const { resetUserStore, updateEditingUser } = userSlice.actions;

@@ -5,7 +5,6 @@ export const useValidateForm = (
   validationSchema?: Record<string, any>
 ) => {
   let errors: Record<string, any> = {};
-
   for (const field in fields) {
     if (field && validationSchema && validationSchema[field]) {
       const value = fields[field];
@@ -57,6 +56,7 @@ export const useValidateForm = (
         validationSchema[field].isPassword &&
         validator.isPassword(value)
       ) {
+        console.log("YEP YEP YEP");
         errors[field] =
           "Password should at least 8 characters long <br />  should contain a special character <br />  should contain a lowercase character <br />  should contain an uppercase character <br /> ";
       } else if (

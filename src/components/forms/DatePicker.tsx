@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -43,7 +43,7 @@ const DatePicker: FC<DatePickerProps> = ({
           disabled={disabled}
         >
           {value ? (
-            (formatDate && formatDate(value)) || format(value, "dd/MM/yyyy")
+            (formatDate && formatDate(value)) || format(parseISO(value), "dd/MM/yyyy")
           ) : (
             <span>{label || "Pick a date"}</span>
           )}

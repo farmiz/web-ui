@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./styles/global.css";
@@ -8,15 +7,14 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeProvider.tsx";
 import { Toaster } from "sonner";
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <>
     <Router>
       <ThemeProvider>
         <Provider store={store}>
-          
           <App />
-        <Toaster />
+          <Toaster />
         </Provider>
       </ThemeProvider>
     </Router>
-  </React.StrictMode>
+  </>
 );

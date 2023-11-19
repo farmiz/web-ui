@@ -27,7 +27,7 @@ export class RequestService extends BaseRequestService {
     };
     return await this.request(requestConfig, {
       useToken: true,
-      tokenType: "accessToken"
+      tokenType: "accessToken",
     });
   };
   public createOne = async (
@@ -46,13 +46,31 @@ export class RequestService extends BaseRequestService {
 
     return await this.request(requestConfig, {
       useToken: true,
-      tokenType: "accessToken"
+      tokenType: "accessToken",
+    });
+  };
+  public updateOne = async (
+    data: Record<string, any>,
+    id: string
+  ): Promise<BaseResponse> => {
+    let url = this.name;
+
+    url = `${this.name}/${id}`;
+
+    const requestConfig: AxiosRequestConfig = {
+      url: `${url}`,
+      method: "put",
+      data,
+    };
+
+    return await this.request(requestConfig, {
+      useToken: true,
+      tokenType: "accessToken",
     });
   };
   public getMany = async (
     query: Record<string, any>
   ): Promise<BaseResponse> => {
-
     const requestConfig: AxiosRequestConfig = {
       url: `${this.name}`,
       method: "get",
@@ -60,7 +78,7 @@ export class RequestService extends BaseRequestService {
     };
     return await this.request(requestConfig, {
       useToken: true,
-      tokenType: "accessToken"
+      tokenType: "accessToken",
     });
   };
 }

@@ -1,3 +1,4 @@
+import { removeFieldsByLabel } from "@/components/forms/FormBuilder/utils";
 import { FormComponent, ValidationSchema } from "@/interfaces/form";
 import { camelCase } from "lodash";
 
@@ -62,8 +63,8 @@ export const userValidationSchema: ValidationSchema = {
   },
   phone: {
     required: true,
-    isPhone: true
-  }
+    isPhone: true,
+  },
 };
 
 export const userDefaultValues = {
@@ -81,113 +82,119 @@ export const userDefaultValues = {
   status: "",
 };
 
-export const userForm: FormComponent[] = [
-  {
-    section: {
-      col: "cols-3",
-      form: [
-        {
-          label: "First Name",
-          fieldKey: "firstName",
-          type: "text",
-        },
-        {
-          label: "Last Name",
-          fieldKey: "lastName",
-          type: "text",
-        },
-        {
-          label: "Username",
-          fieldKey: "username",
-          type: "text",
-        },
-      ],
+export const userForm = (fieldsToOmit?: string[]): FormComponent[] => {
+  const form: FormComponent[] = [
+    {
+      section: {
+        col: "cols-3",
+        form: [
+          {
+            label: "First Name",
+            fieldKey: "firstName",
+            type: "text",
+          },
+          {
+            label: "Last Name",
+            fieldKey: "lastName",
+            type: "text",
+          },
+          {
+            label: "Username",
+            fieldKey: "username",
+            type: "text",
+          },
+        ],
+      },
     },
-  },
-  {
-    section: {
-      col: "cols-3",
-      form: [
-        {
-          label: "Email",
-          fieldKey: "email",
-          type: "text",
-        },
-        {
-          label: "Phone prefix",
-          fieldKey: "phone",
-          type: "phone",
-        },
-        {
-          label: "Role",
-          fieldKey: "role",
-          type: "select",
-          options: roleOptions,
-        },
-      ],
+    {
+      section: {
+        col: "cols-3",
+        form: [
+          {
+            label: "Email",
+            fieldKey: "email",
+            type: "text",
+          },
+          {
+            label: "Phone prefix",
+            fieldKey: "phone",
+            type: "phone",
+          },
+          {
+            label: "Role",
+            fieldKey: "role",
+            type: "select",
+            options: roleOptions,
+          },
+        ],
+      },
     },
-  },
-  {
-    section: {
-      col: "cols-3",
-      form: [
-        {
-          label: "Status",
-          fieldKey: "status",
-          type: "select",
-          options: statusOptions,
-        },
-        {
-          label: "Date of birth",
-          fieldKey: "dateOfBirth",
-          type: "date",
-          disableDate: (date: any) => date > new Date(),
-        },
-        {
-          label: "Gender",
-          fieldKey: "gender",
-          type: "select",
-          options: genderOptions,
-        },
-      ],
+    {
+      section: {
+        col: "cols-3",
+        form: [
+          {
+            label: "Status",
+            fieldKey: "status",
+            type: "select",
+            options: statusOptions,
+          },
+          {
+            label: "Date of birth",
+            fieldKey: "dateOfBirth",
+            type: "date",
+            disableDate: (date: any) => date > new Date(),
+          },
+          {
+            label: "Gender",
+            fieldKey: "gender",
+            type: "select",
+            options: genderOptions,
+          },
+        ],
+      },
     },
-  },
-  {
-    section: {
-      col: "cols-2",
-      form: [
-        {
-          label: "Password",
-          fieldKey: "password",
-          type: "password",
-        },
-        {
-          label: "Confirm Password",
-          fieldKey: "confirmPassword",
-          type: "password",
-        },
-      ],
+    {
+      section: {
+        col: "cols-2",
+        form: [
+          {
+            label: "Password",
+            fieldKey: "password",
+            type: "password",
+          },
+          {
+            label: "Confirm Password",
+            fieldKey: "confirmPassword",
+            type: "password",
+          },
+        ],
+      },
     },
-  },
-  {
-    section: {
-      title: "User Permission",
-      col: "cols-1",
-      form: [
-        {
-          fieldKey: "permission",
-          type: "permission",
-          resources: [
-            "discovery",
-            "users",
-            "settings",
-            "sponsor",
-            "transaction",
-            "wallet",
-          ],
-          actions: ["create", "read", "update", "delete"],
-        },
-      ],
+    {
+      section: {
+        title: "User Permission",
+        col: "cols-1",
+        form: [
+          {
+            fieldKey: "permission",
+            type: "permission",
+            resources: [
+              "discovery",
+              "users",
+              "settings",
+              "sponsor",
+              "transaction",
+              "wallet",
+            ],
+            actions: ["create", "read", "update", "delete"],
+          },
+        ],
+      },
     },
-  },
-];
+  ];
+  if (fieldsToOmit && fieldsToOmit.length) {
+    return removeFieldsByLabel(form, fieldsToOmit);
+  }
+  return form;
+};

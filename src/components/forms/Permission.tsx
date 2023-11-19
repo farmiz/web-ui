@@ -1,19 +1,23 @@
 import { FC, useEffect, useState } from "react";
 import { Checkbox } from "../ui/checkbox";
-import { PermissionOperation, PermissionString } from "@/utils/permissions";
+import {
+  PermissionOperation,
+  PermissionString
+} from "@/utils/permissions";
 
 interface PermissionProps {
   fieldKey: string;
   resources: PermissionString[];
   actions: PermissionOperation[];
   onChange: any;
+  // value: Record<string, any>;
 }
 
 const Permission: FC<PermissionProps> = ({
   actions,
   fieldKey,
   resources,
-  onChange,
+  onChange
 }) => {
   const [selectedPermissions, setSelectedPermissions] = useState<
     Record<PermissionString, PermissionOperation[]>
@@ -60,9 +64,12 @@ const Permission: FC<PermissionProps> = ({
 
       {resources.map((resource) => (
         <div key={resource} className="flex items-center justify-between my-2">
-          <p className="w-[20%] font-semibold text-sm my-1">
+          <label
+            className="w-[20%] font-semibold text-sm my-1"
+            htmlFor={resource}
+          >
             {resource.charAt(0).toUpperCase() + resource.slice(1)}
-          </p>
+          </label>
           <div className="w-[80%] flex items-center justify-between">
             {actions.map((action) => (
               <p
@@ -75,6 +82,7 @@ const Permission: FC<PermissionProps> = ({
                   onCheckedChange={() => {
                     handleCheckboxChange(resource, action);
                   }}
+                  checked={false}
                 />
               </p>
             ))}

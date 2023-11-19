@@ -21,6 +21,16 @@ function CustomFieldBuilder({
       handleChange({ target: { name: field, value: value.value } });
     }
   };
+  const generateSelectValues = (
+    options: Record<string, any>[],
+    values: string | string[]
+  ) => {
+    if (!values) return {};
+    if (values === "string")
+      return options.find((option) => option.value === values);
+
+    return options.filter((option) => values.includes(option.value));
+  };
   switch (props.type) {
     case "text":
     case "email":
@@ -28,7 +38,7 @@ function CustomFieldBuilder({
     case "password":
       return (
         <Input
-          value={state[props.fieldKey]}
+          value={state && state[props.fieldKey] ? state[props.fieldKey] : ""}
           onChange={handleChange}
           type={props.type}
           name={props.fieldKey}
@@ -44,7 +54,7 @@ function CustomFieldBuilder({
           fieldKey={props.fieldKey}
           onChange={handleChange}
           disabled={props.disabled}
-          value={state[props.fieldKey]}
+          value={state && state[props.fieldKey] ? state[props.fieldKey] : ""}
           disableDate={props.disableDate}
         />
       );
@@ -52,7 +62,7 @@ function CustomFieldBuilder({
       return (
         <Textarea
           className={`${props.className}`}
-          value={state[props.fieldKey]}
+          value={state && state[props.fieldKey] ? state[props.fieldKey] : ""}
           onChange={handleChange}
           name={props.fieldKey}
           id={props.id || `form__${props.fieldKey}`}
@@ -68,6 +78,7 @@ function CustomFieldBuilder({
           onChange={(val: any) => handleSelectFieldChanged(props.fieldKey, val)}
           onBlur={handleBlur}
           closeMenuOnSelect={props.isMultiSelect ? false : true}
+          value={generateSelectValues(props.options, state[props.fieldKey])}
         />
       );
     case "permission":
@@ -85,7 +96,7 @@ function CustomFieldBuilder({
         <Phone
           fieldKey={props.fieldKey}
           onChange={handleChange}
-          value={state[props.fieldKey]}
+          value={state && state[props.fieldKey] ? state[props.fieldKey] : ""}
         />
       );
   }

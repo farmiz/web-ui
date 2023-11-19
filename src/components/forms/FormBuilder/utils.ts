@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { FormButtonProps } from "@/interfaces/form";
+import { FormButtonProps, FormComponent } from "@/interfaces/form";
 import React from "react";
 
 export const defineButtonPosition: {
@@ -48,3 +48,20 @@ export function getComponentToRender(type: FormBuilderInputType): React.FC {
       throw new Error("Unknown type");
   }
 }
+
+export const removeFieldsByLabel = (
+  formArray: FormComponent[],
+  labelsToRemove: string[]
+): FormComponent[] => {
+  return formArray.map((section) => {
+    return {
+      ...section,
+      section: {
+        ...section.section,
+        form: section.section.form.filter(
+          (field) => !labelsToRemove.includes(field.fieldKey)
+        ),
+      },
+    };
+  });
+};

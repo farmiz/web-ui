@@ -6,12 +6,8 @@ export const useFormFlowReducer = (defaultValues: Record<string, any>) => {
     switch (action.type) {
       case "CHANGE_INPUT":
         if ("field" in action) {
-          // Split the field into nested levels
           const fieldLevels = action.field.split(".");
-
-          // Handle nested fields
           if (fieldLevels.length > 1) {
-            console.log("I came here")
             return {
               ...state,
               [fieldLevels[0]]: {
@@ -29,11 +25,18 @@ export const useFormFlowReducer = (defaultValues: Record<string, any>) => {
         return state;
       case "RESET_FORM":
         return defaultValues;
+      case "SET_DEFAULT_STATE":
+        return { ...state, ...defaultValues };
       default:
         return state;
     }
   };
 
   const [state, dispatch] = useReducer(reducer, defaultValues);
-  return { state, dispatch };
+
+  const setDefaultState = (defaultState: Record<string, any>) => {
+    dispatch({ type: "SET_DEFAULT_STATE", values: defaultState });
+  };
+
+  return { state, dispatch, setDefaultState };
 };

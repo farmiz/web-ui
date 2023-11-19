@@ -1,37 +1,37 @@
 import Container from "@/components/Container";
 import DashboardLayout from "@/components/dashboard/Layout";
-import FormBuilder from "@/components/forms/FormBuilder/FormBuilder";
 import FormHeader from "@/components/forms/FormHeader";
-import { userForm, userValidationSchema } from "@/formValidations/users";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
-import { FormButtonProps } from "@/interfaces/form";
-import { createUser, getSingleUser } from "@/store/userSlice/actions";
-import { omit } from "lodash";
+import { getSingleUser, updateUser } from "@/store/userSlice/actions";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
+import UserForm from "./component/UserForm";
+import { resetUserStore } from "@/store/userSlice";
+import { objectDifference } from "@/utils";
 const UpdateUserScreen = () => {
   const { id = "" } = useParams();
+  const [updatedFields, setUpdatedFields] = useState<Record<string, any>>({});
   const userStore = useAppSelector("users");
-  const [formIsValid, setFormIsValid] = useState(false);
   const userDispatch = useAppDispatch();
+
   useEffect(() => {
-    console.log(id);
     userDispatch(getSingleUser(id));
+    return () => {
+      userDispatch(resetUserStore());
+    };
   }, [id]);
 
-  const handleValidationChanged = (validation: Record<string, any>) => {
-    setFormIsValid(validation.formIsValid);
+  const handleSubmit = async () => {
+    userDispatch(updateUser({ updatedFields, userId: id }));
   };
-  const handleSubmit = async (data: Record<string, any>) => {
-    userDispatch(createUser(omit(data, ["confirmPassword"])));
-  };
-  const formButton: FormButtonProps = {
-    label: "Submit",
-    position: "bottom-right",
-    className: "min-w-[200px]",
-    disabled: !formIsValid || userStore.isLoading,
-  };
+  useEffect(() => {
+    const difference = objectDifference(
+      userStore.editingUser,
+      userStore.editing
+    );
+    setUpdatedFields(difference);
+  }, [userStore.editingUser]);
+
   return (
     <div>
       <DashboardLayout pageTitle="Create User">
@@ -40,14 +40,15 @@ const UpdateUserScreen = () => {
             description="Basic information about the user"
             title="User data"
           />
-          <FormBuilder
-          schema={userForm}
-          formButton={formButton}
-          formValues={userStore.editingUser}
-          onSubmit={handleSubmit}
-          validationSchema={userValidationSchema}
-          onValidationChangeHandler={handleValidationChanged}
-        />
+          <UserForm
+            type="update"
+            defaultFormValues={userStore.editingUser}
+            handleSubmit={handleSubmit}
+            disableButton={
+              !Boolean(Object.keys(updatedFields).length) || userStore.isLoading
+            }
+            loading={userStore.isLoading}
+          />
         </Container>
       </DashboardLayout>
     </div>

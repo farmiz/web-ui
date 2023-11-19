@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Loader from "@/components/Loader";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
@@ -12,7 +12,6 @@ const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const auth = useAppSelector("auth");
-  const initialized = useRef(false)
   const verifyRefreshToken = async () => {
     try {
       const response = await baseRequest.refreshToken(
@@ -30,14 +29,11 @@ const PersistLogin = () => {
     }
   };
   useEffect(() => {
-    if(!initialized.current){
       if (!auth.userDetails || !Object.keys(auth.userDetails).length) {
         verifyRefreshToken();
       } else {
         setIsLoading(false);
       }
-      initialized.current = true
-    }
   }, []);
   return <>{isLoading ? <Loader /> : <Outlet />}</>;
 };

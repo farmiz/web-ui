@@ -8,6 +8,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
 }) => {
   return (
     <Select
+      defaultInputValue=""
+      defaultValue=""
       {...props}
       options={options}
       className={`${className}`}
