@@ -1,8 +1,19 @@
 import { DataTableColumnHeader } from "@/components/table/DataTableColumnHeader";
 import { DataFilterProps } from "@/interfaces/tables";
 import { DiscoveryProps } from "@/store/discoverySlice/types";
+import { formatCurrency, formatDate } from "@/utils";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
+import { capitalize } from "lodash";
+
+const formatRiskLevel = (level: "high" | "moderate" | "low") => {
+  const levelsWithStyle: { [K in typeof level]: string } = {
+    high: "bg-red-50 text-red-500",
+    low: "bg-green-50 text-green-600",
+    moderate: "bg-orange-50 text-orange-500",
+  };
+  return <span className={`${levelsWithStyle[level]} py-1 px-2.5 text-sm rounded text-gray-800 font-medium`}>{capitalize(level)}</span>;
+};
 
 export const filters: DataFilterProps[] = [];
 
@@ -46,7 +57,11 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
       <DataTableColumnHeader column={column} title="Amount" />
     ),
     cell: ({ row }) => {
-      return <div className="flex space-x-2">{row.getValue("amount")}</div>;
+      return (
+        <div className="flex space-x-2">
+          {formatCurrency(row.getValue("amount"))}
+        </div>
+      );
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
@@ -58,10 +73,12 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
       <DataTableColumnHeader column={column} title="Tags" />
     ),
     cell: ({ row }) => {
+      const tags: string[] = row.getValue("tags");
+      const formattedString = tags.join(", ");
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("tags")}
+            {formattedString}
           </span>
         </div>
       );
@@ -76,7 +93,7 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("riskLevel")}
+            {formatRiskLevel(row.getValue("riskLevel"))}
           </span>
         </div>
       );
@@ -88,10 +105,9 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
       <DataTableColumnHeader column={column} title="Start Date" />
     ),
     cell: ({ row }) => {
+      const date: string = row.getValue("startDate");
       return (
-        <div className="flex w-[100px] items-center">
-          {row.getValue("startDate")}
-        </div>
+        <div className="flex w-[100px] items-center">{formatDate(date)}</div>
       );
     },
   },
@@ -103,7 +119,7 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex w-[100px] items-center">
-          {row.getValue("endDate")}
+          {formatDate(row.getValue("endDate"))}
         </div>
       );
     },
@@ -116,9 +132,9 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex w-[100px] items-center">
-          {row.getValue("closingDate")}
+          {formatDate(row.getValue("closingDate")) || "N/A"}
         </div>
       );
     },
-  }
+  },
 ];

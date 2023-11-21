@@ -9,12 +9,20 @@ export const createDiscovery = createAsyncThunk(
 
       return response;
     } catch (error: any) {
-      const errorMessage =
-        error.response &&
-        error.response.data.response &&
-        Boolean(Object.keys(error.response.data.response).length)
-          ? error.response.data.response.message
-          : error.message;
+      const errorMessage = error.message;
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+export const fetchDiscoveries = createAsyncThunk(
+  "/fetch/discoveries",
+  async (query: Record<string, string>, thunkAPI) => {
+    try {
+      const response = await discoveryService.getMany(query);
+
+      return response;
+    } catch (error: any) {
+      const errorMessage = error.message;
       return thunkAPI.rejectWithValue(errorMessage);
     }
   }

@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { discoveryDefaults, initialRequestState } from "@/defaults";
-import { createDiscovery } from "./actions";
+import { createDiscovery, fetchDiscoveries } from "./actions";
 import { DiscoveryProps } from "./types";
 import { RequestStateProps } from "@/interfaces";
 import { set } from "lodash";
@@ -55,9 +55,24 @@ export const discoverySlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
+      })
+
+      // FETCH ALL DISCOVERIES
+      .addCase(fetchDiscoveries.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchDiscoveries.fulfilled, (state, action) => {
+        state.isLoading = true;
+        state.discoveries = action.payload.response;
+      })
+      .addCase(fetchDiscoveries.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
       });
   },
 });
 
 export default discoverySlice.reducer;
-export const { updateEditingDiscovery, resetDiscovery } = discoverySlice.actions;
+export const { updateEditingDiscovery, resetDiscovery } =
+  discoverySlice.actions;

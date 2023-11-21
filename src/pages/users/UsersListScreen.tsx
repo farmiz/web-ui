@@ -30,7 +30,6 @@ const UsersListScreen = () => {
     {
       label: "Edit",
       action: (data: any) => {
-        console.log(data.id);
         navigate(`/users/${data.id}`);
       },
     },

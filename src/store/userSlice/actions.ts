@@ -8,12 +8,7 @@ export const fetchUsers = createAsyncThunk(
       const response = await userService.getMany(query);
       return response;
     } catch (error: any) {
-      const errorMessage =
-        error.response.data &&
-        error.response.data.response &&
-        Boolean(Object.keys(error.response.data.response).length)
-          ? error.response.data.response.message
-          : error.message;
+      const errorMessage = error.message;
       return thunkAPI.rejectWithValue(errorMessage);
     }
   }

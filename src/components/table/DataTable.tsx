@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataTableToolbar } from "./TableToolbar";
 import {
   ColumnFiltersState,
@@ -77,8 +77,7 @@ export function DataTable<TData, TValue>({
 
   const newQuery = cleanObject(tableStore);
 
-  const memoizedFetchQuery = useMemo(() => {
-    return async () => {
+  const fetchData =  async () => {
       try {
         setLoading(true);
         const { payload } = await dispatchTable(fetchQuery(newQuery));
@@ -91,13 +90,13 @@ export function DataTable<TData, TValue>({
         setLoading(false);
       }
     };
-  }, [newQuery]);
 
   useEffect(() => {
-    if (fetchQuery && initialized.current) {
-      memoizedFetchQuery();
+    if (fetchQuery) {
+      fetchData();
     }
-  }, [search, fetchQuery]);
+  }, [search]);
+
 
   useEffect(() => {
     if (!initialized.current) {

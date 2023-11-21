@@ -1,10 +1,11 @@
 import { UploadedFileProps } from "@/interfaces";
+import { parseISO, format } from "date-fns";
 import { transform } from "lodash";
 
-export const currencyFormat = (amount: number) => {
+export const formatCurrency = (amount: number, currency = "GHS") => {
   return amount.toLocaleString("en-US", {
     style: "currency",
-    currency: "USD",
+    currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -146,3 +147,7 @@ export function combineWithOr(strings: string[]) {
 export function validateFile(uploadedFile: UploadedFileProps) {
   return !!(uploadedFile.fileURL && Object.keys(uploadedFile).length);
 }
+export const formatDate = (date: string, formatType = "MMM dd yyyy") => {
+  if (!date) return "";
+  return format(parseISO(date), formatType);
+};

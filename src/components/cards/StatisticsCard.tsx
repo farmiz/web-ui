@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 // import { PieChartIcon, LineChartIcon } from "lucide-react";
-import { currencyFormat } from "@/utils";
+import { formatCurrency } from "@/utils";
 interface StatisticsCardProps {
   text: string;
   amount: number;
@@ -17,7 +17,7 @@ const StatisticsCard: React.FC<StatisticsCardProps> = ({ amount, text, icon }) =
         {/* <PieChartIcon size={18} className="text-primary" /> */}
       </div>
       <div className="p-6 flex-grow pt-0 pl-0 group-hover:text-white">
-        <div className="text-lg font-medium">{currencyFormat(amount)}</div>
+        <div className="text-lg font-medium">{formatCurrency(amount)}</div>
         <h1 className="text-sm">{text}</h1>
       </div>
     </div>

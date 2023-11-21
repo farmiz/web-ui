@@ -8,6 +8,7 @@ import { omit } from "lodash";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserForm from "./component/UserForm";
+import { resetUserStore } from "@/store/userSlice";
 
 const CreateUserScreen = () => {
   const userDispatch = useAppDispatch();
@@ -23,6 +24,7 @@ const CreateUserScreen = () => {
       userStore.isSuccess &&
       Object.keys(userStore.editingUser).length
     ) {
+      userDispatch(resetUserStore());
       successToast("User created successfully");
       navigate("/users");
     }
