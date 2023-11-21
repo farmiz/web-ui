@@ -69,7 +69,6 @@ export default function FileDropzone({
       );
       return;
     }
-    console.log(uploadedFile);
 
     const uploadedFileSize = uploadedFile.size / (1024 * 1024);
     if (maxFileSize && uploadedFileSize > maxFileSize) {

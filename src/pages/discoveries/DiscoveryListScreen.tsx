@@ -28,7 +28,7 @@ const Discovery = () => {
     {
       label: "Edit",
       action: (data: any) => {
-        navigate(`/discovery/${data.id}`);
+        navigate(`/discovery/${data._id}`);
       },
     },
     {

@@ -50,7 +50,6 @@ function CustomFieldBuilder({
       );
 
     case "date":
-      console.log(state);
       return (
         <DatePicker
           fieldKey={props.fieldKey}

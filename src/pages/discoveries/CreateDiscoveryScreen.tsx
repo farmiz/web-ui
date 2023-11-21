@@ -28,9 +28,13 @@ const CreateDiscovery = () => {
     const formData = new FormData();
     formData.append("file", selectedFiles.uploadedFile as Blob);
     Object.keys(discoveryStore.editingDiscovery).forEach((key) => {
-      formData.append(key, discoveryStore.editingDiscovery[key]);
+      if (key === "duration") {
+        formData.append(
+          key,
+          JSON.stringify(discoveryStore.editingDiscovery[key])
+        );
+      } else formData.append(key, discoveryStore.editingDiscovery[key]);
     });
-
     dispatch(createDiscovery(formData));
   };
 
@@ -52,7 +56,8 @@ const CreateDiscovery = () => {
     label: "Submit",
     position: "bottom-right",
     className: "min-w-[200px]",
-    disabled: !formIsValid || !validateFile(selectedFiles) || discoveryStore.isLoading,
+    disabled:
+      !formIsValid || !validateFile(selectedFiles) || discoveryStore.isLoading,
     onClick: () => handleSubmit(),
     loading: discoveryStore.isLoading,
   };

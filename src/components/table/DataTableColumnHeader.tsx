@@ -44,8 +44,7 @@ export function DataTableColumnHeader<TData, TValue>({
     setSortedType(newMapper);
 
     for (const entry of searchParams.entries()) {
-      const [param, value] = entry;
-      console.info({param, value })
+      const [param] = entry;
       if (!param) {
         setSearchParams({
           sort:

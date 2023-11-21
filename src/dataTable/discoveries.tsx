@@ -123,18 +123,5 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
         </div>
       );
     },
-  },
-  {
-    accessorKey: "closingDate",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Closing Date" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex w-[100px] items-center">
-          {formatDate(row.getValue("closingDate")) || "N/A"}
-        </div>
-      );
-    },
-  },
+  }
 ];
