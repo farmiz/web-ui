@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
 import { UserProps } from "@/store/userSlice/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { camelCaseToSentence } from "@/utils";
 
 export const columns: ColumnDef<UserProps>[] = [
   {
@@ -47,9 +48,6 @@ export const columns: ColumnDef<UserProps>[] = [
         <span>{row.getValue("firstName")}</span>
       </div>
     ),
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
   },
   {
     accessorKey: "lastName",
@@ -58,9 +56,6 @@ export const columns: ColumnDef<UserProps>[] = [
     ),
     cell: ({ row }) => {
       return <div className="flex space-x-2">{row.getValue("lastName")}</div>;
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
     },
   },
   {
@@ -99,14 +94,7 @@ export const columns: ColumnDef<UserProps>[] = [
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
-      return (
-        <div className="flex w-[100px] items-center">
-          {row.getValue("status")}
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+      return <div>{camelCaseToSentence(row.getValue("status"))}</div>;
     },
   },
 ];

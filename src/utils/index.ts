@@ -1,6 +1,7 @@
 import { UploadedFileProps } from "@/interfaces";
 import { parseISO, format } from "date-fns";
 import { transform } from "lodash";
+import { capitalize, words } from "lodash";
 
 export const formatCurrency = (amount: number, currency = "GHS") => {
   return amount.toLocaleString("en-US", {
@@ -150,4 +151,10 @@ export function validateFile(uploadedFile: UploadedFileProps) {
 export const formatDate = (date: string, formatType = "MMM dd yyyy") => {
   if (!date) return "";
   return format(parseISO(date), formatType);
+};
+
+export const camelCaseToSentence = (word: string) => {
+  if (!word) return "";
+  const wordsArr = words(word).join(" ");
+  return capitalize(wordsArr);
 };

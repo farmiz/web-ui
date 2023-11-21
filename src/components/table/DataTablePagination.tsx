@@ -100,6 +100,7 @@ export function DataTablePagination<TData>({
                   handleGoToNextOrPreviousPage(paginator?.page! + 1)
                 }
                 disabled={
+                  paginator.totalPages === 1 || 
                   paginator?.page === Number(paginator?.totalPages! - 1)
                 }
               >
@@ -112,7 +113,7 @@ export function DataTablePagination<TData>({
                 onClick={() =>
                   handleGoToNextOrPreviousPage(paginator?.totalPages! - 1)
                 }
-                disabled={paginator?.totalPages! - 1 === paginator?.page!}
+                disabled={  paginator.totalPages === 1 ||  paginator?.totalPages! - 1 === paginator?.page!}
               >
                 <span className="sr-only">Go to last page</span>
                 <ArrowRightIcon className="h-4 w-4" />
