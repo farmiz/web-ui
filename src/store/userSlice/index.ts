@@ -58,7 +58,7 @@ export const userSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
+        // state.isSuccess = true;
         state.users = action.payload.response;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
