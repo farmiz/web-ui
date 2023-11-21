@@ -7,7 +7,7 @@ const defaultValidation = {
   minLength: 3,
 };
 
-const userRole = ["admin", "support", "customer"];
+const userRole = ["admin", "support"];
 const gender = ["male", "female"];
 const status = ["active", "suspended", "pendingApproval", "inactive"];
 
@@ -48,7 +48,7 @@ export const userValidationSchema: ValidationSchema = {
   },
   role: {
     required: true,
-    enumValues: ["admin", "support", "customer"],
+    enumValues: ["admin", "support"],
     isEnum: true,
   },
   status: {
