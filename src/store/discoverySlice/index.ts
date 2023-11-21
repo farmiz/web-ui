@@ -6,14 +6,14 @@ import { RequestStateProps } from "@/interfaces";
 import { set } from "lodash";
 
 interface DiscoveryPayloadProps extends RequestStateProps {
-  discovery: DiscoveryProps;
+  discovery?: DiscoveryProps;
   discoveries: DiscoveryProps[];
   editingDiscovery: Record<string, any>;
 }
 const initialState: DiscoveryPayloadProps = {
   ...initialRequestState,
   discoveries: [],
-  discovery: discoveryDefaults(),
+  discovery: { ...discoveryDefaults() },
   editingDiscovery: {},
 };
 export const discoverySlice = createSlice({
@@ -28,6 +28,15 @@ export const discoverySlice = createSlice({
       } else {
         state.editingDiscovery[action.payload.key] = action.payload.value;
       }
+    },
+
+    resetDiscovery: (state) => {
+      state.discovery = { ...discoveryDefaults() };
+      state.isError = false;
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.discoveries = [];
+      state.editingDiscovery = {};
     },
   },
   extraReducers: (builder: ActionReducerMapBuilder<typeof initialState>) => {
@@ -51,4 +60,4 @@ export const discoverySlice = createSlice({
 });
 
 export default discoverySlice.reducer;
-export const { updateEditingDiscovery } = discoverySlice.actions;
+export const { updateEditingDiscovery, resetDiscovery } = discoverySlice.actions;

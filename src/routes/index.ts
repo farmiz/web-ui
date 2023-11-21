@@ -27,7 +27,12 @@ export interface RoutesProps {
   permission?: [PermissionString, PermissionOperation];
   requireAuth: boolean;
   allowedRoles?: UserRole[];
-  meta?: Record<string, string>;
+  meta?: {
+    breadcrumbs: {
+      title: string;
+      url?: string;
+    }[];
+  };
   component: React.FC;
 }
 export const routes: RoutesProps[] = [
@@ -35,7 +40,7 @@ export const routes: RoutesProps[] = [
     url: "/users",
     requireAuth: true,
     component: UsersListScreen,
-    permission: ["users", "read"]
+    permission: ["users", "read"],
   },
   {
     url: "/verify/email",
@@ -56,34 +61,35 @@ export const routes: RoutesProps[] = [
     url: "/users/create",
     requireAuth: true,
     component: CreateUser,
-    permission: ["users", "create"]
-
+    permission: ["users", "create"],
   },
   {
     url: "/users/:id",
     requireAuth: true,
     component: UpdateUserScreen,
-    permission: ["users", "update"]
-
+    permission: ["users", "update"],
+    meta: {
+      breadcrumbs: [{ title: "Users List", url: "/users" }],
+    },
   },
   {
     url: "/discoveries/create",
     requireAuth: true,
     component: CreateDiscovery,
-    permission: ["discovery", "create"]
+    permission: ["discovery", "create"],
   },
   {
     url: "/discoveries",
     requireAuth: true,
     component: Discovery,
-    permission: ["discovery", "read"]
+    permission: ["discovery", "read"],
   },
 
   {
-    url :"/unauthorized",
+    url: "/unauthorized",
     requireAuth: false,
-    component: NotAuthorized
-  }
+    component: NotAuthorized,
+  },
 ];
 
 export const menuSidebarRoutes = {

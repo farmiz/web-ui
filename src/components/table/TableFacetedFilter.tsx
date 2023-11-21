@@ -119,7 +119,7 @@ export function DataTableFacetedFilter({
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options &&
-                options.length &&
+                options.length > 0 &&
                 options.map((option) => {
                   const isSelected = selectedValues.includes(option.value);
                   return (

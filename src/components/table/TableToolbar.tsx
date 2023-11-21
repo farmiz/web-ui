@@ -55,7 +55,7 @@ export function DataTableToolbar<TData>({
       <div className="flex items-center">
         <div className="filters flex gap-2 overflow-x-scroll">
           {filters &&
-            filters.length &&
+            filters.length > 0 &&
             filters.map((filter) => {
               return !filter.isNumber
                 ? table.getColumn(filter.column) && (

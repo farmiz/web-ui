@@ -94,10 +94,10 @@ export function DataTable<TData, TValue>({
   }, [newQuery]);
 
   useEffect(() => {
-    if (fetchQuery) {
+    if (fetchQuery && initialized.current) {
       memoizedFetchQuery();
     }
-  }, [search]);
+  }, [search, fetchQuery]);
 
   useEffect(() => {
     if (!initialized.current) {

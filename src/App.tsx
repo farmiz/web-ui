@@ -15,7 +15,7 @@ function App() {
           route.requireAuth ? (
             <Route element={<PersistLogin />} key={route.url}>
               <Route element={<RequireAuth permission={route.permission!} />}>
-                <Route path={route.url} element={<route.component />} />
+                <Route path={route.url} element={<route.component />}  />
               </Route>
             </Route>
           ) : (

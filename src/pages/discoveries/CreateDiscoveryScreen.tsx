@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
 import { UploadedFileProps } from "@/interfaces";
 import { FormButtonProps, HandlerProps } from "@/interfaces/form";
 import { errorToast, successToast } from "@/lib/toast";
-import { updateEditingDiscovery } from "@/store/discoverySlice";
+import { resetDiscovery, updateEditingDiscovery } from "@/store/discoverySlice";
 import { createDiscovery } from "@/store/discoverySlice/actions";
 import { validateFile } from "@/utils";
 import { useEffect, useState } from "react";
@@ -41,6 +41,7 @@ const CreateDiscovery = () => {
   useEffect(() => {
     if (discoveryStore.isSuccess) {
       successToast(discoveryStore.message);
+      dispatch(resetDiscovery());
       navigate("/discoveries");
     }
     if (discoveryStore.isError) {
@@ -51,7 +52,7 @@ const CreateDiscovery = () => {
     label: "Submit",
     position: "bottom-right",
     className: "min-w-[200px]",
-    disabled: !formIsValid || !validateFile(selectedFiles),
+    disabled: !formIsValid || !validateFile(selectedFiles) || discoveryStore.isLoading,
     onClick: () => handleSubmit(),
     loading: discoveryStore.isLoading,
   };
