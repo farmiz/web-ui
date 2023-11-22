@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DataTableToolbar } from "./TableToolbar";
 import {
   ColumnFiltersState,
@@ -24,12 +24,10 @@ import {
 } from "../ui/table";
 import { DataTableProps, Paginator } from "@/interfaces/tables";
 import TableBodyItem from "./TableBodyItem";
-import { useNavigate, useLocation } from "react-router-dom";
 import NoDataImg from "/no-data.svg";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
-import { cleanObject, objectToQueryString } from "@/utils";
-import { addColumn } from "@/store/tableSlice";
 import { DataTableRowActions } from "./DataTableRowActions";
+import { useQueryParams } from "@/hooks/useSetQueryParam";
 export function DataTable<TData, TValue>({
   columns,
   showExportButton = false,
@@ -44,13 +42,15 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [data, setData] = useState<TData[]>([]);
   const [paginator, setPaginator] = useState<Paginator>();
-  const navigate = useNavigate();
   const tableStore = useAppSelector("table");
   const dispatchTable = useAppDispatch();
   const [tableColumn, setTableColumn] = useState(columns);
   const initialized = useRef(false);
 
-  const search = useLocation().search;
+  const { getQueryParam, setQueryParam, queryObject } = useQueryParams();
+
+  // TABLE STATE
+  const [queryColumn] = useState(getQueryParam("columns") || "");
 
   const columnsForDefaultValues =
     columns && columns.length
@@ -64,40 +64,35 @@ export function DataTable<TData, TValue>({
           .filter((columnName: any) => columnName)
       : [];
 
-  // /items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
-  if (!tableStore.columns.length) {
-    dispatchTable(addColumn(columnsForDefaultValues as any));
-  }
-
   useEffect(() => {
-    navigate({
-      search: `?${objectToQueryString(tableStore)}`,
-    });
-  }, [tableStore]);
+    if (!queryColumn) {
+      setQueryParam("columns", columnsForDefaultValues.join(","));
+    }
+  }, []);
 
-  const newQuery = cleanObject(tableStore);
+  // FETCH REQUEST
+  const fetchData = async () => {
+    console.log(queryObject)
+    try {
+      setLoading(true);
+      const { payload } = await dispatchTable(fetchQuery(queryObject));
 
-  const fetchData =  async () => {
-      try {
-        setLoading(true);
-        const { payload } = await dispatchTable(fetchQuery(newQuery));
+      setData(payload.response.data);
+      setPaginator(payload.response.paginator);
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        setData(payload.response.data);
-        setPaginator(payload.response.paginator);
-      } catch (error) {
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    };
-
-  useEffect(() => {
+  useMemo(() => {
     if (fetchQuery) {
       fetchData();
     }
-  }, [search]);
+  }, []);
 
-
+  // ADD TABLE MENU
   useEffect(() => {
     if (!initialized.current) {
       if (actionButtons && actionButtons.length) {
@@ -114,6 +109,8 @@ export function DataTable<TData, TValue>({
       initialized.current = true;
     }
   }, []);
+
+  // REACT TABLE STUFF
   const table = useReactTable({
     data,
     columns: tableColumn,

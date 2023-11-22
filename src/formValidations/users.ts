@@ -1,5 +1,6 @@
 import { removeFieldsByLabel } from "@/components/forms/FormBuilder/utils";
 import { FormComponent, ValidationSchema } from "@/interfaces/form";
+import { camelCaseToSentence } from "@/utils";
 import { camelCase } from "lodash";
 
 const defaultValidation = {
@@ -11,15 +12,15 @@ const userRole = ["admin", "support"];
 const gender = ["male", "female"];
 const status = ["active", "suspended", "pendingApproval", "inactive"];
 
-const statusOptions = status.map((stat) => ({
-  label: camelCase(stat),
+export const statusOptions = status.map((stat) => ({
+  label: camelCaseToSentence(stat),
   value: stat,
 }));
-const genderOptions = gender.map((gen) => ({
+export const genderOptions = gender.map((gen) => ({
   label: camelCase(gen),
   value: gen,
 }));
-const roleOptions = userRole.map((role) => ({
+export const roleOptions = userRole.map((role) => ({
   label: camelCase(role),
   value: role,
 }));

@@ -1,8 +1,8 @@
 import Modal from "@/components/Modal";
 import DashboardLayout from "@/components/dashboard/Layout";
 import Table from "@/components/table/Table";
-import { columns } from "@/components/table/columns";
-import { filters } from "@/components/table/data/filters";
+import { columns } from "@/dataTable/users";
+import { filters } from "@/dataTable/users";
 import { useAppDispatch } from "@/hooks/useStoreActions";
 import { ActionButtonProps, ModalActionButtonProps } from "@/interfaces";
 import { resetUserStore } from "@/store/userSlice";

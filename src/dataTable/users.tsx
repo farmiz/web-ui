@@ -5,21 +5,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/components/table/DataTableColumnHeader";
 import { UserProps } from "@/store/userSlice/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { statusOptions } from "@/formValidations/users";
 
-export const statuses = [
-  {
-    value: "active",
-    label: "Active",
-  },
-  {
-    value: "pendingApproval",
-    label: "Pending Approval",
-  },
-];
 export const filters: DataFilterProps[] = [
   {
     column: "status",
-    options: statuses,
+    options: statusOptions,
     title: "Status",
     extra: {
       mainIcon: Settings2,
@@ -54,6 +46,17 @@ export const columns: ColumnDef<UserProps>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    id: "avatar",
+    cell: ({ row: { original } }) => (
+      <Avatar className="h-8 w-8 outline-none">
+        <AvatarImage src="https://github.com/shadcn.png" alt="Avatar" />
+        <AvatarFallback>
+          {`${original.firstName?.[0]}${original.lastName?.[0]}`.toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+    ),
   },
   {
     accessorKey: "firstName",

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { CheckIcon, ChevronsUpDownIcon, CornerDownRight } from "lucide-react";
@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import IsBetweenFilter from "./IsBetweenFilter";
 import { Input } from "../ui/input";
 import { DataFilterProps } from "@/interfaces/tables";
+import { useQueryParams } from "@/hooks/useSetQueryParam";
 
 interface DataFacetedFilterForNumbersProps {
   filter: DataFilterProps;
@@ -34,26 +35,85 @@ const DataFacetedFilterForNumbers: React.FC<
   DataFacetedFilterForNumbersProps
 > = ({ filter }) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<FilterGroupValues>();
+  const [parentOpen, setParentOpen] = useState(false);
+  const [value, setValue] = useState<FilterGroupValues | null>(null);
   const [label, setLabel] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [facetData, setFacetData] = useState<Record<string, any> | null>(null);
+
+  const { removeQueryParam, setQueryParam } = useQueryParams();
 
   const handleItemSelect = useCallback(
     (data: string) => {
       setLabel(data);
       setOpen((open) => !open);
       const labelValue = filterGroups.find((group) => group.label === data);
-      setValue(labelValue?.value);
+      if (labelValue) {
+        setValue(labelValue?.value);
+      }
     },
     [label]
   );
+  const handleInputChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setInputValue(event.target.value);
+    },
+    []
+  );
+  const formatFilterDisplay = (value: FilterGroupValues) => {
+    if (!value) return "";
+    const mapper = {
+      isEql: "=",
+      isLess: "<",
+      isGreater: ">",
+      isBetween: ">=",
+    };
+    return mapper[value];
+  };
+
+  const getQueryKeyMapper = (key: FilterGroupValues) => {
+    const queryKeyMapper = {
+      isEql: "eq",
+      isLess: "lt",
+      isGreater: "gt",
+      isBetween: "gte",
+    };
+    return queryKeyMapper[key];
+  };
+  const closeFilter = () => {
+    setParentOpen(false);
+    let symbol = "";
+    if (value) {
+      symbol = formatFilterDisplay(value);
+    }
+    const displayString = `${symbol} ${inputValue}`;
+    setFacetData({ displayString });
+
+    if (value && inputValue) {
+      const queryKey = getQueryKeyMapper(value);
+      setQueryParam(`${filter.column}_${queryKey}`, inputValue);
+    }
+  };
+
+  const resetFilter = () => {
+    if (value) {
+      const queryKey = getQueryKeyMapper(value);
+      removeQueryParam(`${filter.column}_${queryKey}`);
+    }
+    setValue(null);
+    setInputValue("");
+    setLabel("");
+    setFacetData(null);
+  };
+
   return (
-    <Popover>
+    <Popover open={parentOpen} onOpenChange={setParentOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
           {filter && filter.extra && filter.extra.mainIcon && (
             <filter.extra.mainIcon className="mr-2 h-4 w-4" />
           )}
-          {filter.title}
+          {filter.title} {facetData && facetData.displayString}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
@@ -62,7 +122,12 @@ const DataFacetedFilterForNumbers: React.FC<
             <p className="text-sm text-muted-foreground">Set filter</p>
             <h4 className="font-medium leading-none">{filter.title} Filter</h4>
           </div>
-          <div className="mt-3">
+          <div className="mt-1">
+            <div className="flex items-center justify-end mb-[0.3rem] cursor-pointer text-primary/90">
+              <span className="text-black text-sm" onClick={resetFilter}>
+                Clear filter
+              </span>
+            </div>
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -84,6 +149,7 @@ const DataFacetedFilterForNumbers: React.FC<
                         <CommandItem
                           key={framework.value}
                           onSelect={handleItemSelect}
+                          className="cursor-pointer"
                         >
                           {framework.label}
                           <CheckIcon
@@ -109,10 +175,15 @@ const DataFacetedFilterForNumbers: React.FC<
                     {value === "isBetween" ? (
                       <IsBetweenFilter />
                     ) : (
-                      <Input className="h-10" />
+                      <Input
+                        className="h-10"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        type="number"
+                      />
                     )}
                   </div>
-                  <Button>Apply filter criteria</Button>
+                  <Button onClick={closeFilter}>Apply filter criteria</Button>
                 </div>
               </div>
             )}

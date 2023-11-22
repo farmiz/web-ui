@@ -1,6 +1,5 @@
 import { X } from "lucide-react";
 import { Table } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/components/table/DataTableViewOptions";
@@ -9,8 +8,7 @@ import { DataTableFacetedFilter } from "./TableFacetedFilter";
 import { DataFilterProps } from "@/interfaces/tables";
 import DataFacetedFilterForNumbers from "./DataFacetedFilterForNumbers";
 import { useCallback, useState } from "react";
-import { useAppDispatch } from "@/hooks/useStoreActions";
-import { addQuery } from "@/store/tableSlice";
+import { useQueryParams } from "@/hooks/useSetQueryParam";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -24,18 +22,18 @@ export function DataTableToolbar<TData>({
   filters,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const [value, setValue] = useState<string>("");
-  const tableDispatch = useAppDispatch();
+  const { setQueryParam, getQueryParam } = useQueryParams();
+  const [value, setValue] = useState<string>(getQueryParam("search") || "");
+
   const handleOnChange = useCallback((event: any) => {
+    const { target: { value = "" } = {} } = event;
     setValue(event.target.value);
-    if (event.target.value) {
-      if (event.target.value.length >= 3) {
-        tableDispatch(addQuery(event.target.value));
-      } else if (event.target.value.length === 0) {
-        tableDispatch(addQuery(event.target.value));
-      }
+
+    if (value.length >= 3 || value.length === 0) {
+      setQueryParam("search", value);
     }
   }, []);
+
   return (
     <>
       <div className="flex flex-col lg:flex-row items-center justify-between mb-5">

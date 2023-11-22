@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { CheckIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
 import {
   Command,
   CommandEmpty,
@@ -18,9 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAppDispatch } from "@/hooks/useStoreActions";
-import { addGenericFilter } from "@/store/tableSlice";
-
+import { useQueryParams } from "@/hooks/useSetQueryParam";
 interface DataTableFacetedFilterProps {
   column: string;
   title?: string;
@@ -40,36 +39,34 @@ export function DataTableFacetedFilter({
   extra,
   column,
 }: DataTableFacetedFilterProps) {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-  const tableStore = useAppDispatch();
+  const { getQueryParam, removeQueryParam, setQueryParam } = useQueryParams();
+  const [selectedValues, setSelectedValues] = useState<string[]>(
+    getQueryParam(`${column}_in`)?.split(",") || []
+  );
 
   const itemExists = (item: string) =>
     !!options.find((option) => option.value === item);
-  const removeDuplicate = (item: string) => [
-    ...new Set([...selectedValues, item]),
-  ];
 
   const handleItemChange = (item: string) => {
-    if (!itemExists) return;
-    const selectedItems = removeDuplicate(item);
-    setSelectedValues(selectedItems);
-    tableStore(
-      addGenericFilter({
-        column,
-        value: selectedValues,
-      })
-    );
+    if (!itemExists(item)) return;
+    setSelectedValues((prev) => {
+      const newValues = [...prev, item];
+      setQueryParam(`${column}_in`, newValues.join(","));
+      return newValues;
+    });
   };
   const handleItemRemove = (item: string) => {
     const newValues = selectedValues.filter((value) => value !== item);
     setSelectedValues(newValues);
-    tableStore(
-      addGenericFilter({
-        column,
-        value: selectedValues,
-      })
-    );
+    setQueryParam(`${column}_in`, newValues.join(","));
   };
+  const resetItems = useCallback(() => {
+    removeQueryParam(`${column}_in`);
+    setSelectedValues([]);
+  }, []);
+  // useEffect(() => {
+  //   console.log(getQueryParam(`${column}_in`)?.split(","));
+  // }, []);
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -157,7 +154,7 @@ export function DataTableFacetedFilter({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => setSelectedValues([])}
+                    onSelect={resetItems}
                     className="justify-center text-center cursor-pointer"
                   >
                     Clear filters
