@@ -3,6 +3,7 @@ import { initialRequestState } from "@/defaults";
 import { RequestStateProps } from "@/interfaces";
 import {
   createUser,
+  deleteUser,
   fetchUsers,
   getSingleUser,
   updateUser,
@@ -11,12 +12,14 @@ export interface UserPayloadProps extends RequestStateProps {
   editingUser: Record<string, any>;
   editing: Record<string, any>;
   users: Record<string, any>[];
+  paginator: { page: number, perPage: number, totalPages: number, totalDocuments: number },
 }
 const initialState: UserPayloadProps = {
   users: [],
   editingUser: {},
   editing: {},
   ...initialRequestState,
+  paginator: { page: 1, perPage: 30, totalPages: 0, totalDocuments: 0 },
 };
 
 export const userSlice = createSlice({
@@ -58,7 +61,8 @@ export const userSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.users = action.payload.response;
+        state.users = action.payload.response.data;
+        state.paginator = action.payload.response.paginator
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.isLoading = false;
@@ -108,6 +112,22 @@ export const userSlice = createSlice({
         state.editing = action.payload.response;
       })
       .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
+      })
+      // DELETE SINGLE USER
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.editingUser = action.payload.response;
+        state.editing = action.payload.response;
+        state.users = state.users.filter(user => user.id !== action.payload.response.id)
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;

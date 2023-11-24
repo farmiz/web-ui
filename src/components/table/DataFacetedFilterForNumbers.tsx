@@ -34,14 +34,21 @@ const filterGroups: { label: string; value: FilterGroupValues }[] = [
 const DataFacetedFilterForNumbers: React.FC<
   DataFacetedFilterForNumbersProps
 > = ({ filter }) => {
+  const { removeQueryParam, setQueryParam, getQueryParam } = useQueryParams();
   const [open, setOpen] = useState(false);
+
   const [parentOpen, setParentOpen] = useState(false);
   const [value, setValue] = useState<FilterGroupValues | null>(null);
   const [label, setLabel] = useState("");
   const [inputValue, setInputValue] = useState("");
+  const [isBetweenValues, setIsBetweenValues] = useState<{
+    lesserValue?: string;
+    higherValue?: string;
+  }>({
+    lesserValue: "",
+    higherValue: "",
+  });
   const [facetData, setFacetData] = useState<Record<string, any> | null>(null);
-
-  const { removeQueryParam, setQueryParam } = useQueryParams();
 
   const handleItemSelect = useCallback(
     (data: string) => {
@@ -76,7 +83,7 @@ const DataFacetedFilterForNumbers: React.FC<
       isEql: "eq",
       isLess: "lt",
       isGreater: "gt",
-      isBetween: "gte",
+      isBetween: "between",
     };
     return queryKeyMapper[key];
   };
@@ -89,16 +96,31 @@ const DataFacetedFilterForNumbers: React.FC<
     const displayString = `${symbol} ${inputValue}`;
     setFacetData({ displayString });
 
-    if (value && inputValue) {
+    if (
+      value === "isBetween" &&
+      isBetweenValues &&
+      isBetweenValues.higherValue &&
+      isBetweenValues.lesserValue
+    ) {
+      setQueryParam(
+        `${filter.column}_lte`,
+        `${isBetweenValues.lesserValue}`
+      );
+      setQueryParam(
+        `${filter.column}_gte`,
+        `${isBetweenValues.higherValue}`
+      );
+    } else if (value && inputValue) {
       const queryKey = getQueryKeyMapper(value);
       setQueryParam(`${filter.column}_${queryKey}`, inputValue);
     }
   };
-
   const resetFilter = () => {
     if (value) {
       const queryKey = getQueryKeyMapper(value);
-      removeQueryParam(`${filter.column}_${queryKey}`);
+      if (getQueryParam(`${filter.column}_${queryKey}`)) {
+        removeQueryParam(`${filter.column}_${queryKey}`);
+      }
     }
     setValue(null);
     setInputValue("");
@@ -106,6 +128,25 @@ const DataFacetedFilterForNumbers: React.FC<
     setFacetData(null);
   };
 
+  const handleIsBetweenValues = ({ name, value }: any) => {
+    setIsBetweenValues((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
+  const disableApplyFilterButton = () => {
+    if (value && value === "isBetween") {
+      return !!(
+        isBetweenValues &&
+        isBetweenValues.higherValue &&
+        isBetweenValues.lesserValue
+      );
+    }
+    return !!inputValue;
+  };
   return (
     <Popover open={parentOpen} onOpenChange={setParentOpen}>
       <PopoverTrigger asChild>
@@ -113,6 +154,7 @@ const DataFacetedFilterForNumbers: React.FC<
           {filter && filter.extra && filter.extra.mainIcon && (
             <filter.extra.mainIcon className="mr-2 h-4 w-4" />
           )}
+          {facetData}
           {filter.title} {facetData && facetData.displayString}
         </Button>
       </PopoverTrigger>
@@ -173,7 +215,10 @@ const DataFacetedFilterForNumbers: React.FC<
                   <div className="flex items-center gap-2">
                     <CornerDownRight size={22} />
                     {value === "isBetween" ? (
-                      <IsBetweenFilter />
+                      <IsBetweenFilter
+                        column={filter.column}
+                        handleIsBetweenValues={handleIsBetweenValues}
+                      />
                     ) : (
                       <Input
                         className="h-10"
@@ -183,7 +228,12 @@ const DataFacetedFilterForNumbers: React.FC<
                       />
                     )}
                   </div>
-                  <Button onClick={closeFilter}>Apply filter criteria</Button>
+                  <Button
+                    onClick={closeFilter}
+                    disabled={!disableApplyFilterButton()}
+                  >
+                    Apply filter criteria
+                  </Button>
                 </div>
               </div>
             )}

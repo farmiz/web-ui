@@ -3,17 +3,21 @@ import DashboardLayout from "@/components/dashboard/Layout";
 import Table from "@/components/table/Table";
 import { columns } from "@/dataTable/users";
 import { filters } from "@/dataTable/users";
-import { useAppDispatch } from "@/hooks/useStoreActions";
-import { ActionButtonProps, ModalActionButtonProps } from "@/interfaces";
-import { resetUserStore } from "@/store/userSlice";
-import { fetchUsers } from "@/store/userSlice/actions";
-import { useEffect, useMemo, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
+import {
+  ActionButtonProps,
+  ModalActionButtonProps,
+  OptionsProps,
+} from "@/interfaces";
+import { deleteUser, fetchUsers } from "@/store/userSlice/actions";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const UsersListScreen = () => {
   const navigate = useNavigate();
   const userDispatch = useAppDispatch();
-
+  const userStore = useAppSelector("users");
+  const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Record<string, any>>({});
   const handleCreateButtonClick = () => {
@@ -57,20 +61,27 @@ const UsersListScreen = () => {
       },
       {
         title: "Continue",
-        action: () => {},
+        action: async () => {
+          setLoading(true);
+          await userDispatch(deleteUser(selectedUser.id));
+          setLoading(false);
+          setOpenModal(false);
+        },
         type: "action",
+        loading,
       },
     ] as ModalActionButtonProps[],
   };
 
   const columnsToDisplay = useMemo(() => columns, []);
 
-  useEffect(() => {
-    return () => {
-      userDispatch(resetUserStore());
-    };
-  });
-
+  const searchSelectionOptions: OptionsProps[] = [
+    { label: "All Fields", value: "" },
+    { label: "First Name", value: "firstName" },
+    { label: "Last Name", value: "lastName" },
+    { label: "Email", value: "email" },
+    { label: "Role", value: "role" }
+  ];
   return (
     <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
       <Modal
@@ -86,6 +97,11 @@ const UsersListScreen = () => {
         filters={filters}
         fetchQuery={fetchUsers}
         actionButtons={tableActionButtons}
+        allowRowSelect={true}
+        data={userStore.users}
+        paginator={userStore.paginator}
+        showSearchSelection={true}
+        searchSelectionOptions={searchSelectionOptions}
       />
     </DashboardLayout>
   );

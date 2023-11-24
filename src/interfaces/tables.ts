@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { MouseEventHandler } from "react";
+import { OptionsProps } from ".";
 
 type IconType = React.ComponentType<{ className?: string }>;
 export interface DataFilterProps {
@@ -27,6 +28,12 @@ export interface DataTableProps<TData, TValue> {
   actionButtons?: ActionButton[];
   filters?: DataFilterProps[];
   fetchQuery?: any;
+  selectedDocuments?: Record<string, any>;
+  allowRowSelect?: boolean;
+  data: TData[];
+  paginator?: Paginator;
+  showSearchSelection?: boolean;
+  searchSelectionOptions?: OptionsProps[];
 }
 
 export interface Paginator {

@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { ListFilter, X } from "lucide-react";
 import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,17 +9,23 @@ import { DataFilterProps } from "@/interfaces/tables";
 import DataFacetedFilterForNumbers from "./DataFacetedFilterForNumbers";
 import { useCallback, useState } from "react";
 import { useQueryParams } from "@/hooks/useSetQueryParam";
+import { OptionsProps } from "@/interfaces";
+import Dropdown from "./Dropdown";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   showExportButton?: boolean;
   filters?: DataFilterProps[];
+  showSearchSelection?: boolean;
+  searchSelectionOptions?: OptionsProps[];
 }
 
 export function DataTableToolbar<TData>({
   table,
   showExportButton = false,
   filters,
+  searchSelectionOptions,
+  showSearchSelection,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const { setQueryParam, getQueryParam } = useQueryParams();
@@ -34,15 +40,28 @@ export function DataTableToolbar<TData>({
     }
   }, []);
 
+  const handleSelectedField = (field: string) => {
+    setQueryParam("searchSelection", field);
+  };
+
   return (
     <>
       <div className="flex flex-col lg:flex-row items-center justify-between mb-5">
-        <div className="flex flex-1 items-center space-x-2">
+        <div className="flex flex-1 items-center">
+          {showSearchSelection && (
+            <Dropdown
+              options={searchSelectionOptions}
+              icon={<ListFilter />}
+              className="rounded-r-none"
+              handleSelectedField={handleSelectedField}
+              defaultValue={getQueryParam("searchSelection") || ""}
+            />
+          )}
           <Input
-            placeholder="Filter tasks..."
+            placeholder="Search..."
             value={value}
             onChange={handleOnChange}
-            className="h-8 w-full lg:w-[250px] my-2 lg:my-0"
+            className="h-10 w-full lg:w-[250px] my-2 lg:my-0 rounded-l-none"
           />
         </div>
         <DataTableViewOptions
@@ -50,41 +69,46 @@ export function DataTableToolbar<TData>({
           showExportButton={showExportButton}
         />
       </div>
-      <div className="flex items-center">
-        <div className="filters flex gap-2 overflow-x-scroll">
-          {filters &&
-            filters.length > 0 &&
-            filters.map((filter) => {
-              return !filter.isNumber
-                ? table.getColumn(filter.column) && (
-                    <DataTableFacetedFilter
-                      column={filter.column}
-                      title={filter.title}
-                      options={filter.options}
-                      extra={filter.extra}
-                      key={Math.ceil(Math.random() * 1000000000)}
-                    />
-                  )
-                : table.getColumn(filter.column) && (
-                    <DataFacetedFilterForNumbers
-                      key={Math.ceil(Math.random() * 1000000000)}
-                      filter={filter}
-                    />
-                  );
-            })}
+      <div className="flex items-center justify-between my-5">
+        {/* TABLE FILTERS */}
+        <div>
+          <div className="filters flex gap-2 overflow-x-scroll">
+            {filters &&
+              filters.length > 0 &&
+              filters.map((filter) => {
+                return !filter.isNumber
+                  ? table.getColumn(filter.column) && (
+                      <DataTableFacetedFilter
+                        column={filter.column}
+                        title={filter.title}
+                        options={filter.options}
+                        extra={filter.extra}
+                        key={Math.ceil(Math.random() * 1000000000)}
+                      />
+                    )
+                  : table.getColumn(filter.column) && (
+                      <DataFacetedFilterForNumbers
+                        key={Math.ceil(Math.random() * 1000000000)}
+                        filter={filter}
+                      />
+                    );
+              })}
+          </div>
+          <div className="reset">
+            {isFiltered && (
+              <Button
+                variant="ghost"
+                onClick={() => table.resetColumnFilters()}
+                className="h-8 px-2 lg:px-3"
+              >
+                Reset
+                <X className="ml-2 h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
-        <div className="reset">
-          {isFiltered && (
-            <Button
-              variant="ghost"
-              onClick={() => table.resetColumnFilters()}
-              className="h-8 px-2 lg:px-3"
-            >
-              Reset
-              <X className="ml-2 h-4 w-4" />
-            </Button>
-          )}
-        </div>
+        {/* BULK ACTION */}
+        <div>{/* <BulkAction /> */}</div>
       </div>
     </>
   );

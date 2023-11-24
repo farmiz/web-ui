@@ -1,4 +1,5 @@
 import { PermissionOperation, PermissionString } from "@/utils/permissions";
+import { OptionsProps } from ".";
 
 export type IconType = React.ComponentType<{
   className?: string;
@@ -121,7 +122,7 @@ export interface FormFieldProps {
 
 interface SelectFieldProps extends Omit<FormFieldProps, "type"> {
   type: "select";
-  options: { label: string; value: string }[];
+  options: OptionsProps[];
   isClearable?: boolean;
   isSearchable?: boolean;
   isMultiSelect?: boolean;

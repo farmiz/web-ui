@@ -40,9 +40,13 @@ export function DataTableFacetedFilter({
   column,
 }: DataTableFacetedFilterProps) {
   const { getQueryParam, removeQueryParam, setQueryParam } = useQueryParams();
-  const [selectedValues, setSelectedValues] = useState<string[]>(
-    getQueryParam(`${column}_in`)?.split(",") || []
-  );
+  const selected =
+    !!getQueryParam(`${column}_in`) && getQueryParam(`${column}_in`)?.length
+      ? getQueryParam(`${column}_in`)!.split(",")
+      : [];
+  if (getQueryParam(`${column}_in`)) {
+  }
+  const [selectedValues, setSelectedValues] = useState<string[]>(selected);
 
   const itemExists = (item: string) =>
     !!options.find((option) => option.value === item);
@@ -64,9 +68,6 @@ export function DataTableFacetedFilter({
     removeQueryParam(`${column}_in`);
     setSelectedValues([]);
   }, []);
-  // useEffect(() => {
-  //   console.log(getQueryParam(`${column}_in`)?.split(","));
-  // }, []);
   return (
     <Popover>
       <PopoverTrigger asChild>

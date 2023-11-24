@@ -9,12 +9,15 @@ interface DiscoveryPayloadProps extends RequestStateProps {
   discovery?: DiscoveryProps;
   discoveries: DiscoveryProps[];
   editingDiscovery: Record<string, any>;
+  paginator: { page: number, perPage: number, totalPages: number, totalDocuments: number },
+
 }
 const initialState: DiscoveryPayloadProps = {
   ...initialRequestState,
   discoveries: [],
   discovery: { ...discoveryDefaults() },
   editingDiscovery: {},
+  paginator: { page: 1, perPage: 30, totalPages: 0, totalDocuments: 0 },
 };
 export const discoverySlice = createSlice({
   name: "discovery",
@@ -63,7 +66,8 @@ export const discoverySlice = createSlice({
       })
       .addCase(fetchDiscoveries.fulfilled, (state, action) => {
         state.isLoading = true;
-        state.discoveries = action.payload.response;
+        state.discoveries = action.payload.response.data;
+        state.paginator = action.payload.response.paginator;
       })
       .addCase(fetchDiscoveries.rejected, (state, action) => {
         state.isLoading = false;

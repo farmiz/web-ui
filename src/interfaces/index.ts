@@ -56,7 +56,7 @@ export interface ModalActionButtonProps {
   title: string;
   className?: string;
   action: () => void;
-  loader?: boolean;
+  loading?: boolean;
   type: "cancel" | "action";
 }
 
@@ -64,3 +64,8 @@ export interface UploadedFileProps {
   uploadedFile?: File;
   fileURL?: string;
 }
+
+export interface OptionsProps {
+  label: string;
+  value: string;
+};

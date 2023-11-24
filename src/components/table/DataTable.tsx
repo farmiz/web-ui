@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect,  useRef, useState } from "react";
 import { DataTableToolbar } from "./TableToolbar";
 import {
   ColumnFiltersState,
@@ -22,34 +22,36 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { DataTableProps, Paginator } from "@/interfaces/tables";
+import { DataTableProps } from "@/interfaces/tables";
 import TableBodyItem from "./TableBodyItem";
 import NoDataImg from "/no-data.svg";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
+import { useAppDispatch } from "@/hooks/useStoreActions";
 import { DataTableRowActions } from "./DataTableRowActions";
 import { useQueryParams } from "@/hooks/useSetQueryParam";
+import { Checkbox } from "@radix-ui/react-checkbox";
 export function DataTable<TData, TValue>({
   columns,
   showExportButton = false,
   filters,
   fetchQuery,
   actionButtons,
+  allowRowSelect,
+  data,
+  paginator,
+  showSearchSelection = false,
+  searchSelectionOptions
 }: DataTableProps<TData, TValue>) {
   const [loading, setLoading] = useState<boolean>(false);
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [data, setData] = useState<TData[]>([]);
-  const [paginator, setPaginator] = useState<Paginator>();
-  const tableStore = useAppSelector("table");
   const dispatchTable = useAppDispatch();
   const [tableColumn, setTableColumn] = useState(columns);
   const initialized = useRef(false);
 
   const { getQueryParam, setQueryParam, queryObject } = useQueryParams();
 
-  // TABLE STATE
   const [queryColumn] = useState(getQueryParam("columns") || "");
 
   const columnsForDefaultValues =
@@ -72,25 +74,19 @@ export function DataTable<TData, TValue>({
 
   // FETCH REQUEST
   const fetchData = async () => {
-    console.log(queryObject)
     try {
       setLoading(true);
-      const { payload } = await dispatchTable(fetchQuery(queryObject));
-
-      setData(payload.response.data);
-      setPaginator(payload.response.paginator);
-    } catch (error) {
-      throw error;
+      await dispatchTable(fetchQuery(queryObject));
     } finally {
       setLoading(false);
     }
   };
 
-  useMemo(() => {
-    if (fetchQuery) {
+  useEffect(() => {
+    if (fetchQuery && Object.keys(queryObject).length) {
       fetchData();
     }
-  }, []);
+  }, [queryObject]);
 
   // ADD TABLE MENU
   useEffect(() => {
@@ -106,13 +102,44 @@ export function DataTable<TData, TValue>({
           },
         ]);
       }
+
+      if (allowRowSelect) {
+        console.log("I was here");
+        
+        setTableColumn((prevCols) => [
+          {
+            id: "select",
+            header: ({ table }) => (
+              <Checkbox
+                checked={table.getIsAllPageRowsSelected()}
+                onCheckedChange={(value) =>
+                  table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+                className="translate-y-[2px]"
+              />
+            ),
+            cell: ({ row }) => (
+              <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+                className="translate-y-[2px]"
+              />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+          },
+          ...prevCols,
+        ]);
+      }
       initialized.current = true;
     }
   }, []);
 
   // REACT TABLE STUFF
   const table = useReactTable({
-    data,
+    data: data,
     columns: tableColumn,
     state: {
       sorting,
@@ -127,7 +154,7 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    initialState: { pagination: { pageSize: tableStore.limit || 30 } },
+    initialState: { pagination: { pageSize: paginator?.perPage || 30 } },
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
@@ -140,6 +167,8 @@ export function DataTable<TData, TValue>({
         table={table}
         showExportButton={showExportButton}
         filters={filters}
+        searchSelectionOptions={searchSelectionOptions}
+        showSearchSelection={showSearchSelection}
       />
       <div className="rounded border border-md mt-5">
         <Table>
@@ -191,7 +220,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {!loading && <DataTablePagination table={table} paginator={paginator} />}
+      {!loading && data.length > 0&& <DataTablePagination table={table} paginator={paginator} />}
     </div>
   );
 }

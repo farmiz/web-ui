@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/select";
 import PaginationNumbers from "./PaginationNumbers";
 import { Paginator } from "@/interfaces/tables";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
-import { addCurrentPage, addItemPerPage } from "@/store/tableSlice";
+import { useAppSelector } from "@/hooks/useStoreActions";
+import { useQueryParams } from "@/hooks/useSetQueryParam";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -28,29 +28,32 @@ export function DataTablePagination<TData>({
   paginator,
 }: DataTablePaginationProps<TData>) {
   const tableStore = useAppSelector("table");
-  const dispatchTable = useAppDispatch();
+  const { setQueryParam, getQueryParam } = useQueryParams();
 
   const handleGoToNextOrPreviousPage = (pageNumber: number) => {
     if (pageNumber) {
-      dispatchTable(addCurrentPage(pageNumber));
+      setQueryParam("currentPage", String(pageNumber));
     }
   };
+  const totalPageToView = Math.ceil(
+    (paginator?.totalDocuments || 0) / (paginator?.perPage || 0)
+  );
   return (
     <>
-      {paginator && (
+      {paginator && paginator.totalDocuments > 0 && (
         <div className="flex items-center justify-between px-2 overflow-x-scroll">
           <div className="flex-1 text-sm text-muted-foreground">
             {tableStore.currentPage} of
             {table.getFilteredRowModel().rows.length} row(s) selected.
           </div>
           <div className="flex items-center space-x-6 lg:space-x-8">
-            {paginator.totalPages >= 30 && (
+            {
               <div className="flex items-center space-x-2">
                 <p className="text-sm font-medium">Rows per page</p>
                 <Select
-                  value={String(tableStore.limit)}
+                  value={String(getQueryParam("limit") || 30)}
                   onValueChange={(value) => {
-                    dispatchTable(addItemPerPage(Number(value)));
+                    setQueryParam("limit", String(value));
                   }}
                 >
                   <SelectTrigger className="h-8 w-[70px]">
@@ -65,9 +68,9 @@ export function DataTablePagination<TData>({
                   </SelectContent>
                 </Select>
               </div>
-            )}
+            }
             <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-              Page <span className="mx-1">{paginator?.page}</span> of
+              Page <span className="mx-1">{totalPageToView}</span> of
               <span className="mx-1">{Number(paginator?.totalPages)}</span>
             </div>
             <div className="flex items-center space-x-2">
@@ -103,7 +106,7 @@ export function DataTablePagination<TData>({
                 }
                 disabled={
                   paginator.totalPages === 1 ||
-                  paginator?.page === Number(paginator?.totalPages! - 1)
+                  paginator?.page === totalPageToView
                 }
               >
                 <span className="sr-only">Go to next page</span>
@@ -113,11 +116,11 @@ export function DataTablePagination<TData>({
                 variant="outline"
                 className="h-8 w-8 p-0 flex"
                 onClick={() =>
-                  handleGoToNextOrPreviousPage(paginator?.totalPages! - 1)
+                  handleGoToNextOrPreviousPage(paginator?.totalPages)
                 }
                 disabled={
                   paginator.totalPages === 1 ||
-                  paginator?.totalPages! - 1 === paginator?.page!
+                  paginator?.page === totalPageToView
                 }
               >
                 <span className="sr-only">Go to last page</span>

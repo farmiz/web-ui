@@ -1,5 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
-import { addCurrentPage } from "@/store/tableSlice";
+import { useQueryParams } from "@/hooks/useSetQueryParam";
 interface PaginationNumbersProps {
   itemsPerPage: number;
   totalDocument: number;
@@ -8,11 +7,11 @@ export default function PaginationNumbers({
   itemsPerPage,
   totalDocument,
 }: PaginationNumbersProps) {
-  const dispatchTable = useAppDispatch();
-  const tableStore = useAppSelector("table")
-  const totalPages = Math.floor(totalDocument / itemsPerPage || 30);
+  const { setQueryParam, getQueryParam } = useQueryParams();
+
+  const totalPages = Math.ceil(totalDocument / itemsPerPage);
   const pageRange = 1; // Number of page numbers to display around the current page.
-  const currentPage = tableStore.currentPage;
+  const currentPage = Number(getQueryParam("currentPage")) || 1;
   // Function to generate an array of page numbers to display.
   const generatePageNumbers = () => {
     const pageNumbers = [];
@@ -58,7 +57,7 @@ export default function PaginationNumbers({
 
   const handleGeneratePageNumber = (generatedNumber: number | string) => {
     if (typeof generatedNumber === "number") {
-      dispatchTable(addCurrentPage(generatedNumber));
+      setQueryParam("currentPage", String(generatedNumber));
     }
   };
   return (

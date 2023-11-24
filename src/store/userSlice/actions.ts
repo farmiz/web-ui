@@ -54,3 +54,15 @@ export const getSingleUser = createAsyncThunk(
     }
   }
 );
+export const deleteUser = createAsyncThunk(
+  "delete/user",
+  async (id: string, thunkAPI) => {
+    try {
+      const response = await userService.deleteOne(id);
+      return response;
+    } catch (error: any) {
+      const errorMessage = error.message;
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);

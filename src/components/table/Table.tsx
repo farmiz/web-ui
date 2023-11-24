@@ -14,6 +14,12 @@ const Table = ({
   actionButtons,
   filters,
   fetchQuery,
+  data,
+  paginator,
+  allowRowSelect,
+  searchSelectionOptions,
+  selectedDocuments,
+  showSearchSelection,
 }: TableProps) => {
   return (
     <>
@@ -36,6 +42,12 @@ const Table = ({
           actionButtons={actionButtons}
           filters={filters}
           fetchQuery={fetchQuery}
+          data={data}
+          paginator={paginator}
+          allowRowSelect={allowRowSelect}
+          selectedDocuments={selectedDocuments}
+          searchSelectionOptions={searchSelectionOptions}
+          showSearchSelection={showSearchSelection}
         />
       </Container>
     </>

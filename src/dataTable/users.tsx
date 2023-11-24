@@ -1,12 +1,11 @@
 import { DataFilterProps } from "@/interfaces/tables";
-import { Settings2 } from "lucide-react";
+import { Settings2, User2Icon } from "lucide-react";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/components/table/DataTableColumnHeader";
 import { UserProps } from "@/store/userSlice/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { statusOptions } from "@/formValidations/users";
+import { roleOptions, statusOptions } from "@/formValidations/users";
 
 export const filters: DataFilterProps[] = [
   {
@@ -18,6 +17,14 @@ export const filters: DataFilterProps[] = [
     },
   },
   {
+    column: "role",
+    options: roleOptions,
+    title: "Role",
+    extra: {
+      mainIcon: User2Icon,
+    },
+  },
+  {
     column: "firstName",
     options: [],
     title: "First Name",
@@ -26,27 +33,6 @@ export const filters: DataFilterProps[] = [
 ];
 
 export const columns: ColumnDef<UserProps>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     id: "avatar",
     cell: ({ row: { original } }) => (
@@ -61,7 +47,7 @@ export const columns: ColumnDef<UserProps>[] = [
   {
     accessorKey: "firstName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="FirstName" />
+      <DataTableColumnHeader column={column} title="First name" />
     ),
     cell: ({ row }) => (
       <div className="flex space-x-2">{row.getValue("firstName")}</div>
@@ -73,10 +59,22 @@ export const columns: ColumnDef<UserProps>[] = [
   {
     accessorKey: "lastName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Label" />
+      <DataTableColumnHeader column={column} title="Last name" />
     ),
     cell: ({ row }) => {
       return <div className="flex space-x-2">{row.getValue("lastName")}</div>;
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Email" />
+    ),
+    cell: ({ row }) => {
+      return <div className="flex space-x-2">{row.getValue("email")}</div>;
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));

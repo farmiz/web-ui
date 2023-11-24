@@ -2,15 +2,14 @@ import Modal from "@/components/Modal";
 import DashboardLayout from "@/components/dashboard/Layout";
 import Table from "@/components/table/Table";
 import { columns, filters } from "@/dataTable/discoveries";
-import { useAppDispatch } from "@/hooks/useStoreActions";
+import { useAppSelector } from "@/hooks/useStoreActions";
 import { ActionButtonProps, ModalActionButtonProps } from "@/interfaces";
-import { resetDiscovery } from "@/store/discoverySlice";
 import { fetchDiscoveries } from "@/store/discoverySlice/actions";
-import { useEffect, useMemo, useState } from "react";
+import {  useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Discovery = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const discoveryStore = useAppSelector("discovery");
   const [openModal, setOpenModal] = useState(false);
   const [{}, setSelectedDiscovery] = useState<Record<string, any>>({});
 
@@ -59,12 +58,6 @@ const Discovery = () => {
   };
 
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetDiscovery());
-    };
-  });
-
   const columnsToDisplay = useMemo(() => columns, []);
   return (
     <DashboardLayout pageTitle="Discoveries List" actionButtons={actionButtons}>
@@ -81,6 +74,8 @@ const Discovery = () => {
         filters={filters}
         actionButtons={tableActionButtons}
         fetchQuery={fetchDiscoveries}
+        data={discoveryStore.discoveries}
+        paginator={discoveryStore.paginator}
       />
     </DashboardLayout>
   );

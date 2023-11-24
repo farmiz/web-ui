@@ -68,6 +68,21 @@ export class RequestService extends BaseRequestService {
       tokenType: "accessToken",
     });
   };
+  public deleteOne = async (id: string): Promise<BaseResponse> => {
+    let url = this.name;
+
+    url = `${id}/${this.name}`;
+
+    const requestConfig: AxiosRequestConfig = {
+      url: `${url}`,
+      method: "delete",
+    };
+
+    return await this.request(requestConfig, {
+      useToken: true,
+      tokenType: "accessToken",
+    });
+  };
   public getMany = async (
     query: Record<string, any>
   ): Promise<BaseResponse> => {

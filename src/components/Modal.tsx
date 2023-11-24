@@ -50,9 +50,9 @@ const Modal: FC<ModalProps> = ({
                     <AlertDialogCancel
                       className={button.className || ""}
                       onClick={button.action}
-                      disabled={button.loader}
+                      disabled={button.loading}
                     >
-                      {button.loader && (
+                      {button.loading && (
                         <div className="animate-spin h-6 w-6 mr-3 border-4 rounded-full border-[#eee] border-r-[#10172a]"></div>
                       )}
                       {button.title}
@@ -62,9 +62,9 @@ const Modal: FC<ModalProps> = ({
                     <AlertDialogAction
                       className={button.className || ""}
                       onClick={button.action}
-                      disabled={button.loader}
+                      disabled={button.loading}
                     >
-                      {button.loader && (
+                      {button.loading && (
                         <div className="animate-spin h-6 w-6 mr-3 border-4 rounded-full border-[#10172a] border-r-[#eee]"></div>
                       )}
                       {button.title}
