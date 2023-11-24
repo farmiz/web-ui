@@ -14,5 +14,3 @@ function getValueFromParams(searchParams: Record<string, any>) {
 }
 
 const value = getValueFromParams(searchParams);
-
-console.log(value);
