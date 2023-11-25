@@ -1,9 +1,10 @@
 import {  Route } from "react-router-dom";
-import { RoutesProps, routes } from "./routes";
+import { routes } from "./routes";
 import PersistLogin from "./components/persistentAuth/PersistLogin";
 import RequireAuth from "./components/persistentAuth/RequireAuth";
 import NotFoundScreen from "./pages/error/NotFoundScreen";
 import CustomSwitch from "./components/CustomSwitch";
+import { RoutesProps } from "./routes/interface";
 
 function App() {
   

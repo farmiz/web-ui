@@ -104,6 +104,7 @@ export function DataTable<TData, TValue>({
       }
 
       if (allowRowSelect) {
+        console.log(table);
         
         setTableColumn((prevCols) => [
           {

@@ -1,10 +1,4 @@
 import { FormComponent } from "@/interfaces/form";
-import { z } from "zod";
-
-export const loginValidationSchema = z.object({
-  email: z.string().email("Invalid email"),
-  password: z.string().min(1, "Password is required"),
-});
 
 export const loginForm: FormComponent[] = [
   {

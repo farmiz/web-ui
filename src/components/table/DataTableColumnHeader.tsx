@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { SortType } from "@/interfaces/tables";
-import { useSearchParams } from "react-router-dom";
+import { useQueryParams } from "@/hooks/useSetQueryParam";
+import { pushOrReplaceSortValues } from "./utils";
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -35,23 +36,27 @@ export function DataTableColumnHeader<TData, TValue>({
   const [sortedType, setSortedType] = useState<SortTypeProps | undefined>(
     undefined
   );
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { setQueryParam, getQueryParam } = useQueryParams();
+
+  const handleSortSelected = (sortField: string) => {
+    const fields = getQueryParam("sort")?.split(",") || [];
+    return [...new Set(pushOrReplaceSortValues(fields, sortField))].join(",");
+  }
+
   const handleItemColumnSorted = (
     selectedColumn: string,
     sortType: SortType
   ) => {
-    const newMapper = { name: selectedColumn, value: sortType };
-    setSortedType(newMapper);
-
-    for (const entry of searchParams.entries()) {
-      const [param] = entry;
-      if (!param) {
-        setSearchParams({
-          sort:
-            sortType === "asc" ? selectedColumn : `-${selectedColumn}`,
-        });
-      }
-    }
+    const mapper = {
+      asc: `${selectedColumn}`,
+      desc: `-${selectedColumn}`,
+    };
+    handleSortSelected(selectedColumn);
+    setQueryParam("sort", handleSortSelected(mapper[sortType]));
+    setSortedType({
+      name: selectedColumn,
+      value: sortType,
+    });
   };
 
   return (

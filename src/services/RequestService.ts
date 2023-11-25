@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import { BaseResponse } from "./BaseResponse";
 import { BaseRequestService } from "./BaseRequestService";
 
-type ServiceName = "auth" | "users" | "discovery";
+type ServiceName = "auth" | "users" | "discoveries";
 export class RequestService extends BaseRequestService {
   private name: string;
   constructor(name: ServiceName) {
@@ -66,6 +66,8 @@ export class RequestService extends BaseRequestService {
     return await this.request(requestConfig, {
       useToken: true,
       tokenType: "accessToken",
+      Accept: "application/json",
+      contentType: "multipart/form-data",
     });
   };
   public deleteOne = async (id: string): Promise<BaseResponse> => {

@@ -1,16 +1,25 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { discoveryDefaults, initialRequestState } from "@/defaults";
-import { createDiscovery, fetchDiscoveries } from "./actions";
+import {
+  createDiscovery,
+  fetchDiscoveries,
+  getSingleDiscovery,
+  updateDiscovery,
+} from "./actions";
 import { DiscoveryProps } from "./types";
 import { RequestStateProps } from "@/interfaces";
 import { set } from "lodash";
 
 interface DiscoveryPayloadProps extends RequestStateProps {
-  discovery?: DiscoveryProps;
+  discovery: DiscoveryProps;
   discoveries: DiscoveryProps[];
   editingDiscovery: Record<string, any>;
-  paginator: { page: number, perPage: number, totalPages: number, totalDocuments: number },
-
+  paginator: {
+    page: number;
+    perPage: number;
+    totalPages: number;
+    totalDocuments: number;
+  };
 }
 const initialState: DiscoveryPayloadProps = {
   ...initialRequestState,
@@ -43,6 +52,7 @@ export const discoverySlice = createSlice({
     },
   },
   extraReducers: (builder: ActionReducerMapBuilder<typeof initialState>) => {
+    // CREATE DISCOVERY
     builder
       .addCase(createDiscovery.pending, (state) => {
         state.isLoading = true;
@@ -65,11 +75,44 @@ export const discoverySlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchDiscoveries.fulfilled, (state, action) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.discoveries = action.payload.response.data;
         state.paginator = action.payload.response.paginator;
       })
       .addCase(fetchDiscoveries.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
+      })
+
+      // UPDATE DISCOVERY
+      .addCase(updateDiscovery.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateDiscovery.fulfilled, (state, action) => {
+        state.isSuccess = true;
+        state.isLoading = false;
+        state.discovery = action.payload.response;
+        state.editingDiscovery = action.payload.response;
+        state.message = "Discovery updated";
+      })
+      .addCase(updateDiscovery.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
+      })
+
+      // GET SINGLE DISCOVERY
+      .addCase(getSingleDiscovery.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSingleDiscovery.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.discoveries.push(action.payload.response);
+        state.discovery = action.payload.response;
+        state.editingDiscovery = action.payload.response;
+      })
+      .addCase(getSingleDiscovery.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;

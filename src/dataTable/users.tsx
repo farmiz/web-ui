@@ -1,27 +1,39 @@
 import { DataFilterProps } from "@/interfaces/tables";
-import { Settings2, User2Icon } from "lucide-react";
+import { Settings2, User2Icon, Users } from "lucide-react";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/table/DataTableColumnHeader";
 import { UserProps } from "@/store/userSlice/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { roleOptions, statusOptions } from "@/formValidations/users";
+import {
+  genderOptions,
+  roleOptions,
+  statusOptions,
+} from "@/formValidations/users";
 
 export const filters: DataFilterProps[] = [
-  {
-    column: "status",
-    options: statusOptions,
-    title: "Status",
-    extra: {
-      mainIcon: Settings2,
-    },
-  },
   {
     column: "role",
     options: roleOptions,
     title: "Role",
     extra: {
       mainIcon: User2Icon,
+    },
+  },
+  {
+    column: "gender",
+    options: genderOptions,
+    title: "Gender",
+    extra: {
+      mainIcon: Users,
+    },
+  },
+  {
+    column: "status",
+    options: statusOptions,
+    title: "Status",
+    extra: {
+      mainIcon: Settings2,
     },
   },
   {
@@ -124,6 +136,6 @@ export const columns: ColumnDef<UserProps>[] = [
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
-    },
+    }
   },
 ];

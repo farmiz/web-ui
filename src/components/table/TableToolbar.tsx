@@ -54,7 +54,7 @@ export function DataTableToolbar<TData>({
               icon={<ListFilter />}
               className="rounded-r-none"
               handleSelectedField={handleSelectedField}
-              defaultValue={getQueryParam("searchSelection") || ""}
+              defaultValue={getQueryParam("searchSelection") || "none"}
             />
           )}
           <Input
@@ -69,10 +69,10 @@ export function DataTableToolbar<TData>({
           showExportButton={showExportButton}
         />
       </div>
-      <div className="flex items-center justify-between my-5">
+      <div className="flex items-center justify-between my-5  overflow-x-scroll">
         {/* TABLE FILTERS */}
         <div>
-          <div className="filters flex gap-2 overflow-x-scroll">
+          <div className="filters flex gap-2">
             {filters &&
               filters.length > 0 &&
               filters.map((filter) => {

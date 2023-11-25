@@ -15,7 +15,7 @@ const SubmitButton: FC<SubmitButtonProps> = ({ formButton }) => {
     >
       <Button
         disabled={formButton.disabled}
-        className={`${formButton.className} min-w-[200px] rounded-sm h-12`}
+        className={`${formButton.className} w-min-full lg-min-w-[200px] rounded-sm h-12`}
         onClick={formButton.onClick}
       >
         {formButton.loading && (

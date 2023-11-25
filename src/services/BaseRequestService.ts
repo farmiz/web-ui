@@ -7,6 +7,7 @@ interface RequestOptions {
   useToken: boolean;
   tokenType?: TokenType | null;
   contentType?: string;
+  Accept?: string;
 }
 
 const { VITE_BASE_API_URL } = import.meta.env;
@@ -31,13 +32,20 @@ export class BaseRequestService {
     }
   ): Promise<BaseResponse> {
     try {
-      const { useToken, tokenType } = options;
+      const {
+        useToken,
+        tokenType,
+        contentType,
+        Accept = "application/json",
+      } = options;
       // check if request should use accessToken
       if (useToken && tokenType) {
         const accessTokenFromStore = localStorage.getItem(tokenType) || null;
         // axios shoud attach access token to each request
         this.axiosInstance.interceptors.request.use(
           (config) => {
+            config.headers["Content-Type"] = contentType;
+            config.headers["Accept"] = Accept;
             if (!config.headers["Authorization"]) {
               config.headers[
                 "Authorization"

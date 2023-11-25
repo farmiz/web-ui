@@ -41,8 +41,11 @@ const Permission: FC<PermissionProps> = ({
       updatedPermissions[resource].splice(index, 1);
     }
 
-    if (!updatedPermissions[resource].length)
+    if (!updatedPermissions[resource].length){
       delete updatedPermissions[resource];
+    }
+    console.log((updatedPermissions));
+    
     setSelectedPermissions(updatedPermissions);
   };
 
@@ -82,7 +85,8 @@ const Permission: FC<PermissionProps> = ({
                   onCheckedChange={() => {
                     handleCheckboxChange(resource, action);
                   }}
-                  checked={false}
+                  aria-checked="mixed"
+                  defaultChecked={false}
                 />
               </p>
             ))}

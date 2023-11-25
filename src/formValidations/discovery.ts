@@ -42,7 +42,7 @@ export const discoveryValidationSchema: ValidationSchema = {
   duration: {
     required: true,
     customValidation(value) {
-      return value.value > 0 && value.type;
+      return value.value > 1 && value.type;
     },
   },
   riskLevel: {
@@ -52,11 +52,12 @@ export const discoveryValidationSchema: ValidationSchema = {
   },
   profitPercentage: {
     minValue: 1,
+    maxValue: 100,
     required: true,
   },
 };
 
-const riskLevelArray = [
+export const riskLevelOptions = [
   {
     label: "High",
     value: "high",
@@ -70,7 +71,7 @@ const riskLevelArray = [
     value: "low",
   },
 ];
-const tags = [
+export const tagsOptions = [
   {
     label: "Bad",
     value: "bad",
@@ -132,7 +133,7 @@ export const discoveryForm: FormComponent[] = [
           label: "Risk level",
           fieldKey: "riskLevel",
           type: "select",
-          options: riskLevelArray,
+          options: riskLevelOptions,
         },
       ],
     },
@@ -145,7 +146,7 @@ export const discoveryForm: FormComponent[] = [
           label: "Tags",
           fieldKey: "tags",
           type: "select",
-          options: tags,
+          options: tagsOptions,
           isMultiSelect: true,
           isClearable: true,
         },

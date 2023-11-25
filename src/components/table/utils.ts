@@ -1,16 +1,14 @@
-const searchParams = new URLSearchParams(
-  "columns=firstName%2ClastName%2Cgender%2Crole%2Cstatus&role_in="
-);
+export function pushOrReplaceSortValues(arr: string[], item: string): string[] {
+  const items = item.split("-");
+  const itemExists = items.length > 1 ? items[1] : items[0];
 
-function getValueFromParams(searchParams: Record<string, any>) {
-  const paramNamePattern = /(\w+)_(eq|gt|gte|lt|lte|ne|in|nin|regex|exists)/i;
-  for (const [paramName, paramValue] of searchParams.entries()) {
-    const match = paramName.match(paramNamePattern);
-    if (match) {
-      return paramValue;
-    }
+  const itemIndex = arr.findIndex((f) => f.includes(itemExists));
+
+  if (itemIndex !== -1) {
+    arr[itemIndex] = items.length > 1 ? items.join("-") : itemExists;
+  } else {
+    arr.push(item);
   }
-  return null;
-}
 
-const value = getValueFromParams(searchParams);
+  return arr;
+}

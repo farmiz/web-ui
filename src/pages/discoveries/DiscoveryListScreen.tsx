@@ -5,7 +5,7 @@ import { columns, filters } from "@/dataTable/discoveries";
 import { useAppSelector } from "@/hooks/useStoreActions";
 import { ActionButtonProps, ModalActionButtonProps } from "@/interfaces";
 import { fetchDiscoveries } from "@/store/discoverySlice/actions";
-import {  useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Discovery = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Discovery = () => {
     {
       label: "Edit",
       action: (data: any) => {
-        navigate(`/discovery/${data._id}`);
+        navigate(`/discoveries/${data.id}/update`);
       },
     },
     {
@@ -57,11 +57,10 @@ const Discovery = () => {
     ] as ModalActionButtonProps[],
   };
 
-
   const columnsToDisplay = useMemo(() => columns, []);
   return (
     <DashboardLayout pageTitle="Discoveries List" actionButtons={actionButtons}>
-        <Modal
+      <Modal
         showModal={modalData.showModal}
         modalTitle={modalData.modalTitle}
         modalDescription={modalData.modalDescription}
@@ -76,6 +75,12 @@ const Discovery = () => {
         fetchQuery={fetchDiscoveries}
         data={discoveryStore.discoveries}
         paginator={discoveryStore.paginator}
+        showSearchSelection={true}
+        searchSelectionOptions={[
+          {label: "All Fields", value: ""},
+          { label: "Name", value: "name" },
+          { label: "Duration value", value: "duration.value" },
+        ]}
       />
     </DashboardLayout>
   );

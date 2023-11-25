@@ -1,10 +1,11 @@
 import { DataTableColumnHeader } from "@/components/table/DataTableColumnHeader";
+import { riskLevelOptions } from "@/formValidations/discovery";
 import { DataFilterProps } from "@/interfaces/tables";
 import { DiscoveryProps } from "@/store/discoverySlice/types";
 import { formatCurrency, formatDate } from "@/utils";
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { capitalize } from "lodash";
+import { AlertTriangle } from "lucide-react";
 
 const formatRiskLevel = (level: "high" | "moderate" | "low") => {
   const levelsWithStyle: { [K in typeof level]: string } = {
@@ -12,33 +13,27 @@ const formatRiskLevel = (level: "high" | "moderate" | "low") => {
     low: "bg-green-50 text-green-600",
     moderate: "bg-orange-50 text-orange-500",
   };
-  return <span className={`${levelsWithStyle[level]} py-1 px-2.5 text-sm rounded text-gray-800 font-medium`}>{capitalize(level)}</span>;
+  return (
+    <span
+      className={`${levelsWithStyle[level]} py-1 px-2.5 text-sm rounded text-gray-800 font-medium`}
+    >
+      {capitalize(level)}
+    </span>
+  );
 };
 
-export const filters: DataFilterProps[] = [];
+export const filters: DataFilterProps[] = [
+  {
+    column: "riskLevel",
+    options: riskLevelOptions,
+    title: "Risk Level",
+    extra: {
+      mainIcon: AlertTriangle 
+    }
+  },
+];
 
 export const columns: ColumnDef<DiscoveryProps>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -100,6 +95,22 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
     },
   },
   {
+    accessorKey: "profitPercentage",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Profit percentage" />
+    ),
+    cell: ({ row }) => {
+      const data = formatRiskLevel(row.getValue("profitPercentage"))
+      return (
+        <div className="">
+          <span className="truncate font-medium">
+            {data}%
+          </span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "startDate",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Start Date" />
@@ -123,5 +134,5 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
         </div>
       );
     },
-  }
+  },
 ];

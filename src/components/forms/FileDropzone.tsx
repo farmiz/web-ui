@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { UploadedFileProps } from "@/interfaces";
 import { combineWithOr } from "@/utils";
 import { X } from "lucide-react";
+import { map, toLower } from "lodash";
 
 interface DropzoneProps {
   onChange: ({ fileURL, uploadedFile }: UploadedFileProps) => void;
@@ -62,7 +63,7 @@ export default function FileDropzone({
     if (
       allowedFileExtensions &&
       allowedFileExtensions.length &&
-      !allowedFileExtensions.includes(fileExtension)
+      !map(allowedFileExtensions, toLower).includes(fileExtension)
     ) {
       setError(
         `Invalid file type. Expected: .${combineWithOr(allowedFileExtensions)}`

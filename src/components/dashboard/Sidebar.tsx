@@ -1,9 +1,9 @@
 import LogoutButton from "@/components/buttons/LogoutButton";
 import ThemeSwitcher from "@/components/buttons/ThemeSwitcher";
 import SidebarMenu from "./SidebarMenu";
-import { generalSidebarRoutes, menuSidebarRoutes } from "@/routes";
 import Logo from "/farmiz.svg";
 import { memo } from "react";
+import { generalSidebarRoutes, menuSidebarRoutes } from "@/routes/sidebar";
 const DashboardSidebar = ({ displaySidebar }: { displaySidebar: boolean }) => {
   return (
     <div

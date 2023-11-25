@@ -34,7 +34,7 @@ const UsersListScreen = () => {
     {
       label: "Edit",
       action: (data: any) => {
-        navigate(`/users/${data.id}`);
+        navigate(`/users/${data.id}/update`);
       },
     },
     {

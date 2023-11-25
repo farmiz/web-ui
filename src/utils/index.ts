@@ -1,6 +1,6 @@
 import { UploadedFileProps } from "@/interfaces";
 import { parseISO, format } from "date-fns";
-import { transform } from "lodash";
+import {  isEmpty, transform } from "lodash";
 import { capitalize, words } from "lodash";
 
 export const formatCurrency = (amount: number, currency = "GHS") => {
@@ -72,48 +72,49 @@ export function cleanObject(obj: Record<string, any>) {
 export function objectDifference(
   baseObject: Record<string, any>,
   objectToCompare: Record<string, any>
-) {
+): Record<string, any> {
   const diff: Record<string, any> = {};
 
-  // Check keys in baseObject
-  for (const key in baseObject) {
-    if (baseObject.hasOwnProperty(key)) {
-      if (
-        typeof baseObject[key] === "object" &&
-        objectToCompare.hasOwnProperty(key) &&
-        typeof objectToCompare[key] === "object"
-      ) {
-        // Recursively compare nested objects
-        const nestedDiff = objectDifference(
-          baseObject[key],
-          objectToCompare[key]
-        );
-        if (Object.keys(nestedDiff).length > 0) {
-          diff[key] = nestedDiff;
+  if (!objectToCompare) return diff;
+  const baseKeys = Object.keys(baseObject);
+  const compareKeys = Object.keys(objectToCompare);
+
+  // Iterate over the keys of baseObject
+  for (const key of baseKeys) {
+    if (compareKeys.includes(key)) {
+      const baseValue = baseObject[key];
+      const compareValue = objectToCompare[key];
+
+      if (Array.isArray(baseValue) && Array.isArray(compareValue)) {
+        // Handle arrays
+        if (JSON.stringify(baseValue) !== JSON.stringify(compareValue)) {
+          diff[key] = compareValue;
         }
-      } else if (
-        !objectToCompare.hasOwnProperty(key) ||
-        baseObject[key] !== objectToCompare[key]
-      ) {
-        // If key is not present in objectToCompare or values are different, add to diff
-        diff[key] = baseObject[key];
+      } else if (typeof baseValue === 'object' && typeof compareValue === 'object') {
+        // Recursively compare nested objects
+        const nestedDiff = objectDifference(baseValue, compareValue);
+        if (!isEmpty(nestedDiff)) {
+          // Create a new object to avoid the "Cannot add property" error
+          diff[key] = { ...nestedDiff };
+        }
+      } else if (baseValue !== compareValue) {
+        diff[key] = compareValue;
       }
+    } else {
+      diff[key] = baseObject[key];
     }
   }
 
-  // Check keys in objectToCompare
-  for (const key in objectToCompare) {
-    if (
-      objectToCompare.hasOwnProperty(key) &&
-      !baseObject.hasOwnProperty(key)
-    ) {
-      // If key is present in objectToCompare but not in baseObject, add to diff
+  // Add keys from objectToCompare that are not in baseObject
+  for (const key of compareKeys) {
+    if (!baseKeys.includes(key)) {
       diff[key] = objectToCompare[key];
     }
   }
 
   return diff;
 }
+
 
 type SizeUnit = "B" | "KB" | "MB" | "GB" | "TB";
 
