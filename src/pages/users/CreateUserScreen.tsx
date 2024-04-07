@@ -3,7 +3,7 @@ import DashboardLayout from "@/components/dashboard/Layout";
 import FormHeader from "@/components/forms/FormHeader";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
 import { errorToast, successToast } from "@/lib/toast";
-import { createUser } from "@/store/userSlice/actions";
+import { userActions } from "@/store/userSlice/actions";
 import { omit } from "lodash";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,9 @@ const CreateUserScreen = () => {
   const navigate = useNavigate();
   const userStore = useAppSelector("users");
   const handleSubmit = async () => {
-    userDispatch(createUser(omit(userStore.editingUser, ["confirmPassword"])));
+    userDispatch(
+      userActions.createUser(omit(userStore.editingUser, ["confirmPassword"]))
+    );
   };
   useEffect(() => {
     if (userStore.isError) {

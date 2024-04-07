@@ -1,23 +1,24 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { initialRequestState } from "@/defaults";
 import { RequestStateProps } from "@/interfaces";
-import {
-  createUser,
-  deleteUser,
-  fetchUsers,
-  getSingleUser,
-  updateUser,
-} from "@/store/userSlice/actions";
+import { userActions } from "@/store/userSlice/actions";
+import { defaultUserValues } from "./defaults";
+
 export interface UserPayloadProps extends RequestStateProps {
   editingUser: Record<string, any>;
   editing: Record<string, any>;
   users: Record<string, any>[];
-  paginator: { page: number, perPage: number, totalPages: number, totalDocuments: number },
+  paginator: {
+    page: number;
+    perPage: number;
+    totalPages: number;
+    totalDocuments: number;
+  };
 }
 const initialState: UserPayloadProps = {
   users: [],
-  editingUser: {},
-  editing: {},
+  editingUser: defaultUserValues,
+  editing: defaultUserValues,
   ...initialRequestState,
   paginator: { page: 1, perPage: 30, totalPages: 0, totalDocuments: 0 },
 };
@@ -27,24 +28,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     resetUserStore: (state) => {
-      state.editingUser = {
-        firstName: "",
-        lastName: "",
-        username: "",
-        email: "",
-        phone: {
-          number: "",
-          prefix: "",
-          country: "",
-        },
-        dateOfBirth: "",
-        password: "",
-        permission: "",
-        confirmPassword: "",
-        role: "",
-        gender: "",
-        status: "",
-      };
+      state.editingUser = defaultUserValues;
       state.isError = false;
       state.isLoading = false;
       state.isSuccess = false;
@@ -56,78 +40,80 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder: ActionReducerMapBuilder<typeof initialState>) => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
+      .addCase(userActions.fetchUsers.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      .addCase(userActions.fetchUsers.fulfilled, (state, action) => {
         state.isLoading = false;
         state.users = action.payload.response.data;
-        state.paginator = action.payload.response.paginator
+        state.paginator = action.payload.response.paginator;
       })
-      .addCase(fetchUsers.rejected, (state, action) => {
+      .addCase(userActions.fetchUsers.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
       })
 
       // CREATE USER ACTION
-      .addCase(createUser.pending, (state) => {
+      .addCase(userActions.createUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createUser.fulfilled, (state, action) => {
+      .addCase(userActions.createUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.editingUser = action.payload.response;
       })
-      .addCase(createUser.rejected, (state, action) => {
+      .addCase(userActions.createUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
       })
 
       // GET SINGLE USER
-      .addCase(getSingleUser.pending, (state) => {
+      .addCase(userActions.getSingleUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getSingleUser.fulfilled, (state, action) => {
+      .addCase(userActions.getSingleUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.editingUser = action.payload.response;
         state.editing = action.payload.response;
       })
-      .addCase(getSingleUser.rejected, (state, action) => {
+      .addCase(userActions.getSingleUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
       })
 
       // UPDATE SINGLE USER
-      .addCase(updateUser.pending, (state) => {
+      .addCase(userActions.updateUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateUser.fulfilled, (state, action) => {
+      .addCase(userActions.updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.editingUser = action.payload.response;
         state.editing = action.payload.response;
       })
-      .addCase(updateUser.rejected, (state, action) => {
+      .addCase(userActions.updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;
       })
       // DELETE SINGLE USER
-      .addCase(deleteUser.pending, (state) => {
+      .addCase(userActions.deleteUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(deleteUser.fulfilled, (state, action) => {
+      .addCase(userActions.deleteUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.editingUser = action.payload.response;
         state.editing = action.payload.response;
-        state.users = state.users.filter(user => user.id !== action.payload.response.id)
+        state.users = state.users.filter(
+          (user) => user.id !== action.payload.response.id
+        );
       })
-      .addCase(deleteUser.rejected, (state, action) => {
+      .addCase(userActions.deleteUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;

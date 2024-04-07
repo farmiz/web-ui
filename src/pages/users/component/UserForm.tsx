@@ -12,6 +12,7 @@ interface UserFormProps {
   handleSubmit: () => Promise<void>;
   disableButton?: boolean;
   loading?: boolean;
+  fieldsToOmit?: string[];
 }
 const UserForm: FC<UserFormProps> = ({
   type,
@@ -19,6 +20,7 @@ const UserForm: FC<UserFormProps> = ({
   handleSubmit,
   defaultFormValues,
   loading,
+  fieldsToOmit,
 }) => {
   const userDispatch = useAppDispatch();
   const [formIsValid, setFormIsValid] = useState(false);
@@ -40,7 +42,7 @@ const UserForm: FC<UserFormProps> = ({
     type === "create"
       ? userForm()
       : type === "update"
-      ? userForm(["password", "confirmPassword"])
+      ? userForm(fieldsToOmit || ["password", "confirmPassword"])
       : null;
   const handleFormFieldChanged = ({ key, value }: HandlerProps) => {
     userDispatch(updateEditingUser({ key, value }));

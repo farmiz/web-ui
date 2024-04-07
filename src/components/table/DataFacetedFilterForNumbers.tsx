@@ -103,11 +103,11 @@ const DataFacetedFilterForNumbers: React.FC<
       isBetweenValues.lesserValue
     ) {
       setQueryParam(
-        `${filter.column}_lte`,
+        `${filter.column}_gte`,
         `${isBetweenValues.lesserValue}`
       );
       setQueryParam(
-        `${filter.column}_gte`,
+        `${filter.column}_lte`,
         `${isBetweenValues.higherValue}`
       );
     } else if (value && inputValue) {

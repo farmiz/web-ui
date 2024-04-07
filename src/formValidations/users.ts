@@ -174,17 +174,18 @@ export const userForm = (fieldsToOmit?: string[]): FormComponent[] => {
     },
     {
       section: {
-        title: "User Permission",
+        title: "",
         col: "cols-1",
         form: [
           {
             fieldKey: "permission",
             type: "permission",
+            dynamicFieldKey: "userPermission",
             resources: [
               "discovery",
               "users",
               "settings",
-              "sponsor",
+              "sponsorship",
               "transaction",
               "wallet",
             ],

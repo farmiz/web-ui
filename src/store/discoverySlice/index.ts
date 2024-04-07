@@ -1,15 +1,16 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { discoveryDefaults, initialRequestState } from "@/defaults";
-import {
-  createDiscovery,
-  fetchDiscoveries,
-  getSingleDiscovery,
-  updateDiscovery,
-} from "./actions";
+import { discoveryActions } from "./actions";
 import { DiscoveryProps } from "./types";
 import { RequestStateProps } from "@/interfaces";
 import { set } from "lodash";
 
+const {
+  createDiscovery,
+  fetchDiscoveries,
+  getSingleDiscovery,
+  updateDiscovery,
+} = discoveryActions;
 interface DiscoveryPayloadProps extends RequestStateProps {
   discovery: DiscoveryProps;
   discoveries: DiscoveryProps[];

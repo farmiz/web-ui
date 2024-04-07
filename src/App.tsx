@@ -1,4 +1,4 @@
-import {  Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import { routes } from "./routes";
 import PersistLogin from "./components/persistentAuth/PersistLogin";
 import RequireAuth from "./components/persistentAuth/RequireAuth";
@@ -15,8 +15,8 @@ function App() {
         routes.map((route: RoutesProps) =>
           route.requireAuth ? (
             <Route element={<PersistLogin />} key={route.url}>
-              <Route element={<RequireAuth permission={route.permission!} />}>
-                <Route path={route.url} element={<route.component />}  />
+              <Route element={<RequireAuth permission={route.permission!} meta={route.meta} />}>
+                <Route path={route.url} element={<route.component />} />
               </Route>
             </Route>
           ) : (

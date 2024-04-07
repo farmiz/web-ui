@@ -1,8 +1,9 @@
 import { AxiosRequestConfig } from "axios";
 import { BaseResponse } from "./BaseResponse";
 import { BaseRequestService } from "./BaseRequestService";
+import { ServiceName } from "./types";
 
-type ServiceName = "auth" | "users" | "discoveries";
+
 export class RequestService extends BaseRequestService {
   private name: string;
   constructor(name: ServiceName) {
@@ -73,7 +74,7 @@ export class RequestService extends BaseRequestService {
   public deleteOne = async (id: string): Promise<BaseResponse> => {
     let url = this.name;
 
-    url = `${id}/${this.name}`;
+    url = `${this.name}/${id}`;
 
     const requestConfig: AxiosRequestConfig = {
       url: `${url}`,

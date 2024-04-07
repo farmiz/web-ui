@@ -1,6 +1,5 @@
 import Container from "@/components/Container";
 import DashboardLayout from "@/components/dashboard/Layout";
-import FileDropzone from "@/components/forms/FileDropzone";
 import FormBuilder from "@/components/forms/FormBuilder/FormBuilder";
 import FormHeader from "@/components/forms/FormHeader";
 import SubmitButton from "@/components/forms/SubmitButton";
@@ -9,33 +8,23 @@ import {
   discoveryValidationSchema,
 } from "@/formValidations/discovery";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
-import { UploadedFileProps } from "@/interfaces";
 import { FormButtonProps, HandlerProps } from "@/interfaces/form";
 import { errorToast, successToast } from "@/lib/toast";
 import { resetDiscovery, updateEditingDiscovery } from "@/store/discoverySlice";
-import { createDiscovery } from "@/store/discoverySlice/actions";
-import { validateFile } from "@/utils";
+import { discoveryActions } from "@/store/discoverySlice/actions";
+import { tagActions } from "@/store/tagsSlice/actions";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreateDiscovery = () => {
-  const [selectedFiles, setSelectedFiles] = useState<UploadedFileProps>({});
   const discoveryStore = useAppSelector("discovery");
+  const tagStore = useAppSelector("tags");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [formIsValid, setFormIsValid] = useState<boolean>(true);
+  const [customOptions, setCustomOptions] = useState<Record<string, any>>({});
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("file", selectedFiles.uploadedFile as Blob);
-    Object.keys(discoveryStore.editingDiscovery).forEach((key) => {
-      if (key === "duration") {
-        formData.append(
-          key,
-          JSON.stringify(discoveryStore.editingDiscovery[key])
-        );
-      } else formData.append(key, discoveryStore.editingDiscovery[key]);
-    });
-    dispatch(createDiscovery(formData));
+    dispatch(discoveryActions.createDiscovery(discoveryStore.editingDiscovery));
   };
 
   const handleValidationChanged = (validation: Record<string, any>) => {
@@ -56,17 +45,21 @@ const CreateDiscovery = () => {
     label: "Submit",
     position: "bottom-right",
     className: "min-w-[200px]",
-    disabled:
-      !formIsValid || !validateFile(selectedFiles) || discoveryStore.isLoading,
+    disabled: !formIsValid || discoveryStore.isLoading,
     onClick: () => handleSubmit(),
     loading: discoveryStore.isLoading,
-  };
-  const handleFileChange = ({ fileURL, uploadedFile }: UploadedFileProps) => {
-    setSelectedFiles({ fileURL, uploadedFile });
   };
   const handleFormFieldChanged = ({ key, value }: HandlerProps) => {
     dispatch(updateEditingDiscovery({ key, value }));
   };
+  useEffect(() => {
+    dispatch(tagActions.fetchTags({ deleted_in: false }));
+  }, []);
+  useEffect(() => {
+    const tags = tagStore.tags;
+    const options = tags.map((tag) => ({ label: tag.name, value: tag.id }));
+    setCustomOptions((prev) => ({ ...prev, tags: options }));
+  }, [tagStore.tags]);
   return (
     <DashboardLayout pageTitle="Create Discovery">
       <Container className="border">
@@ -81,8 +74,8 @@ const CreateDiscovery = () => {
           onValidationChangeHandler={handleValidationChanged}
           onFieldChangeHandler={handleFormFieldChanged}
           validationSchema={discoveryValidationSchema}
+          customOptions={customOptions}
         />
-        <FileDropzone onChange={handleFileChange} showPreview={false} />
         <SubmitButton formButton={formButton} />
       </Container>
     </DashboardLayout>

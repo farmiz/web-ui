@@ -4,15 +4,16 @@ import { FormFieldComponentProps } from "@/interfaces/form";
 import { memo } from "react";
 import SelectField from "../SelectField";
 import DatePicker from "../DatePicker";
+import { get } from "lodash";
 import Permission from "../Permission";
 import Phone from "../Phone";
-import { get } from "lodash";
 
 function CustomFieldBuilder({
   handleBlur,
   handleChange,
   props,
   state,
+  customOptions,
 }: FormFieldComponentProps) {
   const handleSelectFieldChanged = (field: any, value: any) => {
     if (Array.isArray(value)) {
@@ -21,16 +22,6 @@ function CustomFieldBuilder({
     } else {
       handleChange({ target: { name: field, value: value.value } });
     }
-  };
-  const generateSelectValues = (
-    options: Record<string, any>[],
-    values: string | string[]
-  ) => {
-    if (!values) return [];
-    if (values === "string")
-      return options.find((option) => option.value === values);
-
-    return options.filter((option) => values.includes(option.value));
   };
   switch (props.type) {
     case "text":
@@ -74,15 +65,14 @@ function CustomFieldBuilder({
       return (
         <SelectField
           isSearchable={props.isSearchable}
-          options={props.options}
+          options={[
+            ...props.options,
+            ...(customOptions ? customOptions[props.fieldKey] || [] : [])
+          ]}
           isMulti={props.isMultiSelect}
           onChange={(val: any) => handleSelectFieldChanged(props.fieldKey, val)}
           onBlur={handleBlur}
           closeMenuOnSelect={props.isMultiSelect ? false : true}
-          value={generateSelectValues(
-            props.options,
-            get(state, props.fieldKey, "")
-          )}
         />
       );
     case "permission":
@@ -92,6 +82,8 @@ function CustomFieldBuilder({
           resources={props.resources}
           actions={props.actions}
           onChange={handleChange}
+          value={get(state, props.fieldKey, "")}
+          dynamicFieldKey={props.dynamicFieldKey}
         />
       );
 

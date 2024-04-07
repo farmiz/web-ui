@@ -4,7 +4,7 @@ import Table from "@/components/table/Table";
 import { columns, filters } from "@/dataTable/discoveries";
 import { useAppSelector } from "@/hooks/useStoreActions";
 import { ActionButtonProps, ModalActionButtonProps } from "@/interfaces";
-import { fetchDiscoveries } from "@/store/discoverySlice/actions";
+import { discoveryActions } from "@/store/discoverySlice/actions";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Discovery = () => {
@@ -72,7 +72,7 @@ const Discovery = () => {
         columns={columnsToDisplay}
         filters={filters}
         actionButtons={tableActionButtons}
-        fetchQuery={fetchDiscoveries}
+        fetchQuery={discoveryActions.fetchDiscoveries}
         data={discoveryStore.discoveries}
         paginator={discoveryStore.paginator}
         showSearchSelection={true}

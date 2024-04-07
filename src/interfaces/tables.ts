@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { MouseEventHandler } from "react";
 import { OptionsProps } from ".";
 
@@ -34,6 +34,8 @@ export interface DataTableProps<TData, TValue> {
   paginator?: Paginator;
   showSearchSelection?: boolean;
   searchSelectionOptions?: OptionsProps[];
+  showSelectColumns?: boolean;
+  handleRowClick?: (ata: Row<TData>["original"]) => void;
 }
 
 export interface Paginator {

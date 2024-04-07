@@ -18,7 +18,7 @@ const HeaderTitle: React.FC<HeaderTitleProps> = ({
   actionButtons,
 }) => {
   return (
-    <div className="pb-5 mb-5 lg:flex items-center justify-between sm:block">
+    <div className="mb-3 lg:flex items-center justify-between sm:block">
       <div className="title sm:mb-3">
         <h6 className="font-semibold text-2xl">{pageTitle}</h6>
         <p className="text-sm">{pageDescription || ""}</p>

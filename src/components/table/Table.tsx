@@ -20,6 +20,8 @@ const Table = ({
   searchSelectionOptions,
   selectedDocuments,
   showSearchSelection,
+  handleRowClick,
+  showSelectColumns
 }: TableProps) => {
   return (
     <>
@@ -37,6 +39,7 @@ const Table = ({
           </div>
         </div>
         <DataTable
+        handleRowClick={handleRowClick}
           columns={columns}
           showExportButton={showExportButton}
           actionButtons={actionButtons}
@@ -48,6 +51,7 @@ const Table = ({
           selectedDocuments={selectedDocuments}
           searchSelectionOptions={searchSelectionOptions}
           showSearchSelection={showSearchSelection}
+          showSelectColumns={showSelectColumns}
         />
       </Container>
     </>

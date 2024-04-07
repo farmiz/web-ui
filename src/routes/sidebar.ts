@@ -5,6 +5,8 @@ import {
   LucideCompass,
   SettingsIcon,
   ShieldQuestionIcon,
+  Tags,
+  Target,
   User,
   UserCircleIcon,
   WalletIcon,
@@ -27,6 +29,16 @@ export const menuSidebarRoutes = {
       title: "Customers",
       url: "/customers",
       icon: UserCircleIcon,
+    },
+    {
+      title: "Products",
+      url: "/products",
+      icon: Target,
+    },
+    {
+      title: "Tags",
+      url: "/tags",
+      icon: Tags,
     },
     {
       title: "Discoveries",

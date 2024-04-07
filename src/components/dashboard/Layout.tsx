@@ -3,6 +3,7 @@ import Header from "@/components/dashboard/Header";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Content from "@/components/dashboard/Content";
 import HeaderTitle from "./HeaderTitle";
+import BreadCrumb from "../BreadCrumb";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -44,6 +45,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                   showPageExporter={showPageExporter}
                   actionButtons={actionButtons}
                 />
+                <BreadCrumb />
+
                 {children}
               </Content>
             </div>

@@ -2,7 +2,7 @@ import Container from "@/components/Container";
 import DashboardLayout from "@/components/dashboard/Layout";
 import FormHeader from "@/components/forms/FormHeader";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreActions";
-import { getSingleUser, updateUser } from "@/store/userSlice/actions";
+import { userActions } from "@/store/userSlice/actions";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import UserForm from "./component/UserForm";
@@ -15,14 +15,15 @@ const UpdateUserScreen = () => {
   const userDispatch = useAppDispatch();
 
   useEffect(() => {
-    userDispatch(getSingleUser(id));
+    userDispatch(resetUserStore());
+    userDispatch(userActions.getSingleUser(id));
     return () => {
       userDispatch(resetUserStore());
     };
   }, [id]);
 
   const handleSubmit = async () => {
-    userDispatch(updateUser({ updatedFields, userId: id }));
+    userDispatch(userActions.updateUser({ updatedFields, id }));
   };
   useEffect(() => {
     const difference = objectDifference(

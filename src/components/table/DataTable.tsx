@@ -1,4 +1,4 @@
-import { useEffect,  useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataTableToolbar } from "./TableToolbar";
 import {
   ColumnFiltersState,
@@ -25,10 +25,11 @@ import {
 import { DataTableProps } from "@/interfaces/tables";
 import TableBodyItem from "./TableBodyItem";
 import NoDataImg from "/no-data.svg";
-import { useAppDispatch } from "@/hooks/useStoreActions";
 import { DataTableRowActions } from "./DataTableRowActions";
 import { useQueryParams } from "@/hooks/useSetQueryParam";
 import { Checkbox } from "@radix-ui/react-checkbox";
+import { FetchLoader } from "../FetchLoader";
+import { useAppDispatch } from "@/hooks/useStoreActions";
 export function DataTable<TData, TValue>({
   columns,
   showExportButton = false,
@@ -39,15 +40,17 @@ export function DataTable<TData, TValue>({
   data,
   paginator,
   showSearchSelection = false,
-  searchSelectionOptions
+  searchSelectionOptions,
+  showSelectColumns = true,
+  handleRowClick
 }: DataTableProps<TData, TValue>) {
   const [loading, setLoading] = useState<boolean>(false);
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const dispatchTable = useAppDispatch();
   const [tableColumn, setTableColumn] = useState(columns);
+  const dispatch = useAppDispatch();
   const initialized = useRef(false);
 
   const { getQueryParam, setQueryParam, queryObject } = useQueryParams();
@@ -72,11 +75,10 @@ export function DataTable<TData, TValue>({
     }
   }, []);
 
-  // FETCH REQUEST
   const fetchData = async () => {
     try {
       setLoading(true);
-      await dispatchTable(fetchQuery(queryObject));
+      await dispatch(fetchQuery(queryObject));
     } finally {
       setLoading(false);
     }
@@ -104,8 +106,6 @@ export function DataTable<TData, TValue>({
       }
 
       if (allowRowSelect) {
-        console.log(table);
-        
         setTableColumn((prevCols) => [
           {
             id: "select",
@@ -169,10 +169,11 @@ export function DataTable<TData, TValue>({
         filters={filters}
         searchSelectionOptions={searchSelectionOptions}
         showSearchSelection={showSearchSelection}
+        showSelectColumns={showSelectColumns}
       />
-      <div className="rounded border border-md mt-5">
+      <div className="rounded border border-[#f6f6f6] border-md mt-5">
         <Table>
-          <TableHeader className="bg-gray-100 w-full">
+          <TableHeader className="w-full">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -195,7 +196,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell colSpan={columns.length}>
                   <div className="flex justify-center items-center h-full flex-col gap-4">
-                    <div className="loader h-7 w-8 border-4 rounded-full border-x-[#000] border-y-transparent spin-in-6 animate-spin duration-500"></div>
+                    <FetchLoader />
                     <h3>Fetch Data...</h3>
                   </div>
                 </TableCell>
@@ -203,7 +204,13 @@ export function DataTable<TData, TValue>({
             ) : table.getRowModel().rows?.length ? (
               table
                 .getRowModel()
-                .rows.map((row) => <TableBodyItem row={row} key={row.id} />)
+                .rows.map((row) => (
+                  <TableBodyItem
+                    row={row}
+                    key={row.id}
+                    handleRowClick={handleRowClick}
+                  />
+                ))
             ) : (
               <TableRow>
                 <TableCell
@@ -220,7 +227,9 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {!loading && data.length > 0&& <DataTablePagination table={table} paginator={paginator} />}
+      {!loading && data.length > 0 && (
+        <DataTablePagination table={table} paginator={paginator} />
+      )}
     </div>
   );
 }

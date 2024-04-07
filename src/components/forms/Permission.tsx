@@ -1,23 +1,28 @@
-import { FC, useEffect, useState } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { Checkbox } from "../ui/checkbox";
 import {
   PermissionOperation,
-  PermissionString
+  PermissionString,
+  hasPermission,
 } from "@/utils/permissions";
+import { cloneDeep } from "lodash";
 
 interface PermissionProps {
   fieldKey: string;
+  dynamicFieldKey: string;
   resources: PermissionString[];
   actions: PermissionOperation[];
   onChange: any;
-  // value: Record<string, any>;
+  value: Record<string, any>;
 }
 
 const Permission: FC<PermissionProps> = ({
   actions,
   fieldKey,
   resources,
-  onChange
+  onChange,
+  dynamicFieldKey,
+  value,
 }) => {
   const [selectedPermissions, setSelectedPermissions] = useState<
     Record<PermissionString, PermissionOperation[]>
@@ -41,17 +46,23 @@ const Permission: FC<PermissionProps> = ({
       updatedPermissions[resource].splice(index, 1);
     }
 
-    if (!updatedPermissions[resource].length){
+    if (!updatedPermissions[resource].length) {
       delete updatedPermissions[resource];
     }
-    console.log((updatedPermissions));
-    
     setSelectedPermissions(updatedPermissions);
   };
 
   useEffect(() => {
-    onChange({ target: { name: fieldKey, value: selectedPermissions } });
+    const clonedObj = cloneDeep(selectedPermissions);
+    onChange({
+      target: {
+        name: dynamicFieldKey ? dynamicFieldKey : fieldKey,
+        value: clonedObj,
+      },
+    });
   }, [selectedPermissions]);
+  console.log(value);
+  
   return (
     <div>
       <div className="flex justify-between gap-4 mb-10">
@@ -79,14 +90,16 @@ const Permission: FC<PermissionProps> = ({
                 key={action}
                 className="flex-1 flex items-center justify-center"
               >
-                <Checkbox
+                <input
+                type="checkbox"
+                value={action}
                   name={fieldKey}
-                  value={action}
-                  onCheckedChange={() => {
+                  onChange={(e) => {
+                    console.log(e);
                     handleCheckboxChange(resource, action);
                   }}
-                  aria-checked="mixed"
-                  defaultChecked={false}
+                  // defaultChecked={hasPermission(value.access, [resource, action])}
+                  checked={hasPermission(value.access, [resource, action])}
                 />
               </p>
             ))}
@@ -97,4 +110,4 @@ const Permission: FC<PermissionProps> = ({
   );
 };
 
-export default Permission;
+export default memo(Permission);

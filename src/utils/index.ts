@@ -1,9 +1,10 @@
-import { UploadedFileProps } from "@/interfaces";
-import { parseISO, format } from "date-fns";
-import {  isEmpty, transform } from "lodash";
+import { AddressProps, PhoneProps, UploadedFileProps } from "@/interfaces";
+import { parseISO, format, formatDistanceToNow } from "date-fns";
+import { isEmpty, transform } from "lodash";
 import { capitalize, words } from "lodash";
 
 export const formatCurrency = (amount: number, currency = "GHS") => {
+  if (!amount) return 0;
   return amount.toLocaleString("en-US", {
     style: "currency",
     currency,
@@ -90,7 +91,10 @@ export function objectDifference(
         if (JSON.stringify(baseValue) !== JSON.stringify(compareValue)) {
           diff[key] = compareValue;
         }
-      } else if (typeof baseValue === 'object' && typeof compareValue === 'object') {
+      } else if (
+        typeof baseValue === "object" &&
+        typeof compareValue === "object"
+      ) {
         // Recursively compare nested objects
         const nestedDiff = objectDifference(baseValue, compareValue);
         if (!isEmpty(nestedDiff)) {
@@ -114,7 +118,6 @@ export function objectDifference(
 
   return diff;
 }
-
 
 type SizeUnit = "B" | "KB" | "MB" | "GB" | "TB";
 
@@ -159,3 +162,30 @@ export const camelCaseToSentence = (word: string) => {
   const wordsArr = words(word).join(" ");
   return capitalize(wordsArr);
 };
+
+export const getTimeAgo = (dateToCompare: string) => {
+  if (!dateToCompare) return "N/A";
+  return formatDistanceToNow(parseISO(dateToCompare), { addSuffix: true });
+};
+
+export function formatAddressToString(address: AddressProps) {
+  if(!address) return "N/A"
+
+  const {
+    houseNumber = "",
+    zipCode = "",
+    country,
+    city,
+    street,
+    state,
+  } = address;
+
+  const formattedAddress = `${houseNumber} ${street}, ${city}, ${state} ${zipCode}, ${country}`;
+
+  return formattedAddress.trim();
+}
+export const formatPhoneToString = (phone: PhoneProps)=>{
+  if(!phone) return "N/A"
+  const {number= "", prefix = ""}= phone;
+  return `+${prefix} ${number}`
+}

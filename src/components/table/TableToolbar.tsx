@@ -18,6 +18,7 @@ interface DataTableToolbarProps<TData> {
   filters?: DataFilterProps[];
   showSearchSelection?: boolean;
   searchSelectionOptions?: OptionsProps[];
+  showSelectColumns?: boolean;
 }
 
 export function DataTableToolbar<TData>({
@@ -26,6 +27,7 @@ export function DataTableToolbar<TData>({
   filters,
   searchSelectionOptions,
   showSearchSelection,
+  showSelectColumns = true,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const { setQueryParam, getQueryParam } = useQueryParams();
@@ -64,10 +66,12 @@ export function DataTableToolbar<TData>({
             className="h-10 w-full lg:w-[250px] my-2 lg:my-0 rounded-l-none"
           />
         </div>
-        <DataTableViewOptions
-          table={table}
-          showExportButton={showExportButton}
-        />
+        {showSelectColumns && (
+          <DataTableViewOptions
+            table={table}
+            showExportButton={showExportButton}
+          />
+        )}
       </div>
       <div className="flex items-center justify-between my-5  overflow-x-scroll">
         {/* TABLE FILTERS */}

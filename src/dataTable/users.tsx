@@ -10,6 +10,7 @@ import {
   roleOptions,
   statusOptions,
 } from "@/formValidations/users";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const filters: DataFilterProps[] = [
   {
@@ -36,15 +37,34 @@ export const filters: DataFilterProps[] = [
       mainIcon: Settings2,
     },
   },
-  {
-    column: "firstName",
-    options: [],
-    title: "First Name",
-    isNumber: true,
-  },
 ];
 
 export const columns: ColumnDef<UserProps>[] = [
+  {
+    id: "id",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected()
+        }
+        onCheckedChange={(value) => {
+          return table.toggleAllPageRowsSelected(!!value);
+        }}
+        aria-label="Select all"
+        className="translate-y-[2px]"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-[2px]"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     id: "avatar",
     cell: ({ row: { original } }) => (
@@ -136,6 +156,6 @@ export const columns: ColumnDef<UserProps>[] = [
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
-    }
+    },
   },
 ];

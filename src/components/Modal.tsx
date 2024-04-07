@@ -10,7 +10,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ModalActionButtonProps } from "@/interfaces";
-import { FC, memo } from "react";
+import { FC, ReactNode, memo } from "react";
+
 
 interface ModalProps {
   showModal?: boolean;
@@ -19,6 +20,7 @@ interface ModalProps {
   titleClassName?: string;
   descriptionClassName?: string;
   actionButtons?: ModalActionButtonProps[];
+  children?: ReactNode;
 }
 const Modal: FC<ModalProps> = ({
   showModal,
@@ -27,6 +29,7 @@ const Modal: FC<ModalProps> = ({
   actionButtons,
   titleClassName,
   descriptionClassName,
+  children,
 }) => {
   return (
     <AlertDialog open={showModal}>
@@ -41,6 +44,7 @@ const Modal: FC<ModalProps> = ({
             className={descriptionClassName || ""}
           ></AlertDialogDescription>
         </AlertDialogHeader>
+        {children && children}
         <AlertDialogFooter className="gap-4">
           {actionButtons &&
             actionButtons.map((button) => {

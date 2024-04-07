@@ -3,9 +3,11 @@ export type PermissionString =
   | "users"
   | "wallet"
   | "discovery"
-  | "sponsor"
+  | "sponsorship"
   | "settings"
-  | "transaction";
+  | "transaction"
+  | "products"
+  | "tags";
 export type IPermission = Record<
   PermissionString,
   Record<PermissionOperation, number>
@@ -14,7 +16,8 @@ export const hasPermission = (
   userPermission: string,
   permissions: [PermissionString, PermissionOperation]
 ): boolean => {
-  if(!userPermission || !permissions) return false; 
+  if (!userPermission || !permissions) return false;
+
   const [permissionService, permissionOperation] = permissions;
   return userPermission.includes(
     String.fromCharCode(PERMISSIONS[permissionService][permissionOperation])
@@ -24,9 +27,11 @@ export const PERMISSIONS_LIST: PermissionString[] = [
   "users",
   "wallet",
   "discovery",
-  "sponsor",
+  "sponsorship",
   "settings",
   "transaction",
+  "products",
+  "tags",
 ];
 
 export const PERMISSIONS = structurePermissionsObject(PERMISSIONS_LIST);

@@ -28,8 +28,8 @@ export const filters: DataFilterProps[] = [
     options: riskLevelOptions,
     title: "Risk Level",
     extra: {
-      mainIcon: AlertTriangle 
-    }
+      mainIcon: AlertTriangle,
+    },
   },
 ];
 
@@ -100,12 +100,10 @@ export const columns: ColumnDef<DiscoveryProps>[] = [
       <DataTableColumnHeader column={column} title="Profit percentage" />
     ),
     cell: ({ row }) => {
-      const data = formatRiskLevel(row.getValue("profitPercentage"))
+      const data = formatRiskLevel(row.getValue("profitPercentage"));
       return (
         <div className="">
-          <span className="truncate font-medium">
-            {data}%
-          </span>
+          <span className="truncate font-medium">{data}%</span>
         </div>
       );
     },

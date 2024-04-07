@@ -1,16 +1,8 @@
-
 import { AddressProps, IDefaultPlugin, PhoneProps } from "@/interfaces";
 
-export type UserRole =
-  | "admin"
-  | "support"
-  | "customer";
+export type UserRole = "admin" | "support" | "customer";
 
-export const userRoles: UserRole[] = [
-  "admin",
-  "support",
-  "customer",
-];
+export const userRoles: UserRole[] = ["admin", "support", "customer"];
 export type Gender = "male" | "female" | "non-binary" | "other";
 export const genders: Gender[] = ["female", "male", "non-binary", "other"];
 export type UserStatus =
@@ -36,13 +28,16 @@ export interface UserProps extends IDefaultPlugin {
   gender?: Gender;
   physicalAddress?: AddressProps;
   mailingAddress?: AddressProps;
-  status?: UserStatus;
+  status: UserStatus | null;
   deleted?: boolean;
   isLoggedIn?: boolean;
-  dateOfBirth?: Date;
+  dateOfBirth?: Date | null;
   lastLoggedInDate?: Date;
   permission?: {
     access: string;
-    userId?: string;
+    userId: string;
+  } | null;
+  userPermission: {
+    [key in string]: string;
   };
 }

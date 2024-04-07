@@ -13,8 +13,12 @@ function FormBuilder({
   onFieldChangeHandler,
   validationSchema,
   onValidationChangeHandler,
+  customOptions,
 }: FormBuilderProps) {
-  const { errors, formIsValid } = useValidateForm(formValues, validationSchema);
+  const data = { formValues};
+
+  
+  const { errors, formIsValid } = useValidateForm(data, validationSchema);
   const handleChange = ({ target }: FormFieldComponentChangeEvent) => {
     const { name, value } = target;
     if (onFieldChangeHandler) {
@@ -43,7 +47,7 @@ function FormBuilder({
             <h2 className="text-md font-bold">{section.section.title}</h2>
             <p>{section.section.description}</p>
             <div
-              className={`grid sm:grid-cols-1 lg:grid-${section.section.col} md:grid-cols-1 gap-x-4`}
+              className={`grid sm:grid-cols-1 lg:grid-${section.section.col} md:grid-cols-1 gap-x-4 ${section.section.className}`}
             >
               {section.section.form &&
                 section.section.form.length > 0 &&
@@ -64,6 +68,7 @@ function FormBuilder({
                         handleBlur={handleBlur}
                         handleChange={handleChange}
                         state={formValues}
+                        customOptions={customOptions}
                         props={input}
                       />
                       <div

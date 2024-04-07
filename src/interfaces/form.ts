@@ -98,6 +98,7 @@ export interface FormBuilderProps {
   onValidationChangeHandler?: (validation: Record<string, any>) => void;
   resetForm?: boolean;
   validationSchema?: ValidationSchema;
+  customOptions?: Record<string, OptionsProps[]>
 }
 
 export interface FormIconProps {
@@ -136,6 +137,7 @@ interface PermissionProps extends Omit<FormFieldProps, "type"> {
   type: "permission";
   resources: PermissionString[];
   actions: PermissionOperation[];
+  dynamicFieldKey: string;
 }
 
 interface PhoneProps extends Omit<FormFieldProps, "type"> {
@@ -171,4 +173,5 @@ export interface FormFieldComponentProps {
   handleChange: ({ target }: FormFieldComponentChangeEvent) => void;
   handleBlur: (e: FormFieldComponentChangeEvent) => void;
   state: FormBuilderState;
+  customOptions?: Record<string, OptionsProps[]>
 }

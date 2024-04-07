@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import PaginationNumbers from "./PaginationNumbers";
 import { Paginator } from "@/interfaces/tables";
-import { useAppSelector } from "@/hooks/useStoreActions";
 import { useQueryParams } from "@/hooks/useSetQueryParam";
 
 interface DataTablePaginationProps<TData> {
@@ -27,7 +26,6 @@ export function DataTablePagination<TData>({
   table,
   paginator,
 }: DataTablePaginationProps<TData>) {
-  const tableStore = useAppSelector("table");
   const { setQueryParam, getQueryParam } = useQueryParams();
 
   const handleGoToNextOrPreviousPage = (pageNumber: number) => {
@@ -43,7 +41,7 @@ export function DataTablePagination<TData>({
       {paginator && paginator.totalDocuments > 0 && (
         <div className="flex items-center justify-between px-2 overflow-x-scroll">
           <div className="flex-1 text-sm text-muted-foreground">
-            {tableStore.currentPage} of
+            {paginator.page} of
             {table.getFilteredRowModel().rows.length} row(s) selected.
           </div>
           <div className="flex items-center space-x-6 lg:space-x-8">

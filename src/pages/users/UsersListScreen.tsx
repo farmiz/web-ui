@@ -9,7 +9,7 @@ import {
   ModalActionButtonProps,
   OptionsProps,
 } from "@/interfaces";
-import { deleteUser, fetchUsers } from "@/store/userSlice/actions";
+import { userActions } from "@/store/userSlice/actions";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -63,7 +63,7 @@ const UsersListScreen = () => {
         title: "Continue",
         action: async () => {
           setLoading(true);
-          await userDispatch(deleteUser(selectedUser.id));
+          await userDispatch(userActions.deleteUser(selectedUser.id));
           setLoading(false);
           setOpenModal(false);
         },
@@ -80,10 +80,14 @@ const UsersListScreen = () => {
     { label: "First Name", value: "firstName" },
     { label: "Last Name", value: "lastName" },
     { label: "Email", value: "email" },
-    { label: "Role", value: "role" }
+    { label: "Role", value: "role" },
   ];
   return (
-    <DashboardLayout pageTitle="Users List" actionButtons={actionButtons}>
+    <DashboardLayout
+      pageTitle="Users List"
+      actionButtons={actionButtons}
+      showScrollToTopButton={true}
+    >
       <Modal
         showModal={modalData.showModal}
         modalTitle={modalData.modalTitle(selectedUser.firstName)}
@@ -95,7 +99,7 @@ const UsersListScreen = () => {
         title="Users List"
         columns={columnsToDisplay}
         filters={filters}
-        fetchQuery={fetchUsers}
+        fetchQuery={userActions.fetchUsers}
         actionButtons={tableActionButtons}
         allowRowSelect={true}
         data={userStore.users}

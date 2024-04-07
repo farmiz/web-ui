@@ -41,7 +41,7 @@ export class BaseRequestService {
       // check if request should use accessToken
       if (useToken && tokenType) {
         const accessTokenFromStore = localStorage.getItem(tokenType) || null;
-        // axios shoud attach access token to each request
+        // axios should attach access token to each request
         this.axiosInstance.interceptors.request.use(
           (config) => {
             config.headers["Content-Type"] = contentType;

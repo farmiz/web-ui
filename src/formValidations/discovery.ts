@@ -146,7 +146,7 @@ export const discoveryForm: FormComponent[] = [
           label: "Tags",
           fieldKey: "tags",
           type: "select",
-          options: tagsOptions,
+          options: [],
           isMultiSelect: true,
           isClearable: true,
         },

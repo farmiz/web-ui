@@ -1,3 +1,4 @@
+import { Label } from "@/components/ui/label";
 import { FormIconProps } from "@/interfaces/form";
 import { FC } from "react";
 
@@ -11,19 +12,19 @@ const InputLabel: FC<InputLabelProps> = ({ label, id, required }) => {
   return (
     <>
       {label && typeof label === "string" && (
-        <label htmlFor={id} className="cursor-pointer text-sm block">
+        <Label htmlFor={id} className="cursor-pointer text-sm block">
           {label} {required && <sup className="font-bold text-red-500">*</sup>}
-        </label>
+        </Label>
       )}
 
       {label && typeof label !== "string" && (
-        <label
+        <Label
           htmlFor={id}
           className={`cursor-pointer text-sm block ${label.className || ""}`}
         >
           {label.text}
           {required && <sup className="font-bold text-red-500">*</sup>}
-        </label>
+        </Label>
       )}
     </>
   );
